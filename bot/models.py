@@ -26,7 +26,7 @@ class Order(models.Model):
     """"A class for Order objects"""
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders_by_user")
     email = models.ForeignKey(Email, on_delete=models.CASCADE, related_name="orders_by_email")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE())
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     status = models.CharField(max_length=255)
 
