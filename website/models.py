@@ -3,6 +3,7 @@ from django.db import models
 
 class Configuration(models.Model):
     """This is a model for bot configurations"""
+    panel_url = models.CharField(max_length=255)
     bot_name = models.CharField(max_length=255)
     token = models.CharField(max_length=255)
 
