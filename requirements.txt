@@ -1,3 +1,13 @@
+asgiref==3.7.2
+certifi==2023.7.22
+charset-normalizer==3.3.2
 Django==3.2
-python-decouple == 3.8
- djangorestframework
+djangorestframework==3.14.0
+idna==3.4
+pyTelegramBotAPI==4.14.0
+python-decouple==3.8
+pytz==2023.3.post1
+requests==2.31.0
+sqlparse==0.4.4
+telebot==0.0.5
+urllib3==2.0.7
