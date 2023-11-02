@@ -58,10 +58,3 @@ class ChannelAdmin(models.Model):
     def __str__(self):
         return self.name
 
-
-class User(models.Model):
-    user_id = models.IntegerField()
-    primary_email = models.EmailField(max_length=255, unique=True, blank=True, default="12@gmal.com")
-    emails = models.ManyToManyField('Email', blank=True)
-    created_at = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
-
