@@ -13,8 +13,8 @@ class Proxy(models.Model):
 
 class Configuration(models.Model):
     """This is a model for bot configurations"""
-    panel_username = models.CharField(max_length=255)
-    panel_password = models.CharField(max_length=255)
+    panel_username = models.CharField(max_length=255, default=None)
+    panel_password = models.CharField(max_length=255, default=None)
     bot_name = models.CharField(max_length=255)
     panel_url = models.CharField(max_length=255, blank=True)
     token = models.CharField(max_length=255)
@@ -26,6 +26,7 @@ class Configuration(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
+    quantity = models.IntegerField(default=4)
 
     def __str__(self):
         return self.name
@@ -56,3 +57,4 @@ class ChannelAdmin(models.Model):
 
     def __str__(self):
         return self.name
+
