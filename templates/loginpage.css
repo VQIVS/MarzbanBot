@@ -1,6 +1,5 @@
 body {
     background: rgb(250, 242, 165);
-    background-image: url("bgimage.jpg");
     font-family: "Lucida Sans Unicode", "Lucida Grande", "sans-serif";
     width: 100%;
     height: 100%;
@@ -10,12 +9,13 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    background: rgb(95, 93, 66);
+    background: rgb(217, 217, 217);
     width: 285px;
     margin: -140px 0 0 -182px;
     padding: 40px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
     padding-bottom: 3px;
+    opacity: 1;
 }
 
 .loginPage input {
@@ -25,8 +25,7 @@ body {
     margin: 0 0 20px;
     padding: 10px 15px;
     border: 1px solid rgb(243, 215, 74);
-    color: rgb(243, 215, 74);
-    ;
+    color: rgb(243, 215, 74);  
     font-family: "Lucida Sans Unicode", "Lucida Grande", "sans-serif";
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -117,4 +116,27 @@ body {
     text-align: center;
     margin-top: -65px;
     font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('image/bgimage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0.9;
+}
+
+body::before {
+    content: "";
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Adjust the last value for opacity (0.0 to 1.0) */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Place it below the background image */
 }
