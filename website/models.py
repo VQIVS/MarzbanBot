@@ -1,5 +1,4 @@
 from django.db import models
-import datetime
 class ProxyCategory(models.Model):
     name = models.CharField(max_length=255)
 
@@ -7,6 +6,7 @@ class ProxyCategory(models.Model):
         return self.name
 
 class Proxy(models.Model):
+    """this isa model for proxy names in the marzban panel of the user"""
     name = models.CharField(max_length=255)
     type = models.ManyToManyField(ProxyCategory, blank=True)
 
@@ -45,7 +45,7 @@ class TelegramChannel(models.Model):
 class Tutorial(models.Model):
     """This is a model for handling the tutorials of bot """
     name = models.CharField(max_length=255)
-    text = models.TextField(max_length=2043)
+    telegram_id = models.CharField(max_length=2043, default=None)
 
     def __str__(self):
         return self.name
