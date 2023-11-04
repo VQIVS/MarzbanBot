@@ -4,4 +4,13 @@ body {
 
 .Welcome {
     text-align: center;
+    margin-top: -65px;
+    padding: 0;
+}
+
+.Logo {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    margin-left: 10px;
 }
