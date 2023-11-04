@@ -121,7 +121,7 @@ body {
 body {
     margin: 0;
     padding: 0;
-    background-image: url('image/bgimage.jpg');
+    background-image: url('../images/bgimage.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
