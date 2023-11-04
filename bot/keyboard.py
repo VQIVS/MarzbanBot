@@ -9,15 +9,16 @@ buttons_row1 = [
 buttons_row2 = [
     types.KeyboardButton('💬پشتیبانی'),
     types.KeyboardButton('📚راهنما اتصال'),
+    types.KeyboardButton('اضافه کردن ایمیل')
 
 ]
 buttons_row3 = [
-    types.KeyboardButton('اضافه کردن ایمیل')
+    types.KeyboardButton('اشتراک های من')
 ]
-
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
 keyboard.add(*buttons_row3)
+
 
 products_keyboard = types.InlineKeyboardMarkup(row_width=1)
 product_1_name = Product.objects.get(pk=1)
