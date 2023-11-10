@@ -1,11 +1,10 @@
 body {
-    background-color: rgb(129, 129, 129);
+    background-color: rgb(255, 255, 255);
 }
 
 .Welcome {
     text-align: center;
     margin-top: -80px;
-    padding: 0;
 }
 
 .Logo {
