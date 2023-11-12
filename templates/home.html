@@ -2,31 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>CodePen - Sidebar Menu</title>
-    <link rel="../static/styles/home.css" />
+    <title>QiHome</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
     />
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="../static/styles/home.css" />
+    <style>
+      /* .search-box-img {
+        width: 50px;
+        height: 30px;
+        background-color: #faf2a5;
+      } */
+    </style>
   </head>
   <body>
     <nav class="sidebar close">
       <header>
         <div class="image-text">
           <span class="image">
-            <img
-              src="https://drive.google.com/uc?export=view&id=1ETZYgPpWbbBtpJnhi42_IR3vOwSOpR4z"
-              alt=""
-            />
+            <img src="../static/images/QiLogo.png" alt="QiLogo" />
           </span>
-
           <div class="text logo-text">
-            <span class="name">Stella Army </span>
-            <span class="profession">Web developer</span>
+            <span class="name">QiVPN </span>
+            <span class="profession">speed is our signetur</span>
           </div>
         </div>
-
         <i class="bx bx-chevron-right toggle"></i>
       </header>
 
@@ -35,6 +36,11 @@
           <li class="search-box">
             <i class="bx bx-search icon"></i>
             <input type="text" placeholder="Search..." />
+            <img
+              class="search-box-img"
+              src="../static/images/search.png"
+              alt="search-box"
+            />
           </li>
 
           <ul class="menu-links">
@@ -48,35 +54,35 @@
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-bar-chart-alt-2 icon"></i>
-                <span class="text nav-text">Revenue</span>
+                <span class="text nav-text">Products</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-bell icon"></i>
-                <span class="text nav-text">Notifications</span>
+                <span class="text nav-text">Message</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-pie-chart-alt icon"></i>
-                <span class="text nav-text">Analytics</span>
+                <span class="text nav-text">Setting</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-heart icon"></i>
-                <span class="text nav-text">Likes</span>
+                <span class="text nav-text">Documents</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-wallet icon"></i>
-                <span class="text nav-text">Wallets</span>
+                <span class="text nav-text">Donate</span>
               </a>
             </li>
           </ul>
@@ -106,9 +112,8 @@
     </nav>
 
     <section class="home">
-      <div class="text">Dashboard Sidebar</div>
+      <div class="text">Qi Dashboard</div>
     </section>
-    <!-- partial -->
-    <script src="./script.js"></script>
+    <script src="../static/home.js"></script>
   </body>
 </html>
