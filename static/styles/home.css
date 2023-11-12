@@ -318,3 +318,10 @@ body.dark .switch::before {
 body.dark .home .text {
     color: var(--text-color);
 }
+
+.search-box-img {
+    width: 50px;
+    height: 40px;
+    margin-left: -60px;
+    background-color: #FAF2A5;
+}
