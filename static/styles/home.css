@@ -6,15 +6,12 @@
 }
 
 :root {
-    /* ===== Colors ===== */
-    --body-color: #e4e9f7;
-    --sidebar-color: #fff;
-    --primary-color: #dc143c;
-    --primary-color-light: #f6f5ff;
+    --body-color: #c1c1c1;
+    --sidebar-color: #FAF2A5;
+    --primary-color: #707070;
+    /* --primary-color-light: #f6f5ff; */
     --toggle-color: #ddd;
     --text-color: #707070;
-
-    /* ====== Transition ====== */
     --tran-03: all 0.2s ease;
     --tran-03: all 0.3s ease;
     --tran-04: all 0.3s ease;
@@ -41,7 +38,6 @@ body.dark {
     --text-color: #ccc;
 }
 
-/* ===== Sidebar ===== */
 .sidebar {
     position: fixed;
     top: 0;
@@ -58,7 +54,6 @@ body.dark {
     width: 88px;
 }
 
-/* ===== Reusable code - Here ===== */
 .sidebar li {
     height: 50px;
     list-style: none;
@@ -100,8 +95,6 @@ body.dark {
     opacity: 0;
 }
 
-/* =========================== */
-
 .sidebar header {
     position: relative;
 }
@@ -123,7 +116,7 @@ header .image-text .name {
 }
 
 header .image-text .profession {
-    font-size: 16px;
+    font-size: 14px;
     margin-top: -2px;
     display: block;
 }
@@ -135,7 +128,7 @@ header .image-text .profession {
 }
 
 .sidebar header .image img {
-    width: 40px;
+    width: 60px;
     border-radius: 6px;
 }
 
@@ -187,6 +180,10 @@ body.dark .sidebar header .toggle {
     font-size: 17px;
     font-weight: 500;
     transition: var(--tran-05);
+}
+
+.sidebar li.search-box-img img {
+    width: 10px;
 }
 
 .sidebar li a {
