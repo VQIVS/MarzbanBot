@@ -2,38 +2,118 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MarzbanHome</title>
+    <title>QiHome</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+    />
     <link rel="stylesheet" href="../static/styles/home.css" />
+    <style>
+      /* .search-box-img {
+        width: 50px;
+        height: 30px;
+        background-color: #faf2a5;
+      } */
+    </style>
   </head>
   <body>
-    <img class="Logo" src="../static/images/QiLogo.png" alt="QiLogo" />
-    <h1 class="Welcome">Welcome</h1>
-    <div id="container">
-      <nav role="navigation">
-        <ul>
-          <li>
-            <a href="setting.html" target="_blank"
-              ><span class="menu-style">Setting</span></a
-            >
+    <nav class="sidebar close">
+      <header>
+        <div class="image-text">
+          <span class="image">
+            <img src="../static/images/QiLogo.png" alt="QiLogo" />
+          </span>
+          <div class="text logo-text">
+            <span class="name">QiVPN </span>
+            <span class="profession">speed is our signetur</span>
+          </div>
+        </div>
+        <i class="bx bx-chevron-right toggle"></i>
+      </header>
+
+      <div class="menu-bar">
+        <div class="menu">
+          <li class="search-box">
+            <i class="bx bx-search icon"></i>
+            <input type="text" placeholder="Search..." />
+            <img
+              src="../static/images/search.png"
+              alt="search-box-img"
+              class="search-box-img"
+            />
           </li>
-          <li>
-            <a href="products.html" target="_blank"
-              ><span class="menu-style">Products</span></a
-            >
+
+          <ul class="menu-links">
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-home-alt icon"></i>
+                <span class="text nav-text">Dashboard</span>
+              </a>
+            </li>
+
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-bar-chart-alt-2 icon"></i>
+                <span class="text nav-text">Products</span>
+              </a>
+            </li>
+
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-bell icon"></i>
+                <span class="text nav-text">Message</span>
+              </a>
+            </li>
+
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-pie-chart-alt icon"></i>
+                <span class="text nav-text">Setting</span>
+              </a>
+            </li>
+
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-heart icon"></i>
+                <span class="text nav-text">Documents</span>
+              </a>
+            </li>
+
+            <li class="nav-link">
+              <a href="#">
+                <i class="bx bx-wallet icon"></i>
+                <span class="text nav-text">Donate</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bottom-content">
+          <li class="">
+            <a href="#">
+              <i class="bx bx-log-out icon"></i>
+              <span class="text nav-text">Logout</span>
+            </a>
           </li>
-          <li>
-            <a href="clients.html" target="_blank"
-              ><span class="menu-style">Clients</span></a
-            >
+
+          <li class="mode">
+            <div class="sun-moon">
+              <i class="bx bx-moon icon moon"></i>
+              <i class="bx bx-sun icon sun"></i>
+            </div>
+            <span class="mode-text text">Dark mode</span>
+
+            <div class="toggle-switch">
+              <span class="switch"></span>
+            </div>
           </li>
-          <li>
-            <a href="guide.html" target="_blank"
-              ><span class="menu-style">Guide</span></a
-            >
-          </li>
-        </ul>
-      </nav>
-    </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="home">
+      <div class="text">Qi Dashboard</div>
+    </section>
+    <script src="../static/home.js"></script>
   </body>
 </html>
