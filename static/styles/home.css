@@ -198,7 +198,7 @@ body.dark .sidebar header .toggle {
     transition: var(--tran-03);
 }
 
-.sidebar li a:hover {
+.sidebar li a:hover::after {
     background-color: var(--primary-color);
 }
 
@@ -342,7 +342,7 @@ body.dark .home .text {
 .Message {
     width: 50px;
     height: 40px;
-    margin-left: -135px;
+    margin-left: -60px;
     background-color: #FAF2A5;
 }
 
@@ -366,3 +366,4 @@ body.dark .home .text {
     margin-left: -60px;
     background-color: #FAF2A5;
 }
+
