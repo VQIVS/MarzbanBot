@@ -7,18 +7,37 @@ const body = document.querySelector("body"),
 
 toggle.addEventListener("click", () => {
   sidebar.classList.toggle("close");
+  toggleImageVisibility();
 });
 
 searchBtn.addEventListener("click", () => {
   sidebar.classList.remove("close");
+  toggleImageVisibility();
 });
 
-modeSwitch.addEventListener("click", () => {
-  body.classList.toggle("dark");
+function toggleDarkMode() {
+  const body = document.querySelector("body");
+  const sidebar = document.querySelector(".sidebar");
+  const images = document.querySelectorAll(".nav-link img");
 
+  body.classList.toggle("dark");
+  sidebar.classList.toggle("dark-sidebar");
+
+  // Change image color and background based on dark mode
   if (body.classList.contains("dark")) {
-    modeText.innerText = "Light mode";
+    images.forEach((img) => {
+      img.style.filter = "invert(100%)";
+      img.parentNode.style.backgroundColor = "#242526";
+    });
   } else {
-    modeText.innerText = "Dark mode";
+    images.forEach((img) => {
+      img.style.filter = "invert(0%)";
+      img.parentNode.style.backgroundColor = "transparent";
+    });
   }
-});     
+}
+
+const darkModeSwitch = document.querySelector(".toggle-switch");
+darkModeSwitch.addEventListener("click", toggleDarkMode);
+
+
