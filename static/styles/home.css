@@ -9,8 +9,7 @@
     --body-color: #c1c1c1;
     --sidebar-color: #FAF2A5;
     --primary-color: #707070;
-    /* --primary-color-light: #f6f5ff; */
-    --toggle-color: #ddd;
+    --toggle-color: #818181;
     --text-color: #707070;
     --tran-03: all 0.2s ease;
     --tran-03: all 0.3s ease;
@@ -320,6 +319,48 @@ body.dark .home .text {
 }
 
 .search-box-img {
+    width: 50px;
+    height: 40px;
+    margin-left: -115px;
+    background-color: #FAF2A5;
+}
+
+.Dashboard {
+    width: 50px;
+    height: 40px;
+    margin-left: -60px;
+    background-color: #FAF2A5;
+}
+
+.Products {
+    width: 50px;
+    height: 40px;
+    margin-left: -60px;
+    background-color: #FAF2A5;
+}
+
+.Message {
+    width: 50px;
+    height: 40px;
+    margin-left: -135px;
+    background-color: #FAF2A5;
+}
+
+.Setting {
+    width: 50px;
+    height: 40px;
+    margin-left: -60px;
+    background-color: #FAF2A5;
+}
+
+.Documents {
+    width: 50px;
+    height: 40px;
+    margin-left: -60px;
+    background-color: #FAF2A5;
+}
+
+.Donate {
     width: 50px;
     height: 40px;
     margin-left: -60px;

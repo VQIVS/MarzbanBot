@@ -21,4 +21,4 @@ modeSwitch.addEventListener("click", () => {
   } else {
     modeText.innerText = "Dark mode";
   }
-});
+});     
