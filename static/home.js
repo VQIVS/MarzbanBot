@@ -22,8 +22,7 @@ function toggleDarkMode() {
 
   body.classList.toggle("dark");
   sidebar.classList.toggle("dark-sidebar");
-
-  // Change image color and background based on dark mode
+  
   if (body.classList.contains("dark")) {
     images.forEach((img) => {
       img.style.filter = "invert(100%)";
