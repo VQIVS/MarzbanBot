@@ -1,9 +1,12 @@
 from django.db import models
+
+
 class ProxyCategory(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
 
 class Proxy(models.Model):
     """this isa model for proxy names in the marzban panel of the user"""
@@ -24,9 +27,9 @@ class Configuration(models.Model):
 
 
 class Product(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
-    quantity = models.IntegerField(default=4)
 
     def __str__(self):
         return self.name
@@ -57,4 +60,3 @@ class ChannelAdmin(models.Model):
 
     def __str__(self):
         return self.name
-
