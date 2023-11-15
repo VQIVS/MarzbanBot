@@ -384,8 +384,7 @@ body.dark .home .text {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
-    /* Adjust the color and opacity */
+    background-color: #FAF2A5;
     z-index: 1;
 }
 
@@ -395,14 +394,14 @@ body.dark .home .text {
     transition: opacity 0.3s ease;
 }
 
-.sidebar li.nav-link a:hover .icon,
-.sidebar li.nav-link a:hover .text {
-    color: #818181;
+.sidebar li.nav-link a:hover .icon {
+    color: #707070;
 }
 
 .sidebar li.nav-link a:hover .text {
     color: #ffffff;
 }
+
 
 body.dark .sidebar {
     background-color: #242526;
@@ -430,7 +429,7 @@ body.dark.sidebar li.nav-link img {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #242526;
     z-index: 1;
 }
 
@@ -447,4 +446,26 @@ body.dark.sidebar li.nav-link a:hover .text {
 
 body.dark.sidebar li.nav-link a:hover .text {
     color: #ffffff;
+}
+
+
+
+body.dark .sidebar:not(.close) li.nav-link img {
+    filter: invert(100%);
+    background-color: transparent;
+    /* Set the background color to transparent in dark mode */
+}
+
+.sidebar:not(.close) li.nav-link img {
+    display: none;
+}
+
+.sidebar:not(.close) header .image img {
+    display: block;
+}
+
+.sidebar:not(.close) li.nav-link:hover img,
+.sidebar:not(.close) li.nav-link:hover img::before {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
