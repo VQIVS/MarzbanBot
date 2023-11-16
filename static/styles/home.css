@@ -422,7 +422,7 @@ body.dark.sidebar li.nav-link img {
     transition: opacity 0.3s ease;
 }
 
-*/ body.dark.sidebar li.nav-link:hover img::before {
+body.dark.sidebar li.nav-link:hover img::before {
     content: "";
     position: absolute;
     top: 0;
@@ -476,4 +476,17 @@ body.dark .sidebar.close li.nav-link img {
 body.dark .sidebar li.nav-link:hover img::before,
 body.dark .sidebar:not(.close) li.nav-link:hover img::before {
     background-color: #242526;
+}
+
+body.dark .sidebar li.search-box input {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: #242526;
+    color: var(--text-color);
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 500;
+    transition: var(--tran-05);
 }
