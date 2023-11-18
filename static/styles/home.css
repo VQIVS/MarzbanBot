@@ -32,9 +32,9 @@ body.dark {
     --body-color: #18191a;
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
-    --primary-color-light: #3a3b3c;
+    /* --primary-color-light: #3a3b3c; */
     --toggle-color: #fff;
-    --text-color: #ccc;
+    /* --text-color: #ccc; */
 }
 
 .sidebar {
@@ -473,6 +473,15 @@ body.dark .sidebar.close li.nav-link img {
     background-color: transparent;
 }
 
+body.dark .sidebar li.search-box img {
+    background-color: transparent;
+}
+
+body.dark header span.image img {
+    background-color: transparent;
+}
+
+
 body.dark .sidebar li.nav-link:hover img::before,
 body.dark .sidebar:not(.close) li.nav-link:hover img::before {
     background-color: #242526;
@@ -483,7 +492,7 @@ body.dark .sidebar li.search-box input {
     width: 100%;
     outline: none;
     border: none;
-    background-color: #242526;
+    /* background-color: #242526; */
     color: var(--text-color);
     border-radius: 6px;
     font-size: 17px;
