@@ -32,9 +32,9 @@ body.dark {
     --body-color: #18191a;
     --sidebar-color: #242526;
     --primary-color: #3a3b3c;
-    --primary-color-light: #3a3b3c;
+    /* --primary-color-light: #3a3b3c; */
     --toggle-color: #fff;
-    --text-color: #ccc;
+    /* --text-color: #ccc; */
 }
 
 .sidebar {
@@ -384,8 +384,7 @@ body.dark .home .text {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
-    /* Adjust the color and opacity */
+    background-color: #FAF2A5;
     z-index: 1;
 }
 
@@ -395,14 +394,14 @@ body.dark .home .text {
     transition: opacity 0.3s ease;
 }
 
-.sidebar li.nav-link a:hover .icon,
-.sidebar li.nav-link a:hover .text {
-    color: #818181;
+.sidebar li.nav-link a:hover .icon {
+    color: #707070;
 }
 
 .sidebar li.nav-link a:hover .text {
     color: #ffffff;
 }
+
 
 body.dark .sidebar {
     background-color: #242526;
@@ -423,14 +422,14 @@ body.dark.sidebar li.nav-link img {
     transition: opacity 0.3s ease;
 }
 
-*/ body.dark.sidebar li.nav-link:hover img::before {
+body.dark.sidebar li.nav-link:hover img::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #242526;
     z-index: 1;
 }
 
@@ -447,4 +446,56 @@ body.dark.sidebar li.nav-link a:hover .text {
 
 body.dark.sidebar li.nav-link a:hover .text {
     color: #ffffff;
+}
+
+
+
+.sidebar:not(.close) li.nav-link img {
+    display: none;
+}
+
+.sidebar:not(.close) header .image img {
+    display: block;
+}
+
+.sidebar:not(.close) li.nav-link:hover img,
+.sidebar:not(.close) li.nav-link:hover img::before {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+body.dark .sidebar li.nav-link img {
+    filter: invert(100%);
+    background-color: #242526;
+}
+
+body.dark .sidebar.close li.nav-link img {
+    background-color: transparent;
+}
+
+body.dark .sidebar li.search-box img {
+    background-color: transparent;
+}
+
+body.dark header span.image img {
+    background-color: transparent;
+}
+
+
+body.dark .sidebar li.nav-link:hover img::before,
+body.dark .sidebar:not(.close) li.nav-link:hover img::before {
+    background-color: #242526;
+}
+
+body.dark .sidebar li.search-box input {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    /* background-color: #242526; */
+    color: var(--text-color);
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 500;
+    transition: var(--tran-05);
 }
