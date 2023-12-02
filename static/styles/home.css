@@ -492,7 +492,6 @@ body.dark .sidebar li.search-box input {
     width: 100%;
     outline: none;
     border: none;
-    /* background-color: #242526; */
     color: var(--text-color);
     border-radius: 6px;
     font-size: 17px;
