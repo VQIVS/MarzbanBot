@@ -2,6 +2,8 @@ from django.db import models
 
 from website.models import Product
 
+"""Models for first version"""
+
 
 class Email(models.Model):
     address = models.EmailField(max_length=255, unique=True)
@@ -32,3 +34,6 @@ class Order(models.Model):
 
     def __str__(self):
         return self.email
+
+
+"""Modes for version 2.00 """
