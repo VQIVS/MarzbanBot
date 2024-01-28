@@ -17,6 +17,7 @@ bot = TeleBot(token)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
 
+
 @bot.message_handler(['start'])
 def start(message):
     user_id = message.from_user.id
@@ -35,17 +36,20 @@ def add_email(message):
     user.save()
     bot.send_message(user_id, "لطفا ایمیل خود را به صورت صحیح وارد کنید")
 
+
 @bot.message_handler(func=lambda message: message.text == '⭐️خرید سرویس')
 def buy(message):
     user_id = message.from_user.id
     message_buy = "🛒 لطفاً یکی از پلن های زیر را برای خرید انتخاب کنید."
     bot.send_message(user_id, message_buy, reply_markup=products_keyboard)
 
+
 @bot.message_handler(func=lambda message: message.text == "💬پشتیبانی")
 def support(message):
     user_id = message.from_user.id
     support_id = channel_admin.telegram_id
     bot.send_message(user_id, support_id)
+
 
 @bot.message_handler(func=lambda message: message.text == "اشتراک های من")
 def subscriptions(message):
@@ -67,6 +71,8 @@ def add_email(message):
     except DatabaseError:
         message_unsaved = 'ایمیل تکراری یا اشتباه است.'
         bot.send_message(user_id, message_unsaved)
+
+
 @bot.message_handler(func=lambda message: message.text == "📚راهنما اتصال")
 def tutorial(message):
     user_id = message.chat.id
