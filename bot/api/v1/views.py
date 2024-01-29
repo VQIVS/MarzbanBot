@@ -1,6 +1,9 @@
-from .serializers import UserSerializer, EmailSerializer, OrderSerializer
+from .serializers import UserSerializer, OrderSerializer
 from rest_framework import viewsets
-from ...models import Email, User, Order
+from ...models import User, Order
+
+# from ...models import Email, User, Order
+""" commented for v1 """
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -8,10 +11,13 @@ class UserModelViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class EmailModelViewSet(viewsets.ModelViewSet):
-    queryset = Email.objects.all()
-    serializer_class = EmailSerializer
+""" commented for v1 """
 
+
+# class EmailModelViewSet(viewsets.ModelViewSet):
+#     queryset = Email.objects.all()
+#     serializer_class = EmailSerializer
+#
 
 class OrderModelViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
