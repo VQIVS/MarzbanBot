@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import ConfigurationModelViewSet, ProductModelViewSet, TelegramChannelModelViewSet, TutorialModelViewSet, \
-    ChannelAdminModelViewSet, MessageModelViewSet, CustomUserModelViewSet
+    ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet
 from rest_framework.routers import DefaultRouter
 
 app_name = "v1-website"
@@ -13,7 +13,7 @@ router.register('TelegramChannel', TelegramChannelModelViewSet, basename='Telegr
 router.register('Tutorial', TutorialModelViewSet, basename='Tutorial')
 router.register('ChannelAdminModelViewSet', ChannelAdminModelViewSet, basename='ChannelAdminModelViewSet')
 router.register('MessageModelViewSet', MessageModelViewSet, basename='MessageModelViewSet')
-router.register('CustomUser', CustomUserModelViewSet, basename='CustomUser')
+router.register('User', UserModelViewSet, basename='User')
 
 urlpatterns = [
     path('', include(router.urls))

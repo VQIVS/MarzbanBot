@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 
-class CustomUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
@@ -21,7 +21,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
@@ -34,22 +34,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # Add a token field to your CustomUser model
     token = models.CharField(max_length=255, blank=True, null=True)
 
-    objects = CustomUserManager()
+    objects = UserManager()
 
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
         blank=True,
-        related_name='customuser_set',
-        related_query_name='customuser',
+        related_name='website_user_groups',  # Change this line
+        related_query_name='user',
     )
 
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         verbose_name='user permissions',
         blank=True,
-        related_name='customuser_set',
-        related_query_name='customuser',
+        related_name='website_user_permissions',  # Change this line
+        related_query_name='user',
     )
 
     def save(self, *args, **kwargs):
