@@ -1,5 +1,11 @@
 from rest_framework.serializers import ModelSerializer
-from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message
+from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, CustomUser
+
+
+class CustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 
 class ConfigurationSerializer(ModelSerializer):
