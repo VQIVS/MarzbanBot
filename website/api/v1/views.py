@@ -1,7 +1,12 @@
-from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin
+from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, User
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ConfigurationSerializer, ProductSerializer, TelegramChannelSerializer, TutorialSerializer, \
-    ChannelAdminSerializer, MessageSerializer
+    ChannelAdminSerializer, MessageSerializer, UserSerializer
+
+
+class UserModelViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class ConfigurationModelViewSet(ModelViewSet):
