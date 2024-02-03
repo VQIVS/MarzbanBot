@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         'auth.Group',
         verbose_name='groups',
         blank=True,
-        related_name='website_user_groups',  # Change this line
+        related_name='website_user_groups',
         related_query_name='user',
     )
 
@@ -48,24 +48,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         'auth.Permission',
         verbose_name='user permissions',
         blank=True,
-        related_name='website_user_permissions',  # Change this line
+        related_name='website_user_permissions',
         related_query_name='user',
     )
-
-    def save(self, *args, **kwargs):
-        # Generate a token when saving the user (you can customize this logic)
-        if not self.token:
-            self.token = generate_token()
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.email
-
-
-def generate_token():
-    # Implement your token generation logic here (e.g., using secrets module)
-    pass
-
 
 class Configuration(models.Model):
     """ This is a model for bot configurations """
