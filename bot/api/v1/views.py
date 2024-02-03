@@ -1,4 +1,4 @@
-from .serializers import UserSerializer, OrderSerializer
+from .serializers import BotOrderSerializer, BotOrderSerializer
 from rest_framework import viewsets
 from ...models import User, Order
 
@@ -8,7 +8,7 @@ from ...models import User, Order
 
 class UserModelViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = BotOrderSerializer
 
 
 """ commented for v1 """
@@ -21,4 +21,4 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
 class OrderModelViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    serializer_class = BotOrderSerializer
