@@ -1,8 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, User
 
-
-class UserSerializer(ModelSerializer):
+class WebsiteUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
