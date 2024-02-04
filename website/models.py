@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+import secrets
 
 
-class CustomUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
@@ -20,32 +22,49 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = 'email'
 
-    # Provide unique related_name for groups and user_permissions
+    # Add a token field to your CustomUser model
+    token = models.CharField(max_length=255, blank=True, null=True)
+
+    objects = UserManager()
+
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_user_groups',
+        verbose_name='groups',
         blank=True,
-        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.'
+        related_name='website_user_groups',
+        related_query_name='user',
     )
+
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_user_permissions',
+        verbose_name='user permissions',
         blank=True,
-        help_text='Specific permissions for this user.'
+        related_name='website_user_permissions',
+        related_query_name='user',
     )
+
+    def save(self, *args, **kwargs):
+        # Generate a token when saving the user (you can customize this logic)
+        if not self.token:
+            self.token = generate_token()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email
+
+
+def generate_token():
+    return secrets.token_hex(32)
 
 
 class Configuration(models.Model):
