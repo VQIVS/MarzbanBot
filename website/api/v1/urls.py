@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import ConfigurationModelViewSet, ProductModelViewSet, TelegramChannelModelViewSet, TutorialModelViewSet, \
     ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
 
 app_name = "v1-website"
 
@@ -16,5 +17,6 @@ router.register('MessageModelViewSet', MessageModelViewSet, basename='MessageMod
 router.register('User', UserModelViewSet, basename='User')
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('Token/', obtain_auth_token, name='api_token'),
 ]

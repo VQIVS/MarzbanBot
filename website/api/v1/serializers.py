@@ -1,5 +1,8 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, User
+from django.utils.translation import gettext as _
+
 
 class WebsiteUserSerializer(ModelSerializer):
     class Meta:
@@ -41,3 +44,14 @@ class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
+
+
+class CustomAuthTokenSerializer(serializers.Serializer):
+    email = serializers.CharField(label=_("Email"), write_only=True)
+    password = serializers.CharField(
+        label=_("Password"),
+        style={"input_type": "password"},
+        trim_whitespace=False,
+        write_only=True,
+    )
+    token = serializers.CharField(label=_("Token"), read_only=True)
