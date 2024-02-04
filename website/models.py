@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+import secrets
 
 
 class UserManager(BaseUserManager):
@@ -51,6 +52,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name='website_user_permissions',
         related_query_name='user',
     )
+
+    def save(self, *args, **kwargs):
+        # Generate a token when saving the user (you can customize this logic)
+        if not self.token:
+            self.token = generate_token()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.email
+
+
+def generate_token():
+    return secrets.token_hex(32)
+
 
 class Configuration(models.Model):
     """ This is a model for bot configurations """
