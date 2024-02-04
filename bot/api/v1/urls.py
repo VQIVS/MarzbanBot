@@ -17,5 +17,5 @@ router.register('BotOrder', OrderModelViewSet, basename='BotOrder')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api/token/', obtain_auth_token, name='api_token'),
+    path('Token/', obtain_auth_token, name='api_token'),
 ]
