@@ -124,5 +124,3 @@ class Message(models.Model):
         return self.subject
 
 
-class CheckmigrationsModel(models.Model):
-    name = models.CharField(max_length=255)
