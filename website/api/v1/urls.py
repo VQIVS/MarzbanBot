@@ -19,5 +19,5 @@ router.register('User', UserModelViewSet, basename='User')
 urlpatterns = [
     path('', include(router.urls)),
     path('Token/', obtain_auth_token, name='api_token'),
-    path('api/v1/login/', CustomObtainAuthToken.as_view(), name='custom-login'),
+    path('Token/login/', CustomObtainAuthToken.as_view(), name='custom-login'),
 ]
