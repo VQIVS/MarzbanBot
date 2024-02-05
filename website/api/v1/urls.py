@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import ConfigurationModelViewSet, ProductModelViewSet, TelegramChannelModelViewSet, TutorialModelViewSet, \
-    ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet
+    ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet, CustomObtainAuthToken
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -19,4 +19,5 @@ router.register('User', UserModelViewSet, basename='User')
 urlpatterns = [
     path('', include(router.urls)),
     path('Token/', obtain_auth_token, name='api_token'),
+    path('Token/login/', CustomObtainAuthToken.as_view(), name='custom-login'),
 ]

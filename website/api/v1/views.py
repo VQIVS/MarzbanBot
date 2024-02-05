@@ -3,6 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import ConfigurationSerializer, ProductSerializer, TelegramChannelSerializer, TutorialSerializer, \
     ChannelAdminSerializer, MessageSerializer, WebsiteUserSerializer, CustomAuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserModelViewSet(ModelViewSet):
@@ -51,3 +53,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "user_id": user.pk, "email": user.email})
+
+
+
