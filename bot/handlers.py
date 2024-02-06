@@ -4,7 +4,7 @@ from website.models import Configuration, Message, ChannelAdmin
 from bot.models import BotUser
 import os
 import django
-from bot.keyboard import keyboard
+from bot.keyboard import keyboard, inline_keyboard_markup
 
 """ get the needle data from db """
 configuration = Configuration.objects.first()
@@ -25,3 +25,22 @@ def start(message):
     bot.send_message(user_id, text, reply_markup=keyboard)
 
 
+@bot.message_handler(func=lambda message: message.text == 'آموزش ها💡')
+def handler(message):
+    user_id = message.from_user.id
+
+    # TODO : add reply_markup
+    bot.message_handler(user_id, "لطفا سیستم عامل خود را انتخاب کنید" )
+
+
+@bot.message_handler(func=lambda message: message.text == 'پشتیبانی💬')
+def handler(message):
+    user_id = message.from_user.id
+    support_admin = ChannelAdmin.objects.values('telegram_id').first()['telegram_id']
+    bot.send_message(user_id, support_admin)
+
+
+@bot.message_handler(func=lambda message: message.text == 'خرید سرویس⭐️')
+def handler(message):
+    user_id = message.from_user.id
+    bot.send_message(user_id, "message", reply_markup=inline_keyboard_markup)
