@@ -1,6 +1,6 @@
 from .serializers import BotOrderSerializer, BotOrderSerializer
 from rest_framework import viewsets
-from ...models import User, Order
+from ...models import BotUser, Order
 from rest_framework.authtoken.views import ObtainAuthToken
 
 # from ...models import Email, User, Order
@@ -8,7 +8,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = BotUser.objects.all()
     serializer_class = BotOrderSerializer
 
 

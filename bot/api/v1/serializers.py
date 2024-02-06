@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ...models import User, Order
+from ...models import BotUser, Order
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
@@ -8,7 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class BotUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = BotUser
         fields = '__all__'
 
 
