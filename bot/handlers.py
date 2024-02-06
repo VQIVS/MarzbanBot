@@ -1,6 +1,7 @@
 from sqlite3 import DatabaseError
 from telebot import TeleBot
-from website.models import Configuration, ChannelAdmin, Message
+from website.models import Configuration, Message, ChannelAdmin
+from bot.models import BotUser
 import os
 import django
 from bot.keyboard import keyboard
@@ -18,6 +19,8 @@ django.setup()
 @bot.message_handler(['start'])
 def start(message):
     user_id = message.from_user.id
+    bot_user = BotUser(user_id=user_id)
+    bot_user.save()
     text = message_bot.text
     bot.send_message(user_id, text, reply_markup=keyboard)
 
