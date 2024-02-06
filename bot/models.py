@@ -35,7 +35,7 @@ from website.models import Product
 #         return self.email
 
 
-"""Modes for version 2.00 """
+"""Models for version 2.00 """
 
 
 class BotUser(models.Model):
