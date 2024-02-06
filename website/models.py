@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
 import secrets
 
 
@@ -80,7 +79,6 @@ class Configuration(models.Model):
 
 
 class Product(models.Model):
-    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
 
@@ -116,7 +114,6 @@ class ChannelAdmin(models.Model):
 
 
 class Message(models.Model):
-    id = models.IntegerField(primary_key=True)
     subject = models.CharField(max_length=255)
     text = models.TextField()
 
