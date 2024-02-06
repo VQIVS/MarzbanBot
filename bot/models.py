@@ -38,7 +38,7 @@ from website.models import Product
 """Modes for version 2.00 """
 
 
-class User(models.Model):
+class BotUser(models.Model):
     """A class for User objects"""
 
     user_id = models.IntegerField()
@@ -52,7 +52,7 @@ class User(models.Model):
 class Subscription(models.Model):
     """A class to handle the subscriptions"""
 
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(BotUser, on_delete=models.CASCADE)
     sub_user = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -64,7 +64,7 @@ class Subscription(models.Model):
 class Order(models.Model):
     """"A class for Order objects"""
 
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(BotUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     quantity = models.IntegerField()
