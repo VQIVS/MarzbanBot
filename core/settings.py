@@ -127,3 +127,4 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GRAPPELLI_ADMIN_TITLE = "Your Admin Title"
 
+AUTH_USER_MODEL = "website.User"
