@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserModelViewSet, OrderModelViewSet
 
+
 """commented for v1 """
 # from .views import UserModelViewSet, EmailModelViewSet, OrderModelViewSet
 
