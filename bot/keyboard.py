@@ -50,6 +50,8 @@ inline_tutorial_markup = types.InlineKeyboardMarkup()
 for btn in inline_tutorial_buttons:
     inline_tutorial_markup.add(btn)
 
+""" Inline invoice confirmation keyboard """
 
-
-
+Inline_confirmation_keyboard = types.InlineKeyboardMarkup()
+confirm_button = types.InlineKeyboardButton(text='تایید', callback_data="confirm")
+Inline_confirmation_keyboard.add(confirm_button)
