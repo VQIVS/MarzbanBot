@@ -2,6 +2,10 @@ from telebot import types
 from bot.models import Product
 from website.models import Tutorial
 
+from telebot import TeleBot, types
+
+bot = TeleBot("6413532614:AAGEQwt1cUqYHngJ_ZjImyH9z0xMyslJbcA")
+
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 buttons_row1 = [
     types.KeyboardButton('خرید سرویس⭐️'),
@@ -55,7 +59,6 @@ for btn in inline_tutorial_buttons:
 Inline_confirmation_keyboard = types.InlineKeyboardMarkup()
 confirm_button = types.InlineKeyboardButton(text='تایید', callback_data="confirm")
 Inline_confirmation_keyboard.add(confirm_button)
-
 
 """ Inline payment method keyboard """
 
