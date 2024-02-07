@@ -55,3 +55,9 @@ for btn in inline_tutorial_buttons:
 Inline_confirmation_keyboard = types.InlineKeyboardMarkup()
 confirm_button = types.InlineKeyboardButton(text='تایید', callback_data="confirm")
 Inline_confirmation_keyboard.add(confirm_button)
+
+
+""" Inline payment method keyboard """
+
+Inline_payment_keyboard = types.InlineKeyboardMarkup()
+card = types.InlineKeyboardButton(text='شماره کارت', callback_data="card")
