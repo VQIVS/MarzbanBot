@@ -60,4 +60,7 @@ Inline_confirmation_keyboard.add(confirm_button)
 """ Inline payment method keyboard """
 
 Inline_payment_keyboard = types.InlineKeyboardMarkup()
-card = types.InlineKeyboardButton(text='شماره کارت', callback_data="card")
+card = types.InlineKeyboardButton(text="شماره کارت", callback_data="card")
+trx = types.InlineKeyboardButton(text="ارز دیجیتال ترون", callback_data="trx")
+
+Inline_payment_keyboard.add(card, trx)
