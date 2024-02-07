@@ -5,6 +5,7 @@ from bot.models import BotUser
 import os
 import django
 from bot.keyboard import keyboard, inline_keyboard_markup, inline_tutorial_markup
+from django.db import IntegrityError
 
 """ get the needle data from db """
 configuration = Configuration.objects.first()
@@ -19,8 +20,13 @@ django.setup()
 @bot.message_handler(['start'])
 def start(message):
     user_id = message.from_user.id
-    bot_user = BotUser(user_id=user_id)
-    bot_user.save()
+
+    try:
+        bot_user = BotUser(user_id=user_id)
+        bot_user.save()
+    except IntegrityError:
+        pass
+
     text = message_bot.text
     bot.send_message(user_id, text, reply_markup=keyboard)
 
