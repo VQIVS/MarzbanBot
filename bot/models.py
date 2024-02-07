@@ -35,13 +35,13 @@ from website.models import Product
 #         return self.email
 
 
-"""Modes for version 2.00 """
+""" Models for version 2.00 """
 
 
 class BotUser(models.Model):
     """A class for User objects"""
 
-    user_id = models.IntegerField()
+    user_id = models.IntegerField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
