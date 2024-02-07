@@ -91,7 +91,6 @@ class Configuration(models.Model):
 
 
 class Product(models.Model):
-    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
 
