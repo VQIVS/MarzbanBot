@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import ConfigurationModelViewSet, ProductModelViewSet, TelegramChannelModelViewSet, TutorialModelViewSet, \
-    ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet, CustomObtainAuthToken
+    ChannelAdminModelViewSet, MessageModelViewSet, UserModelViewSet, CustomObtainAuthToken, PaymentMethodModelViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -15,6 +15,7 @@ router.register('Tutorial', TutorialModelViewSet, basename='Tutorial')
 router.register('ChannelAdminModelViewSet', ChannelAdminModelViewSet, basename='ChannelAdminModelViewSet')
 router.register('MessageModelViewSet', MessageModelViewSet, basename='MessageModelViewSet')
 router.register('User', UserModelViewSet, basename='User')
+router.register('PaymentMethod', PaymentMethodModelViewSet, basename='PaymentMethod')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, User
+from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, User, PaymentMethod
 from django.utils.translation import gettext as _
 
 
@@ -55,3 +55,9 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         write_only=True,
     )
     token = serializers.CharField(label=_("Token"), read_only=True)
+
+
+class PaymentMethodSerializer(ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = '__all__'
