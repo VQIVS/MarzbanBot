@@ -1,7 +1,7 @@
 from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, User
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ConfigurationSerializer, ProductSerializer, TelegramChannelSerializer, TutorialSerializer, \
-    ChannelAdminSerializer, MessageSerializer, WebsiteUserSerializer, CustomAuthTokenSerializer
+    ChannelAdminSerializer, MessageSerializer, WebsiteUserSerializer, CustomAuthTokenSerializer, PaymentMethodSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -55,4 +55,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response({"token": token.key, "user_id": user.pk, "email": user.email})
 
 
-
+class PaymentMethodModelViewSet(ModelViewSet):
+    queryset = ChannelAdmin.objects.all()
+    serializer_class = PaymentMethodSerializer
