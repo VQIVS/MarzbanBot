@@ -28,7 +28,7 @@ class Subscription(models.Model):
 class Order(models.Model):
     """"A class for Order objects"""
 
-    user_id = models.ForeignKey(BotUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(BotUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     quantity = models.IntegerField()
