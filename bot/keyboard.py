@@ -8,15 +8,13 @@ bot = TeleBot("6413532614:AAGEQwt1cUqYHngJ_ZjImyH9z0xMyslJbcA")
 
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 buttons_row1 = [
-    types.KeyboardButton('خرید سرویس⭐️'),
+    types.KeyboardButton("خرید سرویس⭐️"),
 ]
 buttons_row2 = [
-    types.KeyboardButton('آموزش ها💡'),
-    types.KeyboardButton('اشتراک های من👤'),
+    types.KeyboardButton("آموزش ها💡"),
+    types.KeyboardButton("اشتراک های من👤"),
 ]
-buttons_row3 = [
-    types.KeyboardButton('پشتیبانی💬')
-]
+buttons_row3 = [types.KeyboardButton("پشتیبانی💬")]
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
 keyboard.add(*buttons_row3)
@@ -30,7 +28,9 @@ for i, product in enumerate(products, start=1):
     button_text = product.name
     callback_data = f"p_{i}"
     product_callbacks.append(callback_data)
-    inline_button = types.InlineKeyboardButton(text=button_text, callback_data=callback_data)
+    inline_button = types.InlineKeyboardButton(
+        text=button_text, callback_data=callback_data
+    )
     inline_buttons.append(inline_button)
 
 inline_keyboard_markup = types.InlineKeyboardMarkup()
@@ -46,8 +46,9 @@ for i, tutorial in enumerate(tutorial, start=1):
     tutorial_text = tutorial.name
     telegram_id_url = tutorial.telegram_id
 
-    inline_tutorial_button = types.InlineKeyboardButton(text=tutorial_text, callback_data=tutorial_text,
-                                                        url=telegram_id_url)
+    inline_tutorial_button = types.InlineKeyboardButton(
+        text=tutorial_text, callback_data=tutorial_text, url=telegram_id_url
+    )
     inline_tutorial_buttons.append(inline_tutorial_button)
 
 inline_tutorial_markup = types.InlineKeyboardMarkup()
@@ -57,7 +58,7 @@ for btn in inline_tutorial_buttons:
 """ Inline invoice confirmation keyboard """
 
 Inline_confirmation_keyboard = types.InlineKeyboardMarkup()
-confirm_button = types.InlineKeyboardButton(text='تایید', callback_data="confirm")
+confirm_button = types.InlineKeyboardButton(text="تایید", callback_data="confirm")
 Inline_confirmation_keyboard.add(confirm_button)
 
 """ Inline payment method keyboard """
