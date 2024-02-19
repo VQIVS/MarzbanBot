@@ -1,6 +1,6 @@
 from django.db import models
-
 from website.models import Product
+import uuid
 
 class BotUser(models.Model):
     """A class for User objects"""
@@ -30,6 +30,7 @@ class Order(models.Model):
 
     user = models.ForeignKey(BotUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order_id = models.CharField(max_length=36, unique=True, default=uuid.uuid4)
 
     quantity = models.IntegerField()
     status = models.CharField(max_length=255)
