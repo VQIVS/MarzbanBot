@@ -305,7 +305,7 @@ def handler(message):
                 data_limit,
                 status,
                 used_traffic,
-                subscription_url,
+                subscription_url
             )
 
             # Check expiration
