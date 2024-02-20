@@ -293,7 +293,7 @@ def handler(message):
             )
 
             # Check expiration
-            if expire_timestamp <= 0 or data_limit - used_traffic <= 0:
+            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
                 text = (
                     "🚫پایان زمان یا حجم اشتراک🚫\n\n"
                     f" شناسه اشتراک: {username}"
@@ -305,18 +305,19 @@ def handler(message):
                 # Send the formatted message as a Telegram message
                 bot.send_message(user_id, formatted_message)
         else:
-            print('no subscription URL available')
+            print('no subscription data available')
 
 @bot.callback_query_handler(func=lambda query: query.data == "cancel")
 def cancel(query):
     user_id = query.message.chat.id
-    subscription_instance = Subscription.objects.filter(status=True).first()
+    bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
+    subscription_instance = Subscription.objects.filter(user_id=bot_user, status=True).first()
     if subscription_instance:
         # Delete the instance
         subscription_instance.delete()
 
-        # Delete the subscription on server side
+        # Delete the subscription on the server side
         delete_user(subscription_instance.sub_user, access_token, panel)
         bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
     else:
-        print("No instance found with status=True.")
+        bot.send_message(user_id, "هیچ اشتراک فعالی یافت نشد.")
