@@ -9,13 +9,13 @@ from .views import UserModelViewSet, OrderModelViewSet
 app_name = "v1-bot"
 
 router = DefaultRouter()
-router.register('BotUser', UserModelViewSet, basename='BotUser')
+router.register("BotUser", UserModelViewSet, basename="BotUser")
 
 """commented for v1 """
 
 # router.register('BotEmail', EmailModelViewSet, basename='BotEmail')
-router.register('BotOrder', OrderModelViewSet, basename='BotOrder')
+router.register("BotOrder", OrderModelViewSet, basename="BotOrder")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

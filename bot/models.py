@@ -2,6 +2,7 @@ from django.db import models
 from website.models import Product
 import uuid
 
+
 class BotUser(models.Model):
     """A class for User objects"""
 
@@ -26,7 +27,7 @@ class Subscription(models.Model):
 
 
 class Order(models.Model):
-    """"A class for Order objects"""
+    """ "A class for Order objects"""
 
     user = models.ForeignKey(BotUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -40,4 +41,3 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.user_id)
-

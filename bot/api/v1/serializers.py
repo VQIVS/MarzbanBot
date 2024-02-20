@@ -9,12 +9,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class BotUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BotUser
-        fields = '__all__'
+        fields = "__all__"
 
 
 class BotOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
-
-
+        fields = "__all__"

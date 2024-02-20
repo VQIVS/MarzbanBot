@@ -1,6 +1,14 @@
 from telebot import TeleBot
 from django.core.files.base import ContentFile
-from website.models import Configuration, Message, ChannelAdmin, Product, PaymentMethod, TelegramChannel, Payment
+from website.models import (
+    Configuration,
+    Message,
+    ChannelAdmin,
+    Product,
+    PaymentMethod,
+    TelegramChannel,
+    Payment,
+)
 from bot.models import BotUser, Order, Subscription
 import os
 import django
@@ -63,14 +71,20 @@ def handler(message):
 def handler(message):
     user_id = message.from_user.id
     support_admin = ChannelAdmin.objects.values("telegram_id").first()["telegram_id"]
-    bot.send_message(user_id, "💬 برای دریافت پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin)
+    bot.send_message(
+        user_id, "💬 برای دریافت پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin
+    )
 
 
 # Handler for the 'خرید سرویس⭐️' message
 @bot.message_handler(func=lambda message: message.text == "خرید سرویس⭐️")
 def handler(message):
     user_id = message.from_user.id
-    bot.send_message(user_id, "🤝 لطفاً اشتراک مد نظر خود را انتخاب کنید.", reply_markup=inline_keyboard_markup)
+    bot.send_message(
+        user_id,
+        "🤝 لطفاً اشتراک مد نظر خود را انتخاب کنید.",
+        reply_markup=inline_keyboard_markup,
+    )
 
 
 # Handler for creating an invoice when a product is selected
@@ -103,7 +117,11 @@ def create_invoice(query):
 @bot.callback_query_handler(func=lambda query: query.data == "confirm")
 def handle_confirmation(query):
     user_id = query.message.chat.id
-    bot.send_message(user_id, "💳 لطفاً روش پرداخت خود را انتخاب کنید.", reply_markup=Inline_payment_keyboard)
+    bot.send_message(
+        user_id,
+        "💳 لطفاً روش پرداخت خود را انتخاب کنید.",
+        reply_markup=Inline_payment_keyboard,
+    )
 
 
 # Handler for processing payment with a card
@@ -136,7 +154,7 @@ def handler(query):
     bot.send_message(user_id, "غیرفعال")
 
 
-@bot.message_handler(content_types=['photo'])
+@bot.message_handler(content_types=["photo"])
 def confirmation(message):
     user_id = message.from_user.id
     last_order = Order.objects.filter(user__user_id=user_id).last()
@@ -152,7 +170,7 @@ def confirmation(message):
     local_photo_path = os.path.join(save_directory, unique_filename)
     downloaded_file = bot.download_file(file_info.file_path)
 
-    with open(local_photo_path, 'wb') as new_file:
+    with open(local_photo_path, "wb") as new_file:
         new_file.write(downloaded_file)
 
     # Create Payment object
@@ -162,7 +180,7 @@ def confirmation(message):
     )
 
     # Save the photo in the Payment object
-    with open(local_photo_path, 'rb') as photo_file:
+    with open(local_photo_path, "rb") as photo_file:
         payment.photo.save(unique_filename, ContentFile(photo_file.read()), save=True)
 
     # Reply to user
@@ -171,7 +189,7 @@ def confirmation(message):
 
     # Send photo to the channel
     channel = TelegramChannel.objects.first()
-    with open(local_photo_path, 'rb') as photo_to_send:
+    with open(local_photo_path, "rb") as photo_to_send:
         bot.send_photo(
             channel.address,
             photo_to_send,
@@ -192,7 +210,7 @@ def extract_user_id_from_caption(caption):
         return None
 
 
-@bot.channel_post_handler(content_types=['text'])
+@bot.channel_post_handler(content_types=["text"])
 def handle_channel_post(message):
     if "confirm" in message.text.lower() and message.reply_to_message:
         user_id = extract_user_id_from_caption(message.reply_to_message.caption)
@@ -201,13 +219,17 @@ def handle_channel_post(message):
         if last_order:
             product = last_order.product
             data_limit = product.data_limit
-            expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=product.expire)
+            expiry_utc_time = datetime.now(timezone.utc) + timedelta(
+                days=product.expire
+            )
             sub_user = generate_custom_id(32)
 
-            user = create_user(sub_user, data_limit, expiry_utc_time.timestamp(), access_token, panel)
+            user = create_user(
+                sub_user, data_limit, expiry_utc_time.timestamp(), access_token, panel
+            )
 
             if user:
-                subscription_url = user.get('subscription_url', '')
+                subscription_url = user.get("subscription_url", "")
 
                 if subscription_url:
                     formatted_message = (
@@ -218,15 +240,20 @@ def handle_channel_post(message):
                         "🔗 لینک اشتراک:\n {}\n\n"
                         "توجه: اشتراک شما فعال شد. جزئیات را در زیر مشاهده کنید.\n"
                     ).format(
-                        user["username"], expiry_utc_time.strftime("%Y-%m-%d %H:%M:%S"), data_limit, subscription_url
+                        user["username"],
+                        expiry_utc_time.strftime("%Y-%m-%d %H:%M:%S"),
+                        data_limit,
+                        subscription_url,
                     )
 
                     bot.send_message(user_id, formatted_message)
 
                     # Save subscription details to database
                     bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
-                    subscription = Subscription.objects.create(user_id=bot_user, sub_user=sub_user)
-                    last_order.status = 'Completed'
+                    subscription = Subscription.objects.create(
+                        user_id=bot_user, sub_user=sub_user
+                    )
+                    last_order.status = "Completed"
                     last_order.save()
                 else:
                     print("No subscription URL available")
@@ -241,19 +268,23 @@ def handle_channel_post(message):
 def handler(message):
     user_id = message.chat.id
     bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
-    sub_users = Subscription.objects.filter(user_id=bot_user).values_list('sub_user', flat=True)
+    sub_users = Subscription.objects.filter(user_id=bot_user).values_list(
+        "sub_user", flat=True
+    )
     num = 0  # Initialize the counter variable
 
     for sub_user in sub_users:
-        user = get_user(sub_user, access_token, panel)  # Assuming get_user is defined elsewhere
+        user = get_user(
+            sub_user, access_token, panel
+        )  # Assuming get_user is defined elsewhere
         if user:
             num += 1  # Increment the counter variable
-            username = user.get('username')
-            expire = user.get('expire')
-            data_limit = user.get('data_limit') / 1024 ** 3
-            status = user.get('status')
-            used_traffic = user.get('used_traffic') / 1024 ** 3
-            subscription_url = user.get('subscription_url')
+            username = user.get("username")
+            expire = user.get("expire")
+            data_limit = user.get("data_limit") / 1024**3
+            status = user.get("status")
+            used_traffic = user.get("used_traffic") / 1024**3
+            subscription_url = user.get("subscription_url")
             formatted_message = (
                 "اشتراک {} 🔖\n\n"
                 "👤 نام کاربری: {}\n\n"
@@ -263,11 +294,17 @@ def handler(message):
                 "🚦 ترافیک استفاده شده: {}\n\n"
                 "🔗 لینک اشتراک:\n [{}]({})\n\n"
             ).format(
-                num, username, expire, data_limit, status, used_traffic, subscription_url, subscription_url
+                num,
+                username,
+                expire,
+                data_limit,
+                status,
+                used_traffic,
+                subscription_url,
+                subscription_url,
             )
 
             # Send the formatted message as a Telegram message
-            bot.send_message(user_id, formatted_message, parse_mode='Markdown')
+            bot.send_message(user_id, formatted_message, parse_mode="Markdown")
         else:
-            print('no subscription URL available')
-
+            print("no subscription URL available")
