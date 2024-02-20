@@ -1,7 +1,22 @@
-from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, User
+from ...models import (
+    Configuration,
+    Product,
+    TelegramChannel,
+    Tutorial,
+    ChannelAdmin,
+    User,
+)
 from rest_framework.viewsets import ModelViewSet
-from .serializers import ConfigurationSerializer, ProductSerializer, TelegramChannelSerializer, TutorialSerializer, \
-    ChannelAdminSerializer, MessageSerializer, WebsiteUserSerializer, PaymentMethodSerializer
+from .serializers import (
+    ConfigurationSerializer,
+    ProductSerializer,
+    TelegramChannelSerializer,
+    TutorialSerializer,
+    ChannelAdminSerializer,
+    MessageSerializer,
+    WebsiteUserSerializer,
+    PaymentMethodSerializer,
+)
 
 
 class UserModelViewSet(ModelViewSet):

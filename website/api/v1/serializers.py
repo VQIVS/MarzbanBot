@@ -1,49 +1,58 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from ...models import Configuration, Product, TelegramChannel, Tutorial, ChannelAdmin, Message, User, PaymentMethod
+from ...models import (
+    Configuration,
+    Product,
+    TelegramChannel,
+    Tutorial,
+    ChannelAdmin,
+    Message,
+    User,
+    PaymentMethod,
+)
 from django.utils.translation import gettext as _
 
 
 class WebsiteUserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ConfigurationSerializer(ModelSerializer):
     class Meta:
         model = Configuration
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TelegramChannelSerializer(ModelSerializer):
     class Meta:
         model = TelegramChannel
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TutorialSerializer(ModelSerializer):
     class Meta:
         model = Tutorial
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ChannelAdminSerializer(ModelSerializer):
     class Meta:
         model = ChannelAdmin
-        fields = '__all__'
+        fields = "__all__"
 
 
 class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
@@ -60,4 +69,4 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class PaymentMethodSerializer(ModelSerializer):
     class Meta:
         model = PaymentMethod
-        fields = '__all__'
+        fields = "__all__"

@@ -1,12 +1,17 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
+from django.contrib.auth.models import (
+    BaseUserManager,
+    AbstractBaseUser,
+    PermissionsMixin,
+)
+
 
 class Usermanager(BaseUserManager):
     """
-        Custom user model manager where email is the unique identifiers
-        for authentication instead of usernames.
-        """
+    Custom user model manager where email is the unique identifiers
+    for authentication instead of usernames.
+    """
 
     def create_user(self, email, password, **extra_fields):
         """
@@ -39,6 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User Model for application
     """
+
     email = models.EmailField(max_length=255, unique=True)
     phone_number = models.IntegerField(null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
@@ -49,9 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = [
-        'first_name', 'last_name'
-    ]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = Usermanager()
 
     def __str__(self):
@@ -59,7 +63,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Configuration(models.Model):
-    """ This is a model for bot configurations """
+    """This is a model for bot configurations"""
+
     panel_username = models.CharField(max_length=255, default=None)
     panel_password = models.CharField(max_length=255, default=None)
     bot_name = models.CharField(max_length=255)
@@ -81,7 +86,8 @@ class Product(models.Model):
 
 
 class TelegramChannel(models.Model):
-    """ This is a model for user telegram channels """
+    """This is a model for user telegram channels"""
+
     name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
@@ -91,7 +97,8 @@ class TelegramChannel(models.Model):
 
 
 class Tutorial(models.Model):
-    """ This is a model for handling the tutorials of bot """
+    """This is a model for handling the tutorials of bot"""
+
     name = models.CharField(max_length=255)
     telegram_id = models.CharField(max_length=2043, default=None)
 
@@ -122,9 +129,10 @@ class PaymentMethod(models.Model):
     def __str__(self):
         return self.holders_name
 
+
 class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    photo = models.ImageField(upload_to='bot/payment_photos/')
+    photo = models.ImageField(upload_to="bot/payment_photos/")
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
