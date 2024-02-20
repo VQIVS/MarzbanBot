@@ -268,43 +268,30 @@ def handle_channel_post(message):
 def handler(message):
     user_id = message.chat.id
     bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
-    sub_users = Subscription.objects.filter(user_id=bot_user).values_list(
-        "sub_user", flat=True
-    )
-    num = 0  # Initialize the counter variable
-
+    sub_users = Subscription.objects.filter(user_id=bot_user).values_list('sub_user', flat=True)
     for sub_user in sub_users:
-        user = get_user(
-            sub_user, access_token, panel
-        )  # Assuming get_user is defined elsewhere
+        user = get_user(sub_user, access_token, panel)  # Assuming get_user is defined elsewhere
         if user:
-            num += 1  # Increment the counter variable
-            username = user.get("username")
-            expire = user.get("expire")
-            data_limit = user.get("data_limit") / 1024**3
-            status = user.get("status")
-            used_traffic = user.get("used_traffic") / 1024**3
-            subscription_url = user.get("subscription_url")
+            username = user.get('username')
+            expire_timestamp = int(user.get('expire'))  # Convert to int
+            expire_date = datetime.fromtimestamp(expire_timestamp)
+            days_to_expire = (expire_date - datetime.now()).days
+            data_limit = user.get('data_limit') / 1024**3
+            status = user.get('status')
+            used_traffic = user.get('used_traffic') / 1024**3
+            subscription_url = user.get('subscription_url')
             formatted_message = (
-                "اشتراک {} 🔖\n\n"
                 "👤 نام کاربری: {}\n\n"
-                "⏰ تاریخ انقضا: {}\n\n"
+                "⏰ تاریخ انقضا: {} ({} روز دیگر)\n\n"
                 "💾 محدودیت داده: {}\n\n"
                 "📊 وضعیت: {}\n\n"
                 "🚦 ترافیک استفاده شده: {}\n\n"
                 "🔗 لینک اشتراک:\n [{}]({})\n\n"
             ).format(
-                num,
-                username,
-                expire,
-                data_limit,
-                status,
-                used_traffic,
-                subscription_url,
-                subscription_url,
+                username, expire_date, days_to_expire, data_limit, status, used_traffic, subscription_url, subscription_url
             )
 
             # Send the formatted message as a Telegram message
-            bot.send_message(user_id, formatted_message, parse_mode="Markdown")
+            bot.send_message(user_id, formatted_message, parse_mode='Markdown')
         else:
-            print("no subscription URL available")
+            print('no subscription URL available')
