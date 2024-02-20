@@ -1,11 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-import secrets
+from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
 
+class Usermanager(BaseUserManager):
+    """
+        Custom user model manager where email is the unique identifiers
+        for authentication instead of usernames.
+        """
 
-class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         """
         Create and save a user with the given email and password.
@@ -34,48 +36,26 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom User Model for application
+    """
     email = models.EmailField(max_length=255, unique=True)
+    phone_number = models.IntegerField(null=True, blank=True)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
+    is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    USERNAME_FIELD = 'email'
-
-    # Add a token field to your CustomUser model
-    token = models.CharField(max_length=255, blank=True, null=True)
-
-    objects = UserManager()
-
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        related_name='website_user_groups',
-        related_query_name='user',
-    )
-
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        related_name='website_user_permissions',
-        related_query_name='user',
-    )
-
-    def save(self, *args, **kwargs):
-        # Generate a token when saving the user (you can customize this logic)
-        if not self.token:
-            self.token = generate_token()
-        super().save(*args, **kwargs)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = [
+        'first_name', 'last_name'
+    ]
+    objects = Usermanager()
 
     def __str__(self):
         return self.email
-
-
-def generate_token():
-    return secrets.token_hex(32)
 
 
 class Configuration(models.Model):
@@ -93,6 +73,8 @@ class Configuration(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    data_limit = models.IntegerField(default=0)
+    expire = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -147,4 +129,3 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment of {self.amount} made at {self.timestamp}"
-
