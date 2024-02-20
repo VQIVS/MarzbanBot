@@ -139,7 +139,7 @@ def modify_user(username, expire, data_limit, access_token, api_url):
         "proxies": {"vmess": {}, "vless": {}},
         "inbounds": {"vmess": [], "vless": []},
         "expire": expire,
-        "data_limit": data_limit * 1024 ** 3,
+        "data_limit": data_limit * 1024**3,
         "data_limit_reset_strategy": "no_reset",
         "status": "active",
         "note": "",
@@ -208,10 +208,3 @@ def delete_user(username, access_token, api_url):
     except requests.exceptions.RequestException as e:
         logging.error(f"Error occurred while resetting user {username}'s usage: {e}")
         return None
-
-
-
-
-
-
-
