@@ -16,7 +16,7 @@ router.register('ChannelAdminModelViewSet', ChannelAdminModelViewSet, basename='
 router.register('MessageModelViewSet', MessageModelViewSet, basename='MessageModelViewSet')
 router.register('User', UserModelViewSet, basename='User')
 router.register('PaymentMethod', PaymentMethodModelViewSet, basename='PaymentMethod')
-router.register('payment',PaymentMethodModelViewSet, basename='Payment')
+router.register('payment', PaymentMethodModelViewSet, basename='Payment')
 
 urlpatterns = [
     path('', include(router.urls)),
