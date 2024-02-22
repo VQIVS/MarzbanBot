@@ -278,6 +278,9 @@ def handler(message):
     sub_users = Subscription.objects.filter(user_id=bot_user).values_list(
         "sub_user", flat=True
     )
+    if not sub_users:
+        bot.send_message(user_id, "⚠️شما اشتراک فعالی ندارید⚠️")
+
     for sub_user in sub_users:
         user = get_user(
             sub_user, access_token, panel
@@ -287,9 +290,9 @@ def handler(message):
             expire_timestamp = int(user.get("expire"))  # Convert to int
             expire_date = datetime.fromtimestamp(expire_timestamp)
             days_to_expire = (expire_date - datetime.now()).days
-            data_limit = user.get("data_limit") / 1024**3
+            data_limit = user.get("data_limit") / 1024 ** 3
             status = user.get("status")
-            used_traffic = user.get("used_traffic") / 1024**3
+            used_traffic = user.get("used_traffic") / 1024 ** 3
             subscription_url = user.get("subscription_url")
             formatted_message = (
                 "👤 شناسه اشتراک: {}\n\n"
@@ -309,7 +312,7 @@ def handler(message):
             )
 
             # Check expiration
-            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
+            if expire_date >= datetime.now() or data_limit - used_traffic <= 0:
                 text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
                 bot.send_message(user_id, text, reply_markup=Inline_cancel_keyboard)
                 Subscription.objects.filter(sub_user=sub_user).update(status=True)
@@ -319,8 +322,6 @@ def handler(message):
             else:
                 # Send the formatted message as a Telegram message
                 bot.send_message(user_id, formatted_message)
-        else:
-            print("no subscription data available")
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "cancel")
@@ -337,5 +338,5 @@ def cancel(query):
         # Delete the subscription on the server side
         delete_user(subscription_instance.sub_user, access_token, panel)
         bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
-    else:
-        bot.send_message(user_id, "هیچ اشتراک فعالی یافت نشد.")
+
+
