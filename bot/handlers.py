@@ -18,10 +18,17 @@ from bot.keyboard import (
     inline_tutorial_markup,
     Inline_confirmation_keyboard,
     Inline_payment_keyboard,
+    Inline_cancel_keyboard,
 )
 from django.db import IntegrityError
 from datetime import datetime, timedelta, timezone
-from .functions import create_user, get_access_token, generate_custom_id, get_user
+from .functions import (
+    create_user,
+    get_access_token,
+    generate_custom_id,
+    get_user,
+    delete_user,
+)
 
 # Get configuration from the db
 conf = Configuration.objects.first()
@@ -268,30 +275,67 @@ def handle_channel_post(message):
 def handler(message):
     user_id = message.chat.id
     bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
-    sub_users = Subscription.objects.filter(user_id=bot_user).values_list('sub_user', flat=True)
+    sub_users = Subscription.objects.filter(user_id=bot_user).values_list(
+        "sub_user", flat=True
+    )
     for sub_user in sub_users:
-        user = get_user(sub_user, access_token, panel)  # Assuming get_user is defined elsewhere
+        user = get_user(
+            sub_user, access_token, panel
+        )  # Assuming get_user is defined elsewhere
         if user:
-            username = user.get('username')
-            expire_timestamp = int(user.get('expire'))  # Convert to int
+            username = user.get("username")
+            expire_timestamp = int(user.get("expire"))  # Convert to int
             expire_date = datetime.fromtimestamp(expire_timestamp)
             days_to_expire = (expire_date - datetime.now()).days
-            data_limit = user.get('data_limit') / 1024**3
-            status = user.get('status')
-            used_traffic = user.get('used_traffic') / 1024**3
-            subscription_url = user.get('subscription_url')
+            data_limit = user.get("data_limit") / 1024**3
+            status = user.get("status")
+            used_traffic = user.get("used_traffic") / 1024**3
+            subscription_url = user.get("subscription_url")
             formatted_message = (
-                "👤 نام کاربری: {}\n\n"
+                "👤 شناسه اشتراک: {}\n\n"
                 "⏰ تاریخ انقضا: {} ({} روز دیگر)\n\n"
                 "💾 محدودیت داده: {}\n\n"
                 "📊 وضعیت: {}\n\n"
                 "🚦 ترافیک استفاده شده: {}\n\n"
-                "🔗 لینک اشتراک:\n [{}]({})\n\n"
+                "🔗 لینک اشتراک:\n{}\n\n"
             ).format(
-                username, expire_date, days_to_expire, data_limit, status, used_traffic, subscription_url, subscription_url
+                username,
+                expire_date,
+                days_to_expire,
+                data_limit,
+                status,
+                used_traffic,
+                subscription_url
             )
 
-            # Send the formatted message as a Telegram message
-            bot.send_message(user_id, formatted_message, parse_mode='Markdown')
+            # Check expiration
+            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
+                text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
+                bot.send_message(user_id, text, reply_markup=Inline_cancel_keyboard)
+                Subscription.objects.filter(sub_user=sub_user).update(status=True)
+                bot.send_message(
+                    user_id, "⚠️لطفا اشتراک خود را حذف و دوباره اقدام به خرید بفرمایید⚠️"
+                )
+            else:
+                # Send the formatted message as a Telegram message
+                bot.send_message(user_id, formatted_message)
         else:
-            print('no subscription URL available')
+            print("no subscription data available")
+
+
+@bot.callback_query_handler(func=lambda query: query.data == "cancel")
+def cancel(query):
+    user_id = query.message.chat.id
+    bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
+    subscription_instance = Subscription.objects.filter(
+        user_id=bot_user, status=True
+    ).first()
+    if subscription_instance:
+        # Delete the instance
+        subscription_instance.delete()
+
+        # Delete the subscription on the server side
+        delete_user(subscription_instance.sub_user, access_token, panel)
+        bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
+    else:
+        bot.send_message(user_id, "هیچ اشتراک فعالی یافت نشد.")
