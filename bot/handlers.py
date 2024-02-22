@@ -231,8 +231,13 @@ def handle_channel_post(message):
             )
             sub_user = generate_custom_id(32)
 
+            expire_timestamp = expiry_utc_time.timestamp()
+            on_hold_expire_duration = int(
+                (expire_timestamp - datetime.now().timestamp())
+            )
+
             user = create_user(
-                sub_user, data_limit, expiry_utc_time.timestamp(), access_token, panel
+                sub_user, data_limit, on_hold_expire_duration, access_token, panel
             )
 
             if user:
@@ -290,9 +295,9 @@ def handler(message):
             expire_timestamp = int(user.get("expire"))  # Convert to int
             expire_date = datetime.fromtimestamp(expire_timestamp)
             days_to_expire = (expire_date - datetime.now()).days
-            data_limit = user.get("data_limit") / 1024 ** 3
+            data_limit = user.get("data_limit") / 1024**3
             status = user.get("status")
-            used_traffic = user.get("used_traffic") / 1024 ** 3
+            used_traffic = user.get("used_traffic") / 1024**3
             subscription_url = user.get("subscription_url")
             formatted_message = (
                 "👤 شناسه اشتراک: {}\n\n"
@@ -308,11 +313,11 @@ def handler(message):
                 data_limit,
                 status,
                 used_traffic,
-                subscription_url
+                subscription_url,
             )
 
             # Check expiration
-            if expire_date >= datetime.now() or data_limit - used_traffic <= 0:
+            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
                 text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
                 bot.send_message(user_id, text, reply_markup=Inline_cancel_keyboard)
                 Subscription.objects.filter(sub_user=sub_user).update(status=True)
@@ -340,3 +345,6 @@ def cancel(query):
         bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
 
 
+@bot.message_handler(func=lambda message: message.text == "خرید عمده🛍️")
+def handler(message):
+    pass
