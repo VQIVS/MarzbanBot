@@ -23,12 +23,12 @@ router.register(
 )
 router.register("Tutorial", TutorialModelViewSet, basename="Tutorial")
 router.register(
-    "ChannelAdminModelViewSet",
+    "ChannelAdmin",
     ChannelAdminModelViewSet,
-    basename="ChannelAdminModelViewSet",
+    basename="ChannelAdmin",
 )
 router.register(
-    "MessageModelViewSet", MessageModelViewSet, basename="MessageModelViewSet"
+    "Message", MessageModelViewSet, basename="Message"
 )
 router.register("User", UserModelViewSet, basename="User")
 router.register("PaymentMethod", PaymentMethodModelViewSet, basename="PaymentMethod")
