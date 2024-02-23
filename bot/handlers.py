@@ -317,19 +317,24 @@ def handler(message):
     )
     if not sub_users:
         bot.send_message(user_id, "⚠️شما اشتراک فعالی ندارید⚠️")
+        return  # Return early if no subscriptions are found
 
     for sub_user in sub_users:
-        user = get_user(
-            sub_user, access_token, panel
-        )  # Assuming get_user is defined elsewhere
+        user = get_user(sub_user, access_token, panel)  # Assuming get_user is defined elsewhere
         if user:
             username = user.get("username")
-            expire_timestamp = int(user.get("expire"))  # Convert to int
-            expire_date = datetime.fromtimestamp(expire_timestamp)
-            days_to_expire = (expire_date - datetime.now()).days
-            data_limit = user.get("data_limit") / 1024**3
+            expire_timestamp = user.get("expire")
+            if expire_timestamp is None:
+                expire = "on_hold"
+            else:
+                expire_timestamp = int(expire_timestamp)  # Convert to int
+                expire_date = datetime.fromtimestamp(expire_timestamp)
+                days_to_expire = (expire_date - datetime.now()).days
+                expire = (expire_date, days_to_expire)
+
+            data_limit = user.get("data_limit", 0) / 1024 ** 3
             status = user.get("status")
-            used_traffic = user.get("used_traffic") / 1024**3
+            used_traffic = user.get("used_traffic", 0) / 1024 ** 3
             subscription_url = user.get("subscription_url")
             formatted_message = (
                 "👤 شناسه اشتراک: {}\n\n"
@@ -340,8 +345,8 @@ def handler(message):
                 "🔗 لینک اشتراک:\n{}\n\n"
             ).format(
                 username,
-                expire_date,
-                days_to_expire,
+                expire[0] if isinstance(expire, tuple) else expire,
+                expire[1] if isinstance(expire, tuple) else '',  # Use '' if not tuple
                 data_limit,
                 status,
                 used_traffic,
@@ -349,7 +354,7 @@ def handler(message):
             )
 
             # Check expiration
-            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
+            if isinstance(expire, tuple) and (expire[0] <= datetime.now() or data_limit - used_traffic <= 0):
                 text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
                 bot.send_message(user_id, text, reply_markup=Inline_cancel_keyboard)
                 Subscription.objects.filter(sub_user=sub_user).update(status=True)
@@ -513,7 +518,7 @@ def process_confirm_message(last_order, user_id):
 
 
 def handle_subscription_success(
-    user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+        user, user_id, last_order, sub_user, expiry_utc_time, data_limit
 ):
     subscription_url = user.get("subscription_url", "")
 
@@ -578,7 +583,7 @@ def process_approved_message(last_order, user_id):
 
 
 def create_and_send_subscription_urls(
-    user_id, quantity, data_limit, on_hold_expire_duration
+        user_id, quantity, data_limit, on_hold_expire_duration
 ):
     # Create a directory to store subscription URLs if it doesn't exist
     if not os.path.exists("subscription_urls"):
