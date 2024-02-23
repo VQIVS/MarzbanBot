@@ -400,7 +400,7 @@ def handle_product_selection(query):
     bot_user = BotUser.objects.get(user_id=user_id)
 
     if selected_product:
-        bot.send_message(user_id, "🛒 لطفا تعداد را مشخص کنید.")
+        bot.send_message(user_id, "🛒 لطفا تعداد درخواستی را بفرستید.")
         bot_user.state = "quantity_input"
         bot_user.selected_product_id = selected_product.id
         bot_user.save()
