@@ -17,14 +17,6 @@ buttons_row3 = [
     types.KeyboardButton("پشتیبانی💬"),
 
 ]
-<<<<<<< HEAD
-buttons_row3 = [
-    types.KeyboardButton("پشتیبانی💬"),
-    types.KeyboardButton("معرفی به دوستان👨‍👩‍👧‍👦"),
-
-]
-=======
->>>>>>> master
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
 keyboard.add(*buttons_row3)
