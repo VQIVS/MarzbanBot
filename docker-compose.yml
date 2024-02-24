@@ -5,7 +5,7 @@ services:
     container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./core:/app
     ports:
       - "8000:8000"
     environment:
@@ -15,4 +15,6 @@ services:
     build: .
     command: python manage.py run_bot
     volumes:
-      - .:/app
+      - ./core:/app
+
+
