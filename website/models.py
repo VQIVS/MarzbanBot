@@ -77,7 +77,7 @@ class Configuration(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=0)
     data_limit = models.IntegerField(default=0)
     expire = models.IntegerField(blank=True, null=True)
 
@@ -138,9 +138,12 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment of {self.amount} made at {self.timestamp}"
 
+
 class MajorProduct(models.Model):
     name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=0)
     data_limit = models.IntegerField(default=0)
     expire = models.IntegerField(blank=True, null=True)
-    
+
+    def __str__(self):
+        return self.name

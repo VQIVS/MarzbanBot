@@ -1,19 +1,30 @@
 from telebot import types
-from bot.models import Product
+from website.models import Product, MajorProduct
 from website.models import Tutorial
 
 # Define the main keyboard
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-buttons_row1 = [types.KeyboardButton("خرید سرویس⭐️")]
+buttons_row1 = [
+    types.KeyboardButton("خرید سرویس⭐️"),
+    types.KeyboardButton("خرید عمده🛍️")
+]
 buttons_row2 = [
     types.KeyboardButton("آموزش ها💡"),
     types.KeyboardButton("اشتراک های من👤"),
+
 ]
+buttons_row3 = [
+    types.KeyboardButton("پشتیبانی💬"),
+
+]
+<<<<<<< HEAD
 buttons_row3 = [
     types.KeyboardButton("پشتیبانی💬"),
     types.KeyboardButton("معرفی به دوستان👨‍👩‍👧‍👦"),
 
 ]
+=======
+>>>>>>> master
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
 keyboard.add(*buttons_row3)
@@ -67,3 +78,20 @@ Inline_payment_keyboard.add(card, trx)
 Inline_cancel_keyboard = types.InlineKeyboardMarkup()
 cancel = types.InlineKeyboardButton(text="حذف اشتراک", callback_data="cancel")
 Inline_cancel_keyboard.add(cancel)
+
+major_products = MajorProduct.objects.all()
+inline_btns = []
+btn_callbacks = []
+
+for i, major_product in enumerate(major_products, start=1):
+    button_text = major_product.name
+    callback_data = f"m_{i}"
+    btn_callbacks.append(callback_data)
+    inline_btn = types.InlineKeyboardButton(
+        text=button_text, callback_data=callback_data
+    )
+    inline_btns.append(inline_btn)  # Append each button individually, not the entire list
+
+inline_major_keyboard_markup = types.InlineKeyboardMarkup()
+for button in inline_btns:
+    inline_major_keyboard_markup.add(button)

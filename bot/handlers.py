@@ -1,4 +1,7 @@
 from telebot import TeleBot
+import os
+from io import BytesIO
+from telebot import types
 from django.core.files.base import ContentFile
 from website.models import (
     Configuration,
@@ -8,6 +11,7 @@ from website.models import (
     PaymentMethod,
     TelegramChannel,
     Payment,
+    MajorProduct,
 )
 from bot.models import BotUser, Order, Subscription
 import os
@@ -19,6 +23,7 @@ from bot.keyboard import (
     Inline_confirmation_keyboard,
     Inline_payment_keyboard,
     Inline_cancel_keyboard,
+    inline_major_keyboard_markup,
 )
 from django.db import IntegrityError
 from datetime import datetime, timedelta, timezone
@@ -140,6 +145,7 @@ def handler(query):
     last_order = Order.objects.filter(user__user_id=user_id).last()
 
     if last_order:
+        major_product = last_order.major_product
         product = last_order.product
         if product:
             price = product.price
@@ -148,6 +154,14 @@ def handler(query):
             )  # Assuming there is only one payment method
             text = f"🏷️ مبلغ: {price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال کنید و منتظر تایید پرداخت بمانید."
 
+            bot.send_message(user_id, text)
+        elif major_product:
+            price = major_product.price * last_order.quantity
+            formatted_price = "{:,}".format(price)
+            payment_method = (
+                PaymentMethod.objects.first()
+            )  # Assuming there is only one payment method
+            text = f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال کنید و منتظر تایید پرداخت بمانید."
             bot.send_message(user_id, text)
         else:
             bot.send_message(user_id, "No product found for the last order.")
@@ -165,42 +179,55 @@ def handler(query):
 def confirmation(message):
     user_id = message.from_user.id
     last_order = Order.objects.filter(user__user_id=user_id).last()
-    product = last_order.product
 
-    # Save the photo
-    save_directory = "bot/payment_photos"
-    photo = message.photo[-1]
-    file_id = photo.file_id
-    file_info = bot.get_file(file_id)
-    file_extension = os.path.splitext(file_info.file_path)[-1]
-    unique_filename = f"photo_{file_id}{file_extension}"
-    local_photo_path = os.path.join(save_directory, unique_filename)
-    downloaded_file = bot.download_file(file_info.file_path)
+    if last_order:
+        if last_order.product:
+            product_price = last_order.product.price
+            caption = (
+                f"User {user_id} Payment Confirmation price: {product_price} TOMANS"
+            )
+        elif last_order.major_product:
+            product_price = last_order.major_product.price * last_order.quantity
+            caption = f"User {user_id} Payment Confirmation price: {product_price} TOMANS (خرید عمده)"
+        else:
+            bot.send_message(
+                user_id,
+                "There was an error processing your payment confirmation. Please try again later.",
+            )
+            return
 
-    with open(local_photo_path, "wb") as new_file:
-        new_file.write(downloaded_file)
+        # Get photo information
+        photo = message.photo[-1]
+        file_id = photo.file_id
+        file_info = bot.get_file(file_id)
 
-    # Create Payment object
-    payment = Payment.objects.create(
-        amount=last_order.product.price,
-        timestamp=datetime.now(),
-    )
+        # Download photo
+        downloaded_file = bot.download_file(file_info.file_path)
 
-    # Save the photo in the Payment object
-    with open(local_photo_path, "rb") as photo_file:
-        payment.photo.save(unique_filename, ContentFile(photo_file.read()), save=True)
+        # Create Payment object
+        payment = Payment.objects.create(
+            amount=product_price,
+            timestamp=datetime.now(),
+        )
 
-    # Reply to user
-    text = "📥 رسید شما دریافت شد.\n\n⏳ منتظر بمانید تا پرداخت شما تایید شود. با تشکر از صبوری شما! 😊"
-    bot.reply_to(message, text)
+        # Save photo in Payment object
+        with BytesIO(downloaded_file) as photo_file:
+            payment.photo.save(
+                f"photo_{file_id}.jpg", ContentFile(photo_file.read()), save=True
+            )
 
-    # Send photo to the channel
-    channel = TelegramChannel.objects.first()
-    with open(local_photo_path, "rb") as photo_to_send:
-        bot.send_photo(
-            channel.address,
-            photo_to_send,
-            caption=f"User {user_id} Payment Confirmation price: {product.price} TOMANS",
+        # Reply to user
+        text = "📥 رسید شما دریافت شد.\n\n⏳ منتظر بمانید تا پرداخت شما تایید شود. با تشکر از صبوری شما! 😊"
+        bot.reply_to(message, text)
+
+        # Send photo to the channel
+        channel = TelegramChannel.objects.first()
+        with BytesIO(downloaded_file) as photo_to_send:
+            bot.send_photo(channel.address, photo_to_send, caption=caption)
+    else:
+        bot.send_message(
+            user_id,
+            "There was an error processing your payment confirmation. Please try again later.",
         )
 
 
@@ -217,63 +244,68 @@ def extract_user_id_from_caption(caption):
         return None
 
 
-@bot.channel_post_handler(content_types=["text"])
-def handle_channel_post(message):
-    if "confirm" in message.text.lower() and message.reply_to_message:
-        user_id = extract_user_id_from_caption(message.reply_to_message.caption)
-        last_order = Order.objects.filter(user__user_id=user_id).last()
-
-        if last_order:
-            product = last_order.product
-            data_limit = product.data_limit
-            expiry_utc_time = datetime.now(timezone.utc) + timedelta(
-                days=product.expire
-            )
-            sub_user = generate_custom_id(32)
-
-            expire_timestamp = expiry_utc_time.timestamp()
-            on_hold_expire_duration = int(
-                (expire_timestamp - datetime.now().timestamp())
-            )
-
-            user = create_user(
-                sub_user, data_limit, on_hold_expire_duration, access_token, panel
-            )
-
-            if user:
-                subscription_url = user.get("subscription_url", "")
-
-                if subscription_url:
-                    formatted_message = (
-                        "🔐 جزئیات اشتراک 🔐\n\n"
-                        "👤 نام کاربری: {}\n\n"
-                        "⏰ تاریخ انقضا: {}\n\n"
-                        "💾 محدودیت داده: {} گیگابایت\n\n"
-                        "🔗 لینک اشتراک:\n {}\n\n"
-                        "توجه: اشتراک شما فعال شد. جزئیات را در زیر مشاهده کنید.\n"
-                    ).format(
-                        user["username"],
-                        expiry_utc_time.strftime("%Y-%m-%d %H:%M:%S"),
-                        data_limit,
-                        subscription_url,
-                    )
-
-                    bot.send_message(user_id, formatted_message)
-
-                    # Save subscription details to database
-                    bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
-                    subscription = Subscription.objects.create(
-                        user_id=bot_user, sub_user=sub_user
-                    )
-                    last_order.status = "Completed"
-                    last_order.save()
-                else:
-                    print("No subscription URL available")
-            else:
-                print("No subscription data available")
-                print(access_token)
-        else:
-            print("No order found for the user")
+# @bot.channel_post_handler(content_types=["text"])
+# def handler(message):
+#     if message.reply_to_message:
+#         user_id = major_extract_user_id_from_caption(message.reply_to_message.caption)
+#         if "approved" in message.text.lower():
+#             last_order = Order.objects.filter(user__user_id=user_id).last()
+#             if last_order:
+#                 quantity = last_order.quantity
+#                 major_product = last_order.major_product
+#                 data_limit = major_product.data_limit
+#                 expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=major_product.expire)
+#                 expire_timestamp = expiry_utc_time.timestamp()
+#                 on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
+#
+#                 # Create a directory to store subscription URLs if it doesn't exist
+#                 if not os.path.exists("subscription_urls"):
+#                     os.makedirs("subscription_urls")
+#
+#                 # Generate and store subscription URLs for each user
+#                 file_content = ""
+#                 for i in range(quantity):
+#                     username = generate_custom_id(32)
+#                     print(f"Creating user {username}...")
+#                     response = create_user(username, data_limit, on_hold_expire_duration, access_token, panel)
+#                     if response:
+#                         subscription_url = response.get("subscription_url")
+#                         if subscription_url:
+#                             # Store subscription URL in the content
+#                             file_content += f"Username: {username}, Subscription URL: {subscription_url}\n"
+#                             print(f"Subscription URL for user {username} created and stored")
+#                         else:
+#                             print(f"Error creating user {username}: No subscription URL returned")
+#                     else:
+#                         print(f"Error creating user {username}: No response received from server")
+#
+#                 # Save subscription URLs to a text file
+#                 file_path = f"subscription_urls/{user_id}_subscriptions.txt"
+#                 with open(file_path, "w") as file:
+#                     file.write(file_content)
+#                     print(f"Subscription URLs file created and stored for user {user_id}")
+#
+#                 # Send the text file to the user who placed the order
+#                 with open(file_path, "rb") as file:
+#                     bot.send_document(user_id, file)
+#                     print(f"Subscription URLs file sent to user {user_id}")
+#             else:
+#                 print("No order found for the user")
+#         else:
+#             print("Approval keyword not found in the message")
+#     else:
+#         print("No reply message found")
+#
+#
+def major_extract_user_id_from_caption(caption):
+    try:
+        parts = caption.split()
+        user_index = parts.index("User")
+        user_id = int(parts[user_index + 1])
+        return user_id
+    except (IndexError, ValueError, AttributeError) as e:
+        print(f"Error extracting user ID: {e}")
+        return None
 
 
 @bot.message_handler(func=lambda message: message.text == "اشتراک های من👤")
@@ -285,19 +317,24 @@ def handler(message):
     )
     if not sub_users:
         bot.send_message(user_id, "⚠️شما اشتراک فعالی ندارید⚠️")
+        return  # Return early if no subscriptions are found
 
     for sub_user in sub_users:
-        user = get_user(
-            sub_user, access_token, panel
-        )  # Assuming get_user is defined elsewhere
+        user = get_user(sub_user, access_token, panel)  # Assuming get_user is defined elsewhere
         if user:
             username = user.get("username")
-            expire_timestamp = int(user.get("expire"))  # Convert to int
-            expire_date = datetime.fromtimestamp(expire_timestamp)
-            days_to_expire = (expire_date - datetime.now()).days
-            data_limit = user.get("data_limit") / 1024**3
+            expire_timestamp = user.get("expire")
+            if expire_timestamp is None:
+                expire = "on_hold"
+            else:
+                expire_timestamp = int(expire_timestamp)  # Convert to int
+                expire_date = datetime.fromtimestamp(expire_timestamp)
+                days_to_expire = (expire_date - datetime.now()).days
+                expire = (expire_date, days_to_expire)
+
+            data_limit = user.get("data_limit", 0) / 1024 ** 3
             status = user.get("status")
-            used_traffic = user.get("used_traffic") / 1024**3
+            used_traffic = user.get("used_traffic", 0) / 1024 ** 3
             subscription_url = user.get("subscription_url")
             formatted_message = (
                 "👤 شناسه اشتراک: {}\n\n"
@@ -308,8 +345,8 @@ def handler(message):
                 "🔗 لینک اشتراک:\n{}\n\n"
             ).format(
                 username,
-                expire_date,
-                days_to_expire,
+                expire[0] if isinstance(expire, tuple) else expire,
+                expire[1] if isinstance(expire, tuple) else '',  # Use '' if not tuple
                 data_limit,
                 status,
                 used_traffic,
@@ -317,7 +354,7 @@ def handler(message):
             )
 
             # Check expiration
-            if expire_date <= datetime.now() or data_limit - used_traffic <= 0:
+            if isinstance(expire, tuple) and (expire[0] <= datetime.now() or data_limit - used_traffic <= 0):
                 text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
                 bot.send_message(user_id, text, reply_markup=Inline_cancel_keyboard)
                 Subscription.objects.filter(sub_user=sub_user).update(status=True)
@@ -347,4 +384,255 @@ def cancel(query):
 
 @bot.message_handler(func=lambda message: message.text == "خرید عمده🛍️")
 def handler(message):
-    pass
+    user_id = message.from_user.id
+    bot.send_message(
+        user_id,
+        "🤝 لطفاً اشتراک مد نظر خود را انتخاب کنید.",
+        reply_markup=inline_major_keyboard_markup,
+    )
+
+
+@bot.callback_query_handler(func=lambda query: query.data.startswith("m_"))
+def handle_product_selection(query):
+    user_id = query.message.chat.id
+    product_index = int(query.data.split("_")[1])
+    selected_product = MajorProduct.objects.all().order_by("id")[product_index - 1]
+    bot_user = BotUser.objects.get(user_id=user_id)
+
+    if selected_product:
+        bot.send_message(user_id, "🛒 لطفا تعداد درخواستی را بفرستید.")
+        bot_user.state = "quantity_input"
+        bot_user.selected_product_id = selected_product.id
+        bot_user.save()
+
+
+@bot.message_handler(
+    func=lambda message: BotUser.objects.filter(
+        user_id=message.chat.id, state="quantity_input"
+    ).exists()
+)
+def handle_quantity_input(message):
+    user_id = message.chat.id
+    bot_user = BotUser.objects.get(user_id=user_id, state="quantity_input")
+    quantity = message.text
+
+    try:
+        quantity = int(quantity)
+        if quantity <= 9:
+            bot.send_message(
+                user_id, "⚠️ تعداد وارد شده باید بیشتر از ۹ باشد. لطفاً دوباره تلاش کنید."
+            )
+            return
+
+        selected_product_id = bot_user.selected_product_id
+        selected_product = MajorProduct.objects.get(id=selected_product_id)
+
+        total_price = selected_product.price * quantity
+        total_price_formatted = "{:,}".format(total_price)
+
+        invoice_text = (
+            f"📄 **فاکتور شما**:\n\n"
+            f"📦 محصول: {selected_product.name}\n\n"
+            f"💰 قیمت فی هر اشتراک: {selected_product.price:,} تومان\n\n"
+            f"👥 تعداد اشتراک: {quantity} کاربر\n\n"
+            f"💵 قیمت کل: {total_price_formatted} تومان\n\n"
+            f"⏳ زمان: ۳۰ روز"
+        )
+
+        inline_keyboard = types.InlineKeyboardMarkup()
+        inline_keyboard.row(
+            types.InlineKeyboardButton("تایید ✅", callback_data="confirm"),
+            types.InlineKeyboardButton("انصراف ❌", callback_data="cancel"),
+        )
+
+        bot_user.state = None
+        bot_user.selected_product_id = None
+        bot_user.save()
+
+        # Save the order after clearing the session data
+        order = Order.objects.create(
+            user=bot_user,
+            major_product=selected_product,
+            quantity=quantity,
+            status="Pending",
+        )
+
+        bot.send_message(user_id, invoice_text, reply_markup=inline_keyboard)
+
+    except ValueError:
+        bot.send_message(user_id, "⚠️ لطفاً یک عدد معتبر وارد کنید.")
+
+
+@bot.channel_post_handler(content_types=["text"])
+def handle_channel_post(message):
+    if message.reply_to_message:
+        if "confirm" in message.text.lower():
+            handle_confirm_message(message)
+            send_confirmation_feedback(message.chat.id)
+        elif "approved" in message.text.lower():
+            handle_approved_message(message)
+            send_approval_feedback(message.chat.id)
+        else:
+            print("No action defined for this message")
+    else:
+        print("No reply message found")
+
+
+def send_confirmation_feedback(channel_id):
+    bot.send_message(channel_id, "Confirmation received and processed.")
+
+
+def send_approval_feedback(channel_id):
+    bot.send_message(channel_id, "Order approved and processed.")
+
+
+def handle_confirm_message(message):
+    user_id = extract_user_id_from_caption(message.reply_to_message.caption)
+    last_order = Order.objects.filter(user__user_id=user_id).last()
+
+    if last_order:
+        process_confirm_message(last_order, user_id)
+    else:
+        print("No order found for the user")
+
+
+def process_confirm_message(last_order, user_id):
+    product = last_order.product
+    data_limit = product.data_limit
+    expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=product.expire)
+    sub_user = generate_custom_id(32)
+
+    expire_timestamp = expiry_utc_time.timestamp()
+    on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
+
+    user = create_user(
+        sub_user, data_limit, on_hold_expire_duration, access_token, panel
+    )
+
+    if user:
+        handle_subscription_success(
+            user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+        )
+    else:
+        print("No subscription data available")
+
+
+def handle_subscription_success(
+        user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+):
+    subscription_url = user.get("subscription_url", "")
+
+    if subscription_url:
+        formatted_message = generate_subscription_message(
+            user, expiry_utc_time, data_limit, subscription_url
+        )
+
+        bot.send_message(user_id, formatted_message)
+
+        # Save subscription details to database
+        save_subscription_details(user_id, sub_user, last_order)
+    else:
+        print("No subscription URL available")
+
+
+def generate_subscription_message(user, expiry_utc_time, data_limit, subscription_url):
+    formatted_message = (
+        "🔐 جزئیات اشتراک 🔐\n\n"
+        "👤 نام کاربری: {}\n\n"
+        "⏰ تاریخ انقضا: {}\n\n"
+        "💾 محدودیت داده: {} گیگابایت\n\n"
+        "🔗 لینک اشتراک:\n {}\n\n"
+        "توجه: اشتراک شما فعال شد. جزئیات را در زیر مشاهده کنید.\n"
+    ).format(
+        user["username"],
+        expiry_utc_time.strftime("%Y-%m-%d %H:%M:%S"),
+        data_limit,
+        subscription_url,
+    )
+    return formatted_message
+
+
+def save_subscription_details(user_id, sub_user, last_order):
+    bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
+    subscription = Subscription.objects.create(user_id=bot_user, sub_user=sub_user)
+    last_order.status = "Completed"
+    last_order.save()
+
+
+def handle_approved_message(message):
+    user_id = major_extract_user_id_from_caption(message.reply_to_message.caption)
+    last_order = Order.objects.filter(user__user_id=user_id).last()
+
+    if last_order:
+        process_approved_message(last_order, user_id)
+    else:
+        print("No order found for the user")
+
+
+def process_approved_message(last_order, user_id):
+    quantity = last_order.quantity
+    major_product = last_order.major_product
+    data_limit = major_product.data_limit
+    expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=major_product.expire)
+    expire_timestamp = expiry_utc_time.timestamp()
+    on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
+
+    create_and_send_subscription_urls(
+        user_id, quantity, data_limit, on_hold_expire_duration
+    )
+
+
+def create_and_send_subscription_urls(
+        user_id, quantity, data_limit, on_hold_expire_duration
+):
+    # Create a directory to store subscription URLs if it doesn't exist
+    if not os.path.exists("subscription_urls"):
+        os.makedirs("subscription_urls")
+
+    # Generate and store subscription URLs for each user
+    file_content = generate_subscription_urls(
+        user_id, quantity, data_limit, on_hold_expire_duration
+    )
+
+    # Save subscription URLs to a text file
+    file_path = save_subscription_urls(user_id, file_content)
+
+    # Send the text file to the user who placed the order
+    send_subscription_file(user_id, file_path)
+
+
+def generate_subscription_urls(user_id, quantity, data_limit, on_hold_expire_duration):
+    file_content = ""
+    for i in range(quantity):
+        username = generate_custom_id(32)
+        print(f"Creating user {username}...")
+        response = create_user(
+            username, data_limit, on_hold_expire_duration, access_token, panel
+        )
+        if response:
+            subscription_url = response.get("subscription_url")
+            if subscription_url:
+                # Store subscription URL in the content
+                file_content += (
+                    f"Username: {username}, Subscription URL: {subscription_url}\n"
+                )
+                print(f"Subscription URL for user {username} created and stored")
+            else:
+                print(f"Error creating user {username}: No subscription URL returned")
+        else:
+            print(f"Error creating user {username}: No response received from server")
+    return file_content
+
+
+def save_subscription_urls(user_id, file_content):
+    file_path = f"subscription_urls/{user_id}_subscriptions.txt"
+    with open(file_path, "w") as file:
+        file.write(file_content)
+        print(f"Subscription URLs file created and stored for user {user_id}")
+    return file_path
+
+
+def send_subscription_file(user_id, file_path):
+    with open(file_path, "rb") as file:
+        bot.send_document(user_id, file)
+        print(f"Subscription URLs file sent to user {user_id}")

@@ -9,6 +9,7 @@ from .models import (
     User,
     PaymentMethod,
     Payment,
+    MajorProduct
 )
 
 admin.site.register(User)
@@ -20,3 +21,4 @@ admin.site.register(ChannelAdmin)
 admin.site.register(Message)
 admin.site.register(PaymentMethod)
 admin.site.register(Payment)
+admin.site.register(MajorProduct)
