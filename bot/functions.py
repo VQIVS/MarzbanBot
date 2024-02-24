@@ -20,18 +20,20 @@ def create_user(username, data_limit, expire, access_token, api_url):
     """
     url = f"{api_url}/api/user"
 
+    # Calculate on_hold_expire_duration based on the expire parameter
+
     payload = {
         "username": username,
         "proxies": {"vmess": {}, "vless": {}},
         "inbounds": {"vmess": [], "vless": []},
-        "expire": expire,
+        "expire": None,
         "data_limit": data_limit * 1024**3,
         "data_limit_reset_strategy": "no_reset",
-        "status": "active",
+        "status": "on_hold",
         "note": "",
-        "on_hold_timeout": "2023-11-03T20:30:00",
-        "on_hold_expire_duration": 0,
+        "on_hold_expire_duration": expire,
     }
+
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",

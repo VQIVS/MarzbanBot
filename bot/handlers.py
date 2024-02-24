@@ -231,8 +231,13 @@ def handle_channel_post(message):
             )
             sub_user = generate_custom_id(32)
 
+            expire_timestamp = expiry_utc_time.timestamp()
+            on_hold_expire_duration = int(
+                (expire_timestamp - datetime.now().timestamp())
+            )
+
             user = create_user(
-                sub_user, data_limit, expiry_utc_time.timestamp(), access_token, panel
+                sub_user, data_limit, on_hold_expire_duration, access_token, panel
             )
 
             if user:
@@ -278,6 +283,9 @@ def handler(message):
     sub_users = Subscription.objects.filter(user_id=bot_user).values_list(
         "sub_user", flat=True
     )
+    if not sub_users:
+        bot.send_message(user_id, "⚠️شما اشتراک فعالی ندارید⚠️")
+
     for sub_user in sub_users:
         user = get_user(
             sub_user, access_token, panel
@@ -305,7 +313,7 @@ def handler(message):
                 data_limit,
                 status,
                 used_traffic,
-                subscription_url
+                subscription_url,
             )
 
             # Check expiration
@@ -319,8 +327,6 @@ def handler(message):
             else:
                 # Send the formatted message as a Telegram message
                 bot.send_message(user_id, formatted_message)
-        else:
-            print("no subscription data available")
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "cancel")
@@ -337,5 +343,8 @@ def cancel(query):
         # Delete the subscription on the server side
         delete_user(subscription_instance.sub_user, access_token, panel)
         bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
-    else:
-        bot.send_message(user_id, "هیچ اشتراک فعالی یافت نشد.")
+
+
+@bot.message_handler(func=lambda message: message.text == "خرید عمده🛍️")
+def handler(message):
+    pass
