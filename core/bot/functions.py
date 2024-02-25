@@ -2,6 +2,7 @@ import requests
 import logging
 import hashlib
 import random
+from uuid import uuid4
 
 
 def create_user(username, data_limit, expire, access_token, api_url):
@@ -210,3 +211,9 @@ def delete_user(username, access_token, api_url):
     except requests.exceptions.RequestException as e:
         logging.error(f"Error occurred while resetting user {username}'s usage: {e}")
         return None
+
+
+def generate_referral_link(user_id, bot_url):
+    code = str(uuid4())
+    link = f'{bot_url}?start={code}'
+    return link
