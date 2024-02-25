@@ -68,6 +68,7 @@ class Configuration(models.Model):
     panel_username = models.CharField(max_length=255, default=None)
     panel_password = models.CharField(max_length=255, default=None)
     bot_name = models.CharField(max_length=255)
+    bot_url = models.CharField(max_length=255, default=None, blank=True)
     panel_url = models.CharField(max_length=255, blank=True)
     token = models.CharField(max_length=255)
 
