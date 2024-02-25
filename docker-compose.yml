@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  backend:
+  core:
     build: ./core
     container_name: backend
     command: python manage.py runserver 0.0.0.0:8000
@@ -18,12 +18,12 @@ services:
     volumes:
       - ./core:/app
 
-  frontend:
+  client:
     build: ./client
     container_name: frontend
     ports:
       - "3000:3000"
     volumes:
-      - ./client:/app  #
+      - ./client:/app
     environment:
       - NODE_ENV=development
