@@ -1,5 +1,4 @@
 from telebot import TeleBot
-import os
 from io import BytesIO
 from telebot import types
 from django.core.files.base import ContentFile
