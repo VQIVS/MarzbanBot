@@ -6,20 +6,26 @@ from website.models import Tutorial
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 buttons_row1 = [
     types.KeyboardButton("خرید سرویس⭐️"),
-    types.KeyboardButton("خرید عمده🛍️")
 ]
 buttons_row2 = [
-    types.KeyboardButton("آموزش ها💡"),
     types.KeyboardButton("اشتراک های من👤"),
 
 ]
 buttons_row3 = [
+    types.KeyboardButton("آموزش ها💡"),
     types.KeyboardButton("پشتیبانی💬"),
+
+]
+buttons_row4 = [
+    types.KeyboardButton("معرفی به دوستان🆓"),
+    types.KeyboardButton("خرید عمده🛍️"),
 
 ]
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
 keyboard.add(*buttons_row3)
+keyboard.add(*buttons_row4)
+
 
 # Create inline buttons for products
 product_callbacks = []
