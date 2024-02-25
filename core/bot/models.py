@@ -10,7 +10,11 @@ class BotUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     state = models.CharField(max_length=255, blank=True, null=True)
-    selected_product_id = models.IntegerField(null=True, blank=True)  # Add this line
+    selected_product_id = models.IntegerField(null=True, blank=True)
+    referral_code = models.CharField(max_length=255, unique=True)
+    referrer = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                                 related_name='referred_users')
+    stars = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.user_id)
