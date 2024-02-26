@@ -79,7 +79,7 @@ class Configuration(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=0)
-    data_limit = models.IntegerField(default=0)
+    data_limit = models.DecimalField(max_digits=10, decimal_places=0)
     expire = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
