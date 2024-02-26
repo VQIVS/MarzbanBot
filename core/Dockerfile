@@ -18,4 +18,4 @@ RUN pip3 install -r requirements.txt
 
 COPY core /app
 
-CMD ["python", "run_bot.py"]
+CMD ["python3","manage.py","runserver","0.0.0.0:8000","run_bot"]
