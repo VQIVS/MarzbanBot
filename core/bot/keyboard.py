@@ -5,21 +5,19 @@ from website.models import Tutorial
 # Define the main keyboard
 keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
 buttons_row1 = [
-    types.KeyboardButton("خرید سرویس⭐️"),
+    types.KeyboardButton("⭐️ خرید سرویس"),
 ]
 buttons_row2 = [
-    types.KeyboardButton("اشتراک های من👤"),
+    types.KeyboardButton("👤 اشتراک‌های من"),
 
 ]
 buttons_row3 = [
-    types.KeyboardButton("آموزش ها💡"),
-    types.KeyboardButton("پشتیبانی💬"),
+    types.KeyboardButton("💡 راهنما‌ی سرویس"),
+    types.KeyboardButton("💬 پشتیبانی"),
 
 ]
 buttons_row4 = [
-    types.KeyboardButton("معرفی به دوستان🆓"),
-    types.KeyboardButton("خرید عمده🛍️"),
-
+    types.KeyboardButton("🛍 خرید عمده️"),
 ]
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
