@@ -67,7 +67,7 @@ def start(message):
 
 
 # Handler for the 'آموزش ها💡' message
-@bot.message_handler(func=lambda message: message.text == "آموزش ها💡")
+@bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")
 def handler(message):
     user_id = message.from_user.id
     bot.send_message(
@@ -78,17 +78,17 @@ def handler(message):
 
 
 # Handler for the 'پشتیبانی💬' message
-@bot.message_handler(func=lambda message: message.text == "پشتیبانی💬")
+@bot.message_handler(func=lambda message: message.text == "💬 پشتیبانی")
 def handler(message):
     user_id = message.from_user.id
     support_admin = ChannelAdmin.objects.values("telegram_id").first()["telegram_id"]
     bot.send_message(
-        user_id, "💬 برای دریافت پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin
+        user_id, "برای ارتباط با پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin
     )
 
 
 # Handler for the 'خرید سرویس⭐️' message
-@bot.message_handler(func=lambda message: message.text == "خرید سرویس⭐️")
+@bot.message_handler(func=lambda message: message.text == "⭐️ خرید سرویس")
 def handler(message):
     user_id = message.from_user.id
     bot.send_message(
@@ -112,7 +112,7 @@ def create_invoice(query):
     selected_product = Product.objects.all().order_by("id")[product_index - 1]
 
     if selected_product:
-        invoice_text = f"📄 **فاکتور شما**:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: ۳۰ روز"
+        invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: ۳۰ روز"
         bot.send_message(
             user_id, invoice_text, reply_markup=Inline_confirmation_keyboard
         )
@@ -243,59 +243,6 @@ def extract_user_id_from_caption(caption):
         return None
 
 
-# @bot.channel_post_handler(content_types=["text"])
-# def handler(message):
-#     if message.reply_to_message:
-#         user_id = major_extract_user_id_from_caption(message.reply_to_message.caption)
-#         if "approved" in message.text.lower():
-#             last_order = Order.objects.filter(user__user_id=user_id).last()
-#             if last_order:
-#                 quantity = last_order.quantity
-#                 major_product = last_order.major_product
-#                 data_limit = major_product.data_limit
-#                 expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=major_product.expire)
-#                 expire_timestamp = expiry_utc_time.timestamp()
-#                 on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
-#
-#                 # Create a directory to store subscription URLs if it doesn't exist
-#                 if not os.path.exists("subscription_urls"):
-#                     os.makedirs("subscription_urls")
-#
-#                 # Generate and store subscription URLs for each user
-#                 file_content = ""
-#                 for i in range(quantity):
-#                     username = generate_custom_id(32)
-#                     print(f"Creating user {username}...")
-#                     response = create_user(username, data_limit, on_hold_expire_duration, access_token, panel)
-#                     if response:
-#                         subscription_url = response.get("subscription_url")
-#                         if subscription_url:
-#                             # Store subscription URL in the content
-#                             file_content += f"Username: {username}, Subscription URL: {subscription_url}\n"
-#                             print(f"Subscription URL for user {username} created and stored")
-#                         else:
-#                             print(f"Error creating user {username}: No subscription URL returned")
-#                     else:
-#                         print(f"Error creating user {username}: No response received from server")
-#
-#                 # Save subscription URLs to a text file
-#                 file_path = f"subscription_urls/{user_id}_subscriptions.txt"
-#                 with open(file_path, "w") as file:
-#                     file.write(file_content)
-#                     print(f"Subscription URLs file created and stored for user {user_id}")
-#
-#                 # Send the text file to the user who placed the order
-#                 with open(file_path, "rb") as file:
-#                     bot.send_document(user_id, file)
-#                     print(f"Subscription URLs file sent to user {user_id}")
-#             else:
-#                 print("No order found for the user")
-#         else:
-#             print("Approval keyword not found in the message")
-#     else:
-#         print("No reply message found")
-#
-#
 def major_extract_user_id_from_caption(caption):
     try:
         parts = caption.split()
@@ -307,7 +254,7 @@ def major_extract_user_id_from_caption(caption):
         return None
 
 
-@bot.message_handler(func=lambda message: message.text == "اشتراک های من👤")
+@bot.message_handler(func=lambda message: message.text == "👤 اشتراک‌های من")
 def handler(message):
     user_id = message.chat.id
     bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
@@ -315,7 +262,7 @@ def handler(message):
         "sub_user", flat=True
     )
     if not sub_users:
-        bot.send_message(user_id, "⚠️شما اشتراک فعالی ندارید⚠️")
+        bot.send_message(user_id, "⚠️ متاسفانه، شما اشتراک فعالی ندارید!")
         return  # Return early if no subscriptions are found
 
     for sub_user in sub_users:
@@ -381,7 +328,7 @@ def cancel(query):
         bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
 
 
-@bot.message_handler(func=lambda message: message.text == "خرید عمده🛍️")
+@bot.message_handler(func=lambda message: message.text == "🛍 خرید عمده️")
 def handler(message):
     user_id = message.from_user.id
     bot.send_message(
@@ -536,12 +483,12 @@ def handle_subscription_success(
 
 def generate_subscription_message(user, expiry_utc_time, data_limit, subscription_url):
     formatted_message = (
-        "🔐 جزئیات اشتراک 🔐\n\n"
+        "🔐 مشخصات اشتراک \n\n"
         "👤 نام کاربری: {}\n\n"
         "⏰ تاریخ انقضا: {}\n\n"
         "💾 محدودیت داده: {} گیگابایت\n\n"
         "🔗 لینک اشتراک:\n {}\n\n"
-        "توجه: اشتراک شما فعال شد. جزئیات را در زیر مشاهده کنید.\n"
+        "✅ اشتراک شما فعال شد\n"
     ).format(
         user["username"],
         expiry_utc_time.strftime("%Y-%m-%d %H:%M:%S"),
