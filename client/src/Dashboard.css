@@ -1,0 +1,34 @@
+.sidebar {
+    position: absolute;
+    width: 230px;
+    height: 100%;
+    background: #2A3F54;
+    z-index: 9999;
+    display: flex;
+}
+
+.sidebar .col-md-3 {
+    width: 230px;
+}
+
+.page-header {
+    margin-left: 230px;
+    padding: 10px 20px 0;
+}
+
+.nav {
+    display: block;
+    width: 100%;
+}
+
+.menu-item {
+    display: block;
+    padding: 10px;
+    color: #fdfdfd;
+    margin: 0 -15px;
+    border-bottom: 1px solid rgb(35, 50, 66);
+}
+
+.menu-item i {
+    margin-right: 10px;
+}
