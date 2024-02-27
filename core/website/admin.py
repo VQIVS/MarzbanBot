@@ -6,13 +6,11 @@ from .models import (
     Tutorial,
     ChannelAdmin,
     Message,
-    User,
     PaymentMethod,
     Payment,
     MajorProduct
 )
 
-admin.site.register(User)
 admin.site.register(Configuration)
 admin.site.register(Product)
 admin.site.register(TelegramChannel)
