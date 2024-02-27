@@ -6,35 +6,33 @@ from .views import (
     TutorialModelViewSet,
     ChannelAdminModelViewSet,
     MessageModelViewSet,
-    UserModelViewSet,
     PaymentMethodModelViewSet,
+    MajorProductModelViewSet
 )
 from rest_framework.routers import DefaultRouter
-from rest_framework.authtoken.views import obtain_auth_token
 
 app_name = "v1-website"
 
 router = DefaultRouter()
 
-router.register("Configuration", ConfigurationModelViewSet, basename="Configuration")
-router.register("Product", ProductModelViewSet, basename="Product")
+router.register("configuration", ConfigurationModelViewSet, basename="Configuration")
+router.register("product", ProductModelViewSet, basename="Product")
 router.register(
-    "TelegramChannel", TelegramChannelModelViewSet, basename="TelegramChannel"
+    "telegram_channel", TelegramChannelModelViewSet, basename="TelegramChannel"
 )
-router.register("Tutorial", TutorialModelViewSet, basename="Tutorial")
+router.register("tutorial", TutorialModelViewSet, basename="Tutorial")
 router.register(
-    "ChannelAdmin",
+    "channel_admin",
     ChannelAdminModelViewSet,
-    basename="ChannelAdmin",
+    basename="channel_admin",
 )
 router.register(
-    "Message", MessageModelViewSet, basename="Message"
+    "message", MessageModelViewSet, basename="Message"
 )
-router.register("User", UserModelViewSet, basename="User")
-router.register("PaymentMethod", PaymentMethodModelViewSet, basename="PaymentMethod")
+router.register("paymentMethod", PaymentMethodModelViewSet, basename="PaymentMethod")
 router.register("payment", PaymentMethodModelViewSet, basename="Payment")
+router.register("major_products", MajorProductModelViewSet, basename="MajorProduct")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("Token/", obtain_auth_token, name="api_token"),
 ]
