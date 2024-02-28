@@ -29,10 +29,10 @@ router.register(
 router.register(
     "message", MessageModelViewSet, basename="Message"
 )
-router.register("paymentMethod", PaymentMethodModelViewSet, basename="PaymentMethod")
+router.register("payment_method", PaymentMethodModelViewSet, basename="PaymentMethod")
 router.register("payment", PaymentMethodModelViewSet, basename="Payment")
-router.register("major_products", MajorProductModelViewSet, basename="MajorProduct")
+router.register("major_product", MajorProductModelViewSet, basename="MajorProduct")
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("website/", include(router.urls)),
 ]
