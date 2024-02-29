@@ -1,6 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home';
+import {BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Dashboard from './Dashboard';
 function App() {
@@ -8,10 +7,9 @@ function App() {
        
         <Router>
              <Routes>
-             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
-
+            <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>
        
