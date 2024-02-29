@@ -9,15 +9,18 @@
     flex-direction: column;
     align-items: flex-start;
     width: 200px;
-    /* Set width of the sidebar */
+    height: 100vh;
     background-color: #222831;
     color: #ece9e6;
-    border-radius: 8px;
     box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.75);
     padding: 20px;
-    margin-right: 20px;
-    /* Add some margin between the sidebar and the content */
+    margin-right: 0;
+    margin-left: -780px;
 }
+
+
+
+
 
 .sidebar ul {
     list-style: none;
@@ -26,6 +29,7 @@
 
 .sidebar ul li {
     margin-bottom: 15px;
+    padding-top: 25px;
     /* Add margin between menu items */
 }
 
@@ -41,6 +45,7 @@
 .main-content {
     display: flex;
     flex-direction: column;
+    margin-left: 20px;
 }
 
 .users,
@@ -51,7 +56,7 @@
     flex-wrap: nowrap;
     color: #ece9e6;
     background: #222831;
-    width: 300px;
+    width: calc(100% - 240px);
     max-width: 100%;
     border-radius: 8px;
     box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.75);
@@ -66,4 +71,19 @@
 .users h2,
 .orders h2 {
     color: #ece9e6;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
 }

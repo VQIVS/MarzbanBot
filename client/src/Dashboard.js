@@ -1,18 +1,11 @@
 import React from 'react';
 import './Dashboard.css';
-import { Link } from 'react-router-dom';
+import Nav from './Nav'; 
 
 function Dashboard() {
     return (
         <div className="container">
-            <div className="sidebar">
-                <ul>
-                    <li><Link to="/dashboard/config">Config</Link></li>
-                    <li><Link to="/dashboard/products">Products</Link></li>
-                    <li><Link to="/dashboard/payment">Payment</Link></li>
-                    <li><Link to="/dashboard/tutorial">Tutorial</Link></li>
-                </ul>
-            </div>
+            <Nav />
             <div className="main-content">
                 <div className="users">
                     <h2 className="usersh2">Users</h2>
