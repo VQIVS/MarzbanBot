@@ -1,18 +1,23 @@
 from rest_framework import serializers
 from ...models import BotUser, Order
-from django.utils.translation import gettext as _
-from django.contrib.auth import authenticate
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class BotUserSerializer(serializers.ModelSerializer):
+    """
+    This class defines the Serializer for the BotUser model.
+    """
+
     class Meta:
         model = BotUser
         fields = "__all__"
 
 
 class BotOrderSerializer(serializers.ModelSerializer):
+    """
+    This class defines the Serializer for the Order model.
+
+    """
+
     class Meta:
         model = Order
         fields = "__all__"
