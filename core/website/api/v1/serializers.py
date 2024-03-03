@@ -7,16 +7,9 @@ from ...models import (
     Tutorial,
     ChannelAdmin,
     Message,
-    User,
     PaymentMethod,
 )
 from django.utils.translation import gettext as _
-
-
-class WebsiteUserSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = "__all__"
 
 
 class ConfigurationSerializer(ModelSerializer):

@@ -4,7 +4,6 @@ from ...models import (
     TelegramChannel,
     Tutorial,
     ChannelAdmin,
-    User,
 )
 from rest_framework.viewsets import ModelViewSet
 from .serializers import (
@@ -14,14 +13,8 @@ from .serializers import (
     TutorialSerializer,
     ChannelAdminSerializer,
     MessageSerializer,
-    WebsiteUserSerializer,
     PaymentMethodSerializer,
 )
-
-
-class UserModelViewSet(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = WebsiteUserSerializer
 
 
 class ConfigurationModelViewSet(ModelViewSet):
