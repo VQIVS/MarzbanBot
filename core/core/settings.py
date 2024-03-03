@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "rest_framework.authtoken",
     "website",
     "bot",
+    "accounts",
     "drf_yasg",
 ]
 
@@ -130,4 +130,4 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GRAPPELLI_ADMIN_TITLE = "QiBotAdmin"
-AUTH_USER_MODEL = "website.User"
+AUTH_USER_MODEL = "accounts.User"
