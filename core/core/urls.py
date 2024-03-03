@@ -58,8 +58,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("website.urls")),
     path("", include("bot.urls")),
-    path("login", login, name="login"),
-    path("home", home, name="home"),
     path("grappelli/", include("grappelli.urls")),
     path("api-docs/", include_docs_urls(title="api-sample")),
     path(
@@ -67,6 +65,5 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
-    path("accounts/login/", LoginView.as_view(), name="login"),
 ]
 
