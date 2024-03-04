@@ -1,0 +1,105 @@
+body {
+  font-family: "Averia Sans Libre", sans-serif;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  background: #e9ece6;
+  background: -webkit-linear-gradient(to right, #ffffff, #ece9e6);
+  background: linear-gradient(to right, #222831, #222831);
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  color: #ece9e6;
+  background: #222831;
+  max-width: 550px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 12px 0px (0, 0, 0, 0.75);
+  box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.75);
+
+  h2 {
+    margin: 35px 0;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .footer {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    width: 100%;
+    height: 100px;
+    background-color: #393e46;
+    clip-path: polygon(63% 68%, 100% 25%, 100% 100%, 0 100%, 0 0);
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin-top: 35px;
+  padding: 0 35px;
+
+  .label {
+    position: absolute;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    pointer-events: none;
+  }
+
+  .input {
+    width: 350px;
+    background-color: transparent;
+    border: none;
+    border-bottom: solid 1px white;
+    outline: none;
+    color: #ece9e6;
+
+    &:focus~label,
+    &:valid~label {
+      margin-top: -25px;
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      transition: all 0.5s ease;
+    }
+  }
+}
+
+.btn {
+  color: #eeeeee;
+  background-color: transparent;
+  outline: none;
+  padding: 3px;
+  padding-bottom: 0;
+  margin: 35px 0;
+  border: none;
+  border-bottom: solid 1px white;
+  -webkit-transition: all 1s linear;
+  -moz-transition: all 1s linear;
+  -ms-transition: all 1s linear;
+  -o-transition: all 1s linear;
+  transition: all 1s linear;
+
+  &:hover {
+    color: #bbe1fa;
+    border-bottom: solid 1px #bbe1fa;
+    -webkit-transition: all 1s linear;
+    -moz-transition: all 1s linear;
+    -ms-transition: all 1s linear;
+    -o-transition: all 1s linear;
+    transition: all 1s linear;
+  }
+}

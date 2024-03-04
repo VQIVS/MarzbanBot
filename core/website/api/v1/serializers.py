@@ -7,7 +7,8 @@ from ...models import (
     Tutorial,
     ChannelAdmin,
     Message,
-    PaymentMethod,
+
+    PaymentMethod, MajorProduct,
 )
 from django.utils.translation import gettext as _
 
@@ -62,4 +63,10 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class PaymentMethodSerializer(ModelSerializer):
     class Meta:
         model = PaymentMethod
+        fields = "__all__"
+
+
+class MajorProductSerializer(ModelSerializer):
+    class Meta:
+        model = MajorProduct
         fields = "__all__"
