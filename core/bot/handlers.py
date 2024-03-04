@@ -66,6 +66,23 @@ def start(message):
     bot.send_message(user_id, text, reply_markup=keyboard)
 
 
+def handle_new_user(message):
+    user_id = message.from_user.id
+    ref_id = message.text[7:]  # Extract referral id from the command
+    bot_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+    if ref_id:
+        # Get the user who referred this new user
+        try:
+            referring_user = BotUser.objects.get(referral_id=ref_id)
+        except BotUser.DoesNotExist:
+            bot.send_message(user_id, "Invalid referral link.")
+            return
+
+        new_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+
+
 # Handler for the 'آموزش ها💡' message
 @bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")
 def handler(message):
@@ -252,6 +269,22 @@ def major_extract_user_id_from_caption(caption):
     except (IndexError, ValueError, AttributeError) as e:
         print(f"Error extracting user ID: {e}")
         return None
+
+
+@bot.message_handler(func=lambda message: message.text == "👨‍👩‍👧‍👦 معرفی به دوستان")
+def handle_referral(message):
+    user_id = message.from_user.id
+    bot_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+    if created or not bot_user.referral_id:
+        # Generate unique referral id for the user if not exists
+        bot_user.referral_id = generate_custom_id(10)  # Generate a custom ID for referral link
+        bot_user.save()
+
+    referral_link = f'{conf.bot_url}?start={bot_user.referral_id}'
+    bot.send_message(user_id, "Use this link to invite your friends:\n" + referral_link)
+
+
 
 
 @bot.message_handler(func=lambda message: message.text == "👤 اشتراک‌های من")

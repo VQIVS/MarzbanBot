@@ -9,6 +9,7 @@ buttons_row1 = [
 ]
 buttons_row2 = [
     types.KeyboardButton("👤 اشتراک‌های من"),
+    types.KeyboardButton("👨‍👩‍👧‍👦 معرفی به دوستان"),
 
 ]
 buttons_row3 = [
