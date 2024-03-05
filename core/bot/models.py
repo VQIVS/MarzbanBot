@@ -11,14 +11,18 @@ class BotUser(models.Model):
     referred_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='referrals')
     referral_count = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     state = models.CharField(max_length=255, blank=True, null=True)
     selected_product_id = models.IntegerField(null=True, blank=True)
 
+    test_status = models.CharField(max_length=250, blank=True, null=True)
 
     def __str__(self):
         return str(self.user_id)
+
 
 class Subscription(models.Model):
     """A class to handle the subscriptions"""

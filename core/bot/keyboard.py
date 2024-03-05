@@ -19,6 +19,7 @@ buttons_row3 = [
 ]
 buttons_row4 = [
     types.KeyboardButton("🛍 خرید عمده️"),
+    types.KeyboardButton("🧪دریافت سرور تست")
 ]
 keyboard.add(*buttons_row1)
 keyboard.add(*buttons_row2)
