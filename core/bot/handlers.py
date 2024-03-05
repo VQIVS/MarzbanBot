@@ -66,6 +66,23 @@ def start(message):
     bot.send_message(user_id, text, reply_markup=keyboard)
 
 
+def handle_new_user(message):
+    user_id = message.from_user.id
+    ref_id = message.text[7:]  # Extract referral id from the command
+    bot_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+    if ref_id:
+        # Get the user who referred this new user
+        try:
+            referring_user = BotUser.objects.get(referral_id=ref_id)
+        except BotUser.DoesNotExist:
+            bot.send_message(user_id, "Invalid referral link.")
+            return
+
+        new_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+
+
 # Handler for the 'آموزش ها💡' message
 @bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")
 def handler(message):
@@ -252,6 +269,22 @@ def major_extract_user_id_from_caption(caption):
     except (IndexError, ValueError, AttributeError) as e:
         print(f"Error extracting user ID: {e}")
         return None
+
+
+@bot.message_handler(func=lambda message: message.text == "👨‍👩‍👧‍👦 معرفی به دوستان")
+def handle_referral(message):
+    user_id = message.from_user.id
+    bot_user, created = BotUser.objects.get_or_create(user_id=user_id)
+
+    if created or not bot_user.referral_id:
+        # Generate unique referral id for the user if not exists
+        bot_user.referral_id = generate_custom_id(10)  # Generate a custom ID for referral link
+        bot_user.save()
+
+    referral_link = f'{conf.bot_url}?start={bot_user.referral_id}'
+    bot.send_message(user_id, "Use this link to invite your friends:\n" + referral_link)
+
+
 
 
 @bot.message_handler(func=lambda message: message.text == "👤 اشتراک‌های من")
@@ -475,7 +508,6 @@ def handle_subscription_success(
 
         bot.send_message(user_id, formatted_message)
 
-        # Save subscription details to database
         save_subscription_details(user_id, sub_user, last_order)
     else:
         print("No subscription URL available")
@@ -582,3 +614,33 @@ def send_subscription_file(user_id, file_path):
     with open(file_path, "rb") as file:
         bot.send_document(user_id, file)
         print(f"Subscription URLs file sent to user {user_id}")
+        print(f"Subscription URLs file sent to user {user_id}")
+
+
+@bot.message_handler(func=lambda message: message.text == "🧪دریافت سرور تست")
+def handler(message):
+    user_id = message.chat.id
+    user = BotUser.objects.get(user_id=user_id)
+    if user.test_status == "True":
+        bot.send_message(user_id, "شما یک بار سرور تست دریافت کردید")
+
+    else:
+        expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=1)
+        expire_timestamp = expiry_utc_time.timestamp()
+        on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
+        response = create_user(user_id, .2, on_hold_expire_duration, access_token, panel)
+        if response is not None:
+            subscription_url = response.get("subscription_url")
+            subscription_size = "200MB"
+            usage_method = "از دکمه آموزش اتصال استفاده کنید"
+            text = (
+                f"اشتراک تست شما:\n{subscription_url}\n"
+                f"حجم اشتراک شما: {subscription_size}\n"
+                f"نحوه استفاده: {usage_method}"
+            )
+
+            user.test_status = "True"
+            user.save()
+            bot.send_message(user_id, text)
+        else:
+            bot.send_message(user_id, "خطایی رخ داده است. لطفا دوباره تلاش کنید")
