@@ -8,7 +8,7 @@ class BotUser(models.Model):
 
     user_id = models.IntegerField(unique=True)
     referral_id = models.CharField(max_length=10, unique=True, null=True, blank=True)
-    referred_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='referrals')
+    referred_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='referrals', blank=True)
     referral_count = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
 
