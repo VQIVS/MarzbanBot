@@ -56,7 +56,6 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
 
     path("grappelli/", include("grappelli.urls")),
-    path("api-docs/", include_docs_urls(title="api sample")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema_view'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
