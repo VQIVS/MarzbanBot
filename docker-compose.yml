@@ -18,14 +18,3 @@ services:
     command: python manage.py run_bot
     volumes:
       - ./core:/app
-
-  client:
-    build: ./client
-    container_name: frontend
-    command: npm start
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/app
-    environment:
-      - NODE_ENV=development
