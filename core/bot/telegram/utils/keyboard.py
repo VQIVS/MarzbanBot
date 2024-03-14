@@ -36,9 +36,9 @@ class Keyboards:
 
     main_buttons = [
         [types.KeyboardButton("⭐️ خرید سرویس")],
-        [types.KeyboardButton("👤 اشتراک‌های من"), types.KeyboardButton("👨‍👩‍👧‍👦 معرفی به دوستان")],
+        [types.KeyboardButton("👤 اشتراک‌های من"), types.KeyboardButton("🧪دریافت سرور تست")],
         [types.KeyboardButton("💡 راهنما‌ی سرویس"), types.KeyboardButton("💬 پشتیبانی")],
-        [types.KeyboardButton("🛍 خرید عمده️"), types.KeyboardButton("🧪دریافت سرور تست")]
+        [types.KeyboardButton("🛍 خرید عمده️")]
     ]
     main_keyboard = KeyboardCreator.create_reply_keyboard(main_buttons)
 
