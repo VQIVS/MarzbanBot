@@ -30,6 +30,11 @@ user_handler = UserHandler(API_token, panel, access_token)
 confirmation = ConfirmationHandler(API_token, panel, access_token)
 
 
+@bot.message_handler(["restart"])
+def start(message):
+    main_handler.start(message)
+
+
 @bot.message_handler(["start"])
 def start(message):
     main_handler.start(message)
