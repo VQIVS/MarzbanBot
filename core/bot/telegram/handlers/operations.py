@@ -79,7 +79,7 @@ class MainHandler:
     def test_subscription(self, message):
         user_id = message.chat.id
         user = BotUser.objects.get(user_id=user_id)
-        if user.test_status == "false":
+        if user.test_status == "True":
             self.bot.send_message(user_id, "شما یک بار سرور تست دریافت کردید")
         else:
             expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=1)
@@ -107,6 +107,7 @@ class OrderHandler(MainHandler):
 
     # Main services order operations
     def create_service_invoice(self, query):
+        msg_id = query.message.message_id
         user_id = query.message.chat.id
         product_callback_data = query.data
         product_index = int(product_callback_data.split("_")[1])
@@ -114,31 +115,35 @@ class OrderHandler(MainHandler):
         selected_product = Product.objects.all().order_by("id")[product_index - 1]
         if selected_product:
             invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: ۳۰ روز"
-            self.bot.send_message(
-                user_id, invoice_text, reply_markup=Keyboards.inline_confirmation_keyboard
-            )
+            self.bot.edit_message_text(message_id=msg_id,
+                                       chat_id=user_id, text=invoice_text,
+                                       reply_markup=Keyboards.inline_confirmation_keyboard
+                                       )
             order = Order(user=bot_user, product=selected_product, quantity=1, status="pending")
             order.save()
         else:
             self.bot.send_message(user_id, "Product not found.")
 
     def confirm_order(self, query):
+        msg_id = query.message.message_id
         user_id = query.message.chat.id
-        self.bot.send_message(
-            user_id,
-            "💳 لطفاً روش پرداخت خود را انتخاب کنید.",
+        self.bot.edit_message_text(
+            message_id=msg_id, chat_id=user_id,
+            text="💳 لطفاً روش پرداخت خود را انتخاب کنید.",
             reply_markup=Keyboards.inline_payment_keyboard,
         )
 
     # Whole services order operations
     def whole_service_selection(self, query):
+        msg_id = query.message.message_id
         user_id = query.message.chat.id
         product_index = int(query.data.split("_")[1])
         selected_product = MajorProduct.objects.all().order_by("id")[product_index - 1]
         bot_user = BotUser.objects.get(user_id=user_id)
 
         if selected_product:
-            self.bot.send_message(user_id, "🛒 لطفا تعداد درخواستی را بفرستید.")
+            self.bot.edit_message_text(message_id=msg_id, chat_id=user_id,
+                                       text="🛒 لطفا تعداد درخواستی را بفرستید.")
             bot_user.state = "quantity_input"
             bot_user.selected_product_id = selected_product.id
             bot_user.save()
@@ -171,12 +176,6 @@ class OrderHandler(MainHandler):
                 f"⏳ زمان: ۳۰ روز"
             )
 
-            inline_keyboard = types.InlineKeyboardMarkup()
-            inline_keyboard.row(
-                types.InlineKeyboardButton("تایید ✅", callback_data="confirm"),
-                types.InlineKeyboardButton("انصراف ❌", callback_data="cancel"),
-            )
-
             bot_user.state = None
             bot_user.selected_product_id = None
             bot_user.save()
@@ -189,7 +188,7 @@ class OrderHandler(MainHandler):
                 status="Pending",
             )
 
-            self.bot.send_message(user_id, invoice_text, reply_markup=inline_keyboard)
+            self.bot.send_message(user_id, invoice_text, reply_markup=Keyboards.inline_keyboard_approve)
 
         except ValueError:
             self.bot.send_message(user_id, "⚠️ لطفاً یک عدد معتبر وارد کنید.")
@@ -197,6 +196,7 @@ class OrderHandler(MainHandler):
 
 class PurchaseHandler(MainHandler):
     def card_purchase(self, query):
+        msg_id = query.message.message_id
         user_id = query.message.chat.id
         last_order = Order.objects.filter(user__user_id=user_id).last()
         if last_order:
@@ -209,7 +209,7 @@ class PurchaseHandler(MainHandler):
                 )
                 text = f"🏷️ مبلغ: {price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال کنید و منتظر تایید پرداخت بمانید."
 
-                self.bot.send_message(user_id, text)
+                self.bot.edit_message_text(chat_id=user_id, message_id=msg_id, text=text)
             elif major_product:
                 price = major_product.price * last_order.quantity
                 formatted_price = "{:,}".format(price)
@@ -219,7 +219,7 @@ class PurchaseHandler(MainHandler):
                 text = (f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
                         f"صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال "
                         f"کنید و منتظر تایید پرداخت بمانید.")
-                self.bot.send_message(user_id, text)
+                self.bot.edit_message_text(chat_id=user_id, message_id=msg_id, text=text)
             else:
                 self.bot.send_message(user_id, "No product found for the last order.")
         else:
@@ -340,6 +340,7 @@ class UserHandler(MainHandler):
                     self.bot.send_message(user_id, formatted_message)
 
     def delete_subscription(self, query):
+        msg_id = query.message.message_id
         user_id = query.message.chat.id
         bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
         subscription_instance = Subscription.objects.filter(
@@ -347,10 +348,10 @@ class UserHandler(MainHandler):
         ).first()
         if subscription_instance:
             subscription_instance.delete()
-
+            text = "🚫اشتراک حذف شد🚫"
             # Delete the subscription on the server side
             marzban.delete_user(subscription_instance.sub_user, access_token)
-            self.bot.send_message(user_id, "🚫اشتراک حذف شد🚫")
+            self.bot.edit_message_text(message_id=msg_id, chat_id=user_id, text=text)
 
 
 class ConfirmationHandler(MainHandler):
