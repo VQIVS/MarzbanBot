@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from bot.handlers import bot
+from bot.telegram.handlers.handler import bot
 import os
 import sys
 import time
