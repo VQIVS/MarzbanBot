@@ -115,7 +115,7 @@ class OrderHandler(MainHandler):
         bot_user = BotUser.objects.get(user_id=user_id)
         selected_product = Product.objects.all().order_by("id")[product_index - 1]
         if selected_product:
-            invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: ۳۰ روز"
+            invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: {selected_product.expire} روز"
             self.bot.edit_message_text(message_id=msg_id,
                                        chat_id=user_id, text=invoice_text,
                                        reply_markup=Keyboards.inline_confirmation_keyboard
@@ -174,7 +174,7 @@ class OrderHandler(MainHandler):
                 f"💰 قیمت فی هر اشتراک: {selected_product.price:,} تومان\n\n"
                 f"👥 تعداد اشتراک: {quantity} کاربر\n\n"
                 f"💵 قیمت کل: {total_price_formatted} تومان\n\n"
-                f"⏳ زمان: ۳۰ روز"
+                f"⏳ زمان: لحظه اتصال کاربر"
             )
 
             bot_user.state = None
