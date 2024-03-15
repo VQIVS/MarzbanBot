@@ -78,6 +78,7 @@ class MainHandler:
 
     def test_subscription(self, message):
         user_id = message.chat.id
+        username = "test" + str(user_id)
         user = BotUser.objects.get(user_id=user_id)
         if user.test_status == "True":
             self.bot.send_message(user_id, "شما یک بار سرور تست دریافت کردید")
@@ -85,7 +86,7 @@ class MainHandler:
             expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=1)
             expire_timestamp = expiry_utc_time.timestamp()
             on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
-            response = marzban.create_user(user_id, .2, on_hold_expire_duration, access_token)
+            response = marzban.create_user(username, .2, on_hold_expire_duration, access_token)
             if response is not None:
                 subscription_url = response.get("subscription_url")
                 subscription_size = "200MB"
