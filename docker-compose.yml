@@ -1,20 +1,28 @@
 version: "3.8"
-services:
-  core:
-    build: ./core
-    container_name: backend
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./core:/app
-    ports:
-      - "8000:8000"
-    environment:
-      - SECRET_KEY=test
-      - DEBUG=True
 
-  bot:
-    build: ./core
-    container_name: bot
-    command: python manage.py run_bot
-    volumes:
-      - ./core:/app
+services:
+  nginx:
+    build: ./nginx
+    image: nginx
+    container_name: "nginx_cont"
+    ports:
+      - 80:80
+    depends_on:
+      - django_app
+  django_app:
+    image: django_app
+    build:
+      context: ./django
+    container_name: "django_cont"
+    ports:
+      - 8001:8001
+    command: gunicorn core.wsgi --bind 0.0.0.0:8001
+    depends_on:
+      - db
+  db:
+    image: mysql
+    container_name: "db_cont"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Qias83.1383
+      - MYSQL_DATABASE=marzbanbot_db
+      
