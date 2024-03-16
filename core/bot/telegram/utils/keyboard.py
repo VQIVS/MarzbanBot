@@ -17,7 +17,7 @@ class KeyboardCreator:
     def create_inline_markup(items):
         inline_keyboard_markup = types.InlineKeyboardMarkup()
         for i, item in enumerate(items, start=1):
-            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"p_{i}")
+            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"t_{i}", url=item.telegram_id)
             inline_keyboard_markup.add(inline_button)
         return inline_keyboard_markup
 
