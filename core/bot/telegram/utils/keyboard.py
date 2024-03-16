@@ -17,7 +17,7 @@ class KeyboardCreator:
     def create_inline_markup(items):
         inline_keyboard_markup = types.InlineKeyboardMarkup()
         for i, item in enumerate(items, start=1):
-            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"t_{i}", url=item.telegram_id)
+            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"p_{i}")
             inline_keyboard_markup.add(inline_button)
         return inline_keyboard_markup
 
@@ -28,6 +28,14 @@ class KeyboardCreator:
             inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"m_{i}")
             inline_major_keyboard_markup.add(inline_button)
         return inline_major_keyboard_markup
+
+    @staticmethod
+    def create_inline_markup_tutorial(items):
+        inline_keyboard_markup = types.InlineKeyboardMarkup()
+        for i, item in enumerate(items, start=1):
+            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"{item.name}", url=item.telegram_id)
+            inline_keyboard_markup.add(inline_button)
+        return inline_keyboard_markup
 
 
 class Keyboards:
@@ -46,7 +54,7 @@ class Keyboards:
     product_inline_markup = KeyboardCreator.create_inline_markup(products)
 
     tutorials = Tutorial.objects.all()
-    tutorial_inline_markup = KeyboardCreator.create_inline_markup(tutorials)
+    tutorial_inline_markup = KeyboardCreator.create_inline_markup_tutorial(tutorials)
 
     major_products = MajorProduct.objects.all()
     major_product_inline_markup = KeyboardCreator.create_major_inline_markup(major_products)
