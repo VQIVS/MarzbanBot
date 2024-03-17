@@ -1,9 +1,17 @@
+from django.http import JsonResponse
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from .serializers import BotOrderSerializer, BotUserSerializer
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializers import BotOrderSerializer, BotUserSerializer, SendMessageSerializer
 from ...models import BotUser, Order
-
 from rest_framework.response import Response
+from telebot import TeleBot
+from website.models import Configuration
+
+conf = Configuration.objects.first()
+bot = TeleBot(conf.token)
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -39,6 +47,27 @@ class UserModelViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class SendMessageToAllUsers(APIView):
+    @swagger_auto_schema(
+        request_body=SendMessageSerializer,
+        responses={200: openapi.Response("Messages sent to all users"), 400: "Bad request",
+                   405: "Method not allowed"})
+    def post(self, request):
+        serializer = SendMessageSerializer(data=request.data)
+        if serializer.is_valid():
+            message_text = serializer.validated_data['message']
+            users = BotUser.objects.all()
+            for user in users:
+                try:
+                    # Use the TeleBot instance to send messages
+                    bot.send_message(user.user_id, message_text)
+                except Exception as e:
+                    print(f"Failed to send message to user {user.user_id}: {str(e)}")
+            return JsonResponse({"message": "Messages sent to all users."}, status=200)
+        else:
+            return JsonResponse({"error": "Invalid request data.", "details": serializer.errors}, status=400)
 
 
 class OrderModelViewSet(viewsets.ModelViewSet):
