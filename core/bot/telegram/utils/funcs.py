@@ -35,10 +35,15 @@ def major_extract_user_id_from_caption(caption):
 
 def generate_user_id(length=32):
     unique_id = uuid.uuid4()
-    return str(f'{conf.bot_name}_' + str(unique_id))[:length]
+    return str(f"{conf.bot_name}_" + str(unique_id))[:length]
 
 
 def rollback(query):
     user_id = query.message.chat.id
     msg_id = query.message.message_id
-    bot.edit_message_text(chat_id=user_id, message_id=msg_id, text="❌ درخواست شما لغو شد.", reply_markup=None)
+    bot.edit_message_text(
+        chat_id=user_id,
+        message_id=msg_id,
+        text="❌ درخواست شما لغو شد.",
+        reply_markup=None,
+    )

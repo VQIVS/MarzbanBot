@@ -32,7 +32,7 @@ class APIManager:
             "proxies": {"vmess": {}, "vless": {}},
             "inbounds": {"vmess": [], "vless": []},
             "expire": None,
-            "data_limit": data_limit * 1024 ** 3,
+            "data_limit": data_limit * 1024**3,
             "data_limit_reset_strategy": "no_reset",
             "status": "on_hold",
             "note": "",
@@ -123,7 +123,7 @@ class APIManager:
             "proxies": {"vmess": {}, "vless": {}},
             "inbounds": {"vmess": [], "vless": []},
             "expire": expire,
-            "data_limit": data_limit * 1024 ** 3,
+            "data_limit": data_limit * 1024**3,
             "data_limit_reset_strategy": "no_reset",
             "status": "active",
             "note": "",
@@ -160,7 +160,9 @@ class APIManager:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error occurred while resetting user {username}'s usage: {e}")
+            logging.error(
+                f"Error occurred while resetting user {username}'s usage: {e}"
+            )
             return None
 
     def delete_user(self, username, access_token):
@@ -186,5 +188,7 @@ class APIManager:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error occurred while resetting user {username}'s usage: {e}")
+            logging.error(
+                f"Error occurred while resetting user {username}'s usage: {e}"
+            )
             return None

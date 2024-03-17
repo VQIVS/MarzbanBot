@@ -17,7 +17,9 @@ class KeyboardCreator:
     def create_inline_markup(items):
         inline_keyboard_markup = types.InlineKeyboardMarkup()
         for i, item in enumerate(items, start=1):
-            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"p_{i}")
+            inline_button = types.InlineKeyboardButton(
+                text=item.name, callback_data=f"p_{i}"
+            )
             inline_keyboard_markup.add(inline_button)
         return inline_keyboard_markup
 
@@ -25,7 +27,9 @@ class KeyboardCreator:
     def create_major_inline_markup(items):
         inline_major_keyboard_markup = types.InlineKeyboardMarkup()
         for i, item in enumerate(items, start=1):
-            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"m_{i}")
+            inline_button = types.InlineKeyboardButton(
+                text=item.name, callback_data=f"m_{i}"
+            )
             inline_major_keyboard_markup.add(inline_button)
         return inline_major_keyboard_markup
 
@@ -33,7 +37,9 @@ class KeyboardCreator:
     def create_inline_markup_tutorial(items):
         inline_keyboard_markup = types.InlineKeyboardMarkup()
         for i, item in enumerate(items, start=1):
-            inline_button = types.InlineKeyboardButton(text=item.name, callback_data=f"{item.name}", url=item.telegram_id)
+            inline_button = types.InlineKeyboardButton(
+                text=item.name, callback_data=f"{item.name}", url=item.telegram_id
+            )
             inline_keyboard_markup.add(inline_button)
         return inline_keyboard_markup
 
@@ -44,9 +50,12 @@ class Keyboards:
 
     main_buttons = [
         [types.KeyboardButton("⭐️ خرید سرویس")],
-        [types.KeyboardButton("👤 اشتراک‌های من"), types.KeyboardButton("🧪دریافت سرور تست")],
+        [
+            types.KeyboardButton("👤 اشتراک‌های من"),
+            types.KeyboardButton("🧪دریافت سرور تست"),
+        ],
         [types.KeyboardButton("💡 راهنما‌ی سرویس"), types.KeyboardButton("💬 پشتیبانی")],
-        [types.KeyboardButton("🛍 خرید عمده️")]
+        [types.KeyboardButton("🛍 خرید عمده️")],
     ]
     main_keyboard = KeyboardCreator.create_reply_keyboard(main_buttons)
 
@@ -57,7 +66,9 @@ class Keyboards:
     tutorial_inline_markup = KeyboardCreator.create_inline_markup_tutorial(tutorials)
 
     major_products = MajorProduct.objects.all()
-    major_product_inline_markup = KeyboardCreator.create_major_inline_markup(major_products)
+    major_product_inline_markup = KeyboardCreator.create_major_inline_markup(
+        major_products
+    )
 
     confirm_button = types.InlineKeyboardButton(text="تایید", callback_data="confirm")
     inline_confirmation_keyboard = types.InlineKeyboardMarkup().add(confirm_button)

@@ -17,13 +17,19 @@ from website.models import (
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from django.core.files.base import ContentFile
-from ..utils.funcs import generate_user_id, extract_user_id_from_caption, major_extract_user_id_from_caption
+from ..utils.funcs import (
+    generate_user_id,
+    extract_user_id_from_caption,
+    major_extract_user_id_from_caption,
+)
 
 # Initializing settings
 conf = Configuration.objects.first()
 url = conf.panel_url
 marzban = APIManager(url)
-access_token = marzban.get_token(username=conf.panel_username, password=conf.panel_password)
+access_token = marzban.get_token(
+    username=conf.panel_username, password=conf.panel_password
+)
 
 
 class MainHandler:
@@ -46,15 +52,20 @@ class MainHandler:
 
     def tutorial(self, message):
         user_id = message.from_user.id
-        text = "لطفا سیستم عامل خود را انتخاب کنید",
+        text = ("لطفا سیستم عامل خود را انتخاب کنید",)
 
-        self.bot.send_message(user_id, text, reply_markup=Keyboards.tutorial_inline_markup)
+        self.bot.send_message(
+            user_id, text, reply_markup=Keyboards.tutorial_inline_markup
+        )
 
     def support(self, message):
         user_id = message.from_user.id
-        support_admin = ChannelAdmin.objects.values("telegram_id").first()["telegram_id"]
+        support_admin = ChannelAdmin.objects.values("telegram_id").first()[
+            "telegram_id"
+        ]
         self.bot.send_message(
-            user_id, "برای ارتباط با پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin
+            user_id,
+            "برای ارتباط با پشتیبانی به اکانت زیر پیام دهید.\n\n" + support_admin,
         )
 
     def buy(self, message):
@@ -83,7 +94,9 @@ class MainHandler:
             expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=1)
             expire_timestamp = expiry_utc_time.timestamp()
             on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
-            response = marzban.create_user(username, .2, on_hold_expire_duration, access_token)
+            response = marzban.create_user(
+                username, 0.2, on_hold_expire_duration, access_token
+            )
             if response is not None:
                 subscription_url = response.get("subscription_url")
                 subscription_size = "200MB"
@@ -98,7 +111,9 @@ class MainHandler:
                 user.save()
                 self.bot.send_message(user_id, text)
             else:
-                self.bot.send_message(user_id, "خطایی رخ داده است. لطفا دوباره تلاش کنید")
+                self.bot.send_message(
+                    user_id, "خطایی رخ داده است. لطفا دوباره تلاش کنید"
+                )
 
 
 class OrderHandler(MainHandler):
@@ -113,11 +128,15 @@ class OrderHandler(MainHandler):
         selected_product = Product.objects.all().order_by("id")[product_index - 1]
         if selected_product:
             invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: بدون محدودیت\n\n⏳ زمان: {selected_product.expire} روز"
-            self.bot.edit_message_text(message_id=msg_id,
-                                       chat_id=user_id, text=invoice_text,
-                                       reply_markup=Keyboards.inline_confirmation_keyboard
-                                       )
-            order = Order(user=bot_user, product=selected_product, quantity=1, status="pending")
+            self.bot.edit_message_text(
+                message_id=msg_id,
+                chat_id=user_id,
+                text=invoice_text,
+                reply_markup=Keyboards.inline_confirmation_keyboard,
+            )
+            order = Order(
+                user=bot_user, product=selected_product, quantity=1, status="pending"
+            )
             order.save()
         else:
             self.bot.send_message(user_id, "Product not found.")
@@ -126,7 +145,8 @@ class OrderHandler(MainHandler):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         self.bot.edit_message_text(
-            message_id=msg_id, chat_id=user_id,
+            message_id=msg_id,
+            chat_id=user_id,
             text="💳 لطفاً روش پرداخت خود را انتخاب کنید.",
             reply_markup=Keyboards.inline_payment_keyboard,
         )
@@ -140,8 +160,11 @@ class OrderHandler(MainHandler):
         bot_user = BotUser.objects.get(user_id=user_id)
 
         if selected_product:
-            self.bot.edit_message_text(message_id=msg_id, chat_id=user_id,
-                                       text="🛒 لطفا تعداد درخواستی را بفرستید.")
+            self.bot.edit_message_text(
+                message_id=msg_id,
+                chat_id=user_id,
+                text="🛒 لطفا تعداد درخواستی را بفرستید.",
+            )
             bot_user.state = "quantity_input"
             bot_user.selected_product_id = selected_product.id
             bot_user.save()
@@ -155,7 +178,8 @@ class OrderHandler(MainHandler):
             quantity = int(quantity)
             if quantity <= 9:
                 self.bot.send_message(
-                    user_id, "⚠️ تعداد وارد شده باید بیشتر از ۹ باشد. لطفاً دوباره تلاش کنید."
+                    user_id,
+                    "⚠️ تعداد وارد شده باید بیشتر از ۹ باشد. لطفاً دوباره تلاش کنید.",
                 )
                 return
 
@@ -186,7 +210,9 @@ class OrderHandler(MainHandler):
                 status="Pending",
             )
 
-            self.bot.send_message(user_id, invoice_text, reply_markup=Keyboards.inline_keyboard_approve)
+            self.bot.send_message(
+                user_id, invoice_text, reply_markup=Keyboards.inline_keyboard_approve
+            )
 
         except ValueError:
             self.bot.send_message(user_id, "⚠️ لطفاً یک عدد معتبر وارد کنید.")
@@ -202,23 +228,25 @@ class PurchaseHandler(MainHandler):
             product = last_order.product
             if product:
                 price = product.price
-                payment_method = (
-                    PaymentMethod.objects.first()
-                )
+                payment_method = PaymentMethod.objects.first()
                 text = f"🏷️ مبلغ: {price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال کنید و منتظر تایید پرداخت بمانید."
 
-                self.bot.edit_message_text(chat_id=user_id, message_id=msg_id, text=text)
+                self.bot.edit_message_text(
+                    chat_id=user_id, message_id=msg_id, text=text
+                )
             elif major_product:
                 price = major_product.price * last_order.quantity
                 formatted_price = "{:,}".format(price)
-                payment_method = (
-                    PaymentMethod.objects.first()
+                payment_method = PaymentMethod.objects.first()
+                text = (
+                    f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
+                    f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
+                    f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
+                    "مستقیماً به صورت تصویر ارسال کنید."
                 )
-                text = (f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
-                        f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
-                        f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
-                        "مستقیماً به صورت تصویر ارسال کنید.")
-                self.bot.edit_message_text(chat_id=user_id, message_id=msg_id, text=text)
+                self.bot.edit_message_text(
+                    chat_id=user_id, message_id=msg_id, text=text
+                )
 
             else:
                 self.bot.send_message(user_id, "No product found for the last order.")
@@ -295,7 +323,9 @@ class UserHandler(MainHandler):
             self.bot.send_message(user_id, "⚠️ متاسفانه، شما اشتراک فعالی ندارید!")
             return
         for sub_user in sub_users:
-            user = marzban.get_user(sub_user, access_token)  # Assuming get_user is defined elsewhere
+            user = marzban.get_user(
+                sub_user, access_token
+            )  # Assuming get_user is defined elsewhere
             if user:
                 username = user.get("username")
                 expire_timestamp = user.get("expire")
@@ -307,9 +337,9 @@ class UserHandler(MainHandler):
                     days_to_expire = (expire_date - datetime.now()).days
                     expire = (expire_date, days_to_expire)
 
-                data_limit = user.get("data_limit", 0) / 1024 ** 3
+                data_limit = user.get("data_limit", 0) / 1024**3
                 status = user.get("status")
-                used_traffic = user.get("used_traffic", 0) / 1024 ** 3
+                used_traffic = user.get("used_traffic", 0) / 1024**3
                 subscription_url = user.get("subscription_url")
                 formatted_message = (
                     "👤 شناسه اشتراک: {}\n\n"
@@ -321,7 +351,9 @@ class UserHandler(MainHandler):
                 ).format(
                     username,
                     expire[0] if isinstance(expire, tuple) else expire,
-                    expire[1] if isinstance(expire, tuple) else '',  # Use '' if not tuple
+                    (
+                        expire[1] if isinstance(expire, tuple) else ""
+                    ),  # Use '' if not tuple
                     data_limit,
                     status,
                     used_traffic,
@@ -329,12 +361,19 @@ class UserHandler(MainHandler):
                 )
 
                 # Check expiration
-                if isinstance(expire, tuple) and (expire[0] <= datetime.now() or data_limit - used_traffic <= 0):
-                    text = "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
-                    self.bot.send_message(user_id, text, reply_markup=Keyboards.inline_delete_subscription)
+                if isinstance(expire, tuple) and (
+                    expire[0] <= datetime.now() or data_limit - used_traffic <= 0
+                ):
+                    text = (
+                        "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
+                    )
+                    self.bot.send_message(
+                        user_id, text, reply_markup=Keyboards.inline_delete_subscription
+                    )
                     Subscription.objects.filter(sub_user=sub_user).update(status=True)
                     self.bot.send_message(
-                        user_id, "⚠️لطفا اشتراک خود را حذف و دوباره اقدام به خرید بفرمایید⚠️"
+                        user_id,
+                        "⚠️لطفا اشتراک خود را حذف و دوباره اقدام به خرید بفرمایید⚠️",
                     )
                 else:
                     self.bot.send_message(user_id, formatted_message)
@@ -358,7 +397,9 @@ class ConfirmationHandler(MainHandler):
 
     # Handle  service confirmation
     def service_message(self, channel_id):
-        self.bot.send_message(channel_id, "Service confirmation received and processed.")
+        self.bot.send_message(
+            channel_id, "Service confirmation received and processed."
+        )
 
     def handle_confirm_message(self, message):
         user_id = extract_user_id_from_caption(message.reply_to_message.caption)
@@ -389,9 +430,9 @@ class ConfirmationHandler(MainHandler):
         else:
             print("No subscription data available")
 
-    def subscription_success(self,
-                             user, user_id, last_order, sub_user, expiry_utc_time, data_limit
-                             ):
+    def subscription_success(
+        self, user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+    ):
         subscription_url = user.get("subscription_url", "")
 
         if subscription_url:
@@ -406,7 +447,9 @@ class ConfirmationHandler(MainHandler):
             print("No subscription URL available")
 
     @staticmethod
-    def generate_subscription_message(user, expiry_utc_time, data_limit, subscription_url):
+    def generate_subscription_message(
+        user, expiry_utc_time, data_limit, subscription_url
+    ):
         formatted_message = (
             "🔐 مشخصات اشتراک \n\n"
             "👤 نام کاربری: {}\n\n"
@@ -434,14 +477,17 @@ class ConfirmationHandler(MainHandler):
         self.bot.send_message(channel_id, "Whole Order approved and processed.")
 
     @staticmethod
-    def generate_subscription_urls(user_id, quantity, data_limit, on_hold_expire_duration):
+    def generate_subscription_urls(
+        user_id, quantity, data_limit, on_hold_expire_duration
+    ):
         file_content = ""
         for i in range(quantity):
             username = generate_user_id()
             print(f"Creating user {username}...")
 
             response = marzban.create_user(
-                username, data_limit, on_hold_expire_duration, access_token)
+                username, data_limit, on_hold_expire_duration, access_token
+            )
 
             if response:
                 subscription_url = response.get("subscription_url")
@@ -452,9 +498,13 @@ class ConfirmationHandler(MainHandler):
                     )
                     print(f"Subscription URL for user {username} created and stored")
                 else:
-                    print(f"Error creating user {username}: No subscription URL returned")
+                    print(
+                        f"Error creating user {username}: No subscription URL returned"
+                    )
             else:
-                print(f"Error creating user {username}: No response received from server")
+                print(
+                    f"Error creating user {username}: No response received from server"
+                )
         return file_content
 
     @staticmethod
@@ -471,9 +521,9 @@ class ConfirmationHandler(MainHandler):
             print(f"Subscription URLs file sent to user {user_id}")
             print(f"Subscription URLs file sent to user {user_id}")
 
-    def create_and_send_subscription_urls(self,
-                                          user_id, quantity, data_limit, on_hold_expire_duration
-                                          ):
+    def create_and_send_subscription_urls(
+        self, user_id, quantity, data_limit, on_hold_expire_duration
+    ):
 
         if not os.path.exists("subscription_urls"):
             os.makedirs("subscription_urls")
@@ -492,7 +542,9 @@ class ConfirmationHandler(MainHandler):
         quantity = last_order.quantity
         major_product = last_order.major_product
         data_limit = major_product.data_limit
-        expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=major_product.expire)
+        expiry_utc_time = datetime.now(timezone.utc) + timedelta(
+            days=major_product.expire
+        )
         expire_timestamp = expiry_utc_time.timestamp()
         on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
 
