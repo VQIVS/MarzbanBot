@@ -7,77 +7,95 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
+
         .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            padding: 40px;
-            transition: transform 0.3s ease;
-            max-width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .container.success {
-            transform: scale(1.05);
-            background-color: #ffffcc;
-        }
+
         h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
             text-align: center;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .users-info {
             margin-bottom: 20px;
             color: #333;
         }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #555;
-        }
-        input[type="text"] {
-            width: calc(100% - 24px);
-            padding: 12px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            resize: vertical;
-            font-size: 16px;
-        }
-        button[type="submit"], #getTotalUsersBtn {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            display: block;
-            margin-top: 10px;
-        }
-        button[type="submit"]:hover, #getTotalUsersBtn:hover {
-            background-color: #218838;
-        }
-        .menu {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .users-info {
-            text-align: center;
-            margin-top: 20px;
-        }
+
         .success-message {
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
             text-align: center;
-            color: #28a745;
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -88,11 +106,18 @@
             <button id="getTotalUsersBtn">Get Total Users</button>
             <!-- Add more buttons for other actions as needed -->
         </div>
-        <form id="sendMessageForm" method="post" action="/api/v1/send-message-to-all-users/">
+        <form id="sendMessageFormAll" method="post" action="/api/v1/send-message-to-all-users/">
             {% csrf_token %}
             <label for="message">Message:</label>
             <input type="text" id="message" name="message" placeholder="Enter your message..." required>
-            <button type="submit">Send</button>
+            <button type="submit">Send to All</button>
+        </form>
+        <form id="sendMessageFormUser" onsubmit="sendMessageToUser(); return false;">
+            <label for="messageUser">Message:</label>
+            <input type="text" id="messageUser" name="messageUser" placeholder="Enter your message..." required>
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="userId" placeholder="Enter user ID..." required>
+            <button type="submit">Send to User</button>
         </form>
         <div class="users-info">
             Total users: <span id="totalUsers">-</span>
@@ -103,7 +128,6 @@
     </div>
 
     <script>
-        const sendMessageForm = document.getElementById("sendMessageForm");
         const successMessage = document.getElementById("successMessage");
         const totalUsersSpan = document.getElementById("totalUsers");
         const getTotalUsersBtn = document.getElementById("getTotalUsersBtn");
@@ -126,16 +150,17 @@
                 });
         }
 
-        sendMessageForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
+        function sendMessageToUser() {
+            const messageUser = document.getElementById("messageUser").value;
+            const userId = document.getElementById("userId").value;
 
-            // Get the form data
-            const formData = new FormData(this);
-
-            // Send the message using fetch API
-            fetch(this.action, {
+            fetch(`/api/v1/send-message-to-user/${userId}/`, {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message: messageUser })
             })
             .then(response => {
                 if (!response.ok) {
@@ -143,7 +168,6 @@
                 }
                 // Show success message
                 successMessage.style.display = "block";
-                sendMessageForm.reset(); // Reset the form
                 setTimeout(function() {
                     successMessage.style.display = "none";
                 }, 3000); // Hide message after 3 seconds
@@ -152,15 +176,7 @@
                 console.error('There was an error sending the message:', error);
                 alert('Failed to send message. Please try again later.');
             });
-        });
-
-        // Handle form submission when pressing Enter key
-        sendMessageForm.addEventListener("keydown", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // Prevent default Enter key behavior
-                sendMessageForm.dispatchEvent(new Event("submit")); // Dispatch submit event
-            }
-        });
+        }
     </script>
 </body>
 </html>
