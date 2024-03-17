@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 40px;
+            transition: transform 0.3s ease;
+            max-width: 90%;
+        }
+        .container.success {
+            transform: scale(1.05);
+            background-color: #ffffcc;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            resize: vertical;
+            font-size: 16px;
+        }
+        button[type="submit"], #getTotalUsersBtn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin-top: 10px;
+        }
+        button[type="submit"]:hover, #getTotalUsersBtn:hover {
+            background-color: #218838;
+        }
+        .menu {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .users-info {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .success-message {
+            text-align: center;
+            color: #28a745;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Send Message</h1>
+        <div class="menu">
+            <button id="getTotalUsersBtn">Get Total Users</button>
+            <!-- Add more buttons for other actions as needed -->
+        </div>
+        <form id="sendMessageForm" method="post" action="/api/v1/send-message-to-all-users/">
+            {% csrf_token %}
+            <label for="message">Message:</label>
+            <input type="text" id="message" name="message" placeholder="Enter your message..." required>
+            <button type="submit">Send</button>
+        </form>
+        <div class="users-info">
+            Total users: <span id="totalUsers">-</span>
+        </div>
+        <div id="successMessage" class="success-message" style="display: none;">
+            Message sent successfully!
+        </div>
+    </div>
+
+    <script>
+        const sendMessageForm = document.getElementById("sendMessageForm");
+        const successMessage = document.getElementById("successMessage");
+        const totalUsersSpan = document.getElementById("totalUsers");
+        const getTotalUsersBtn = document.getElementById("getTotalUsersBtn");
+
+        getTotalUsersBtn.addEventListener("click", function() {
+            fetchTotalUsers('/api/v1/bot/bot-user/');
+        });
+
+        function fetchTotalUsers(endpoint) {
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    // Calculate total users count
+                    const totalUsers = data.length;
+                    totalUsersSpan.textContent = totalUsers;
+                })
+                .catch(error => {
+                    console.error('Error fetching total users:', error);
+                    totalUsersSpan.textContent = 'Error';
+                });
+        }
+
+        sendMessageForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Get the form data
+            const formData = new FormData(this);
+
+            // Send the message using fetch API
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Show success message
+                successMessage.style.display = "block";
+                sendMessageForm.reset(); // Reset the form
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 3000); // Hide message after 3 seconds
+            })
+            .catch(error => {
+                console.error('There was an error sending the message:', error);
+                alert('Failed to send message. Please try again later.');
+            });
+        });
+
+        // Handle form submission when pressing Enter key
+        sendMessageForm.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent default Enter key behavior
+                sendMessageForm.dispatchEvent(new Event("submit")); // Dispatch submit event
+            }
+        });
+    </script>
+</body>
+</html>
