@@ -35,7 +35,7 @@ def major_extract_user_id_from_caption(caption):
 
 def generate_user_id(length=32):
     unique_id = uuid.uuid4()
-    return str('QiVPN_' + str(unique_id))[:length]
+    return str(f'{conf.bot_name}' + str(unique_id))[:length]
 
 
 def rollback(query):
