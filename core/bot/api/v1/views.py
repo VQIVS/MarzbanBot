@@ -50,10 +50,10 @@ class UserModelViewSet(viewsets.ModelViewSet):
 
 
 class SendMessageToAllUsers(APIView):
-    @swagger_auto_schema(
-        request_body=SendMessageSerializer,
-        responses={200: openapi.Response("Messages sent to all users"), 400: "Bad request",
-                   405: "Method not allowed"})
+    @swagger_auto_schema(tags=['Send Message'],
+                         request_body=SendMessageSerializer,
+                         responses={200: openapi.Response("Messages sent to all users"), 400: "Bad request",
+                                    405: "Method not allowed"})
     def post(self, request):
         serializer = SendMessageSerializer(data=request.data)
         if serializer.is_valid():
