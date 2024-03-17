@@ -1,6 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserModelViewSet, OrderModelViewSet, SendMessageToAllUsers
+from .views import (
+    UserModelViewSet,
+    OrderModelViewSet,
+    SendMessageToAllUsers,
+    send_message_to_user,
+)
 
 app_name = "v1-bot"
 
@@ -25,5 +30,10 @@ urlpatterns = [
         "send-message-to-all-users/",
         SendMessageToAllUsers.as_view(),
         name="send-message-to-all-users",
+    ),
+    path(
+        "send-message-to-user/<int:user_id>/",
+        send_message_to_user,
+        name="send_message_to_user",
     ),
 ]
