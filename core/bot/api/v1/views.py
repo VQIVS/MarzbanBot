@@ -95,8 +95,6 @@ def send_message_to_user(request, user_id):
         if serializer.is_valid():
             message_text = serializer.validated_data["message"]
             try:
-                # Send message to the specified user
-                # Assuming you have a method to send messages in your BotUser model
                 user = BotUser.objects.get(user_id=user_id)
                 # Send message using telebot
                 bot.send_message(user.user_id, message_text)
