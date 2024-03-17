@@ -90,7 +90,7 @@ class MainHandler:
             if response is not None:
                 subscription_url = response.get("subscription_url")
                 subscription_size = "200MB"
-                usage_method = "از دکمه آموزش اتصال استفاده کنید"
+                usage_method = "از دکمه راهنمای سرویس استفاده کنید"
                 text = (
                     f"🎉 اشتراک تست شما:\n{subscription_url}\n\n"
                     f"🔋 حجم اشتراک شما: {subscription_size}\n\n"
@@ -115,7 +115,7 @@ class OrderHandler(MainHandler):
         bot_user = BotUser.objects.get(user_id=user_id)
         selected_product = Product.objects.all().order_by("id")[product_index - 1]
         if selected_product:
-            invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: دو کاربر\n\n⏳ زمان: {selected_product.expire} روز"
+            invoice_text = f"📄 پیش فاکتور:\n\n📦 محصول: {selected_product.name}\n\n💵 قیمت: {selected_product.price} تومان\n\n👥 تعداد کاربر: بدون محدودیت\n\n⏳ زمان: {selected_product.expire} روز"
             self.bot.edit_message_text(message_id=msg_id,
                                        chat_id=user_id, text=invoice_text,
                                        reply_markup=Keyboards.inline_confirmation_keyboard
