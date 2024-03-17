@@ -53,10 +53,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("website.urls")),
     path("", include("bot.urls")),
-    path("accounts/", include("accounts.urls")),
-
     path("grappelli/", include("grappelli.urls")),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema_view'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
+    path("api-docs/", include_docs_urls(title="api-sample")),
+    path("accounts/", include("accounts.urls")),
+    path("grappelli/", include("grappelli.urls")),
+    path(
+        "swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema_view"
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]

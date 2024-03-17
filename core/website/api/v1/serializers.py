@@ -7,9 +7,11 @@ from ...models import (
     Tutorial,
     ChannelAdmin,
     Message,
-    PaymentMethod, MajorProduct,
+    PaymentMethod,
+    MajorProduct,
 )
 from django.utils.translation import gettext as _
+
 
 class ConfigurationSerializer(ModelSerializer):
     class Meta:

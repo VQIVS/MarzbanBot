@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .users-info {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .success-message {
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Send Message</h1>
+        <div class="menu">
+            <button id="getTotalUsersBtn">Get Total Users</button>
+            <!-- Add more buttons for other actions as needed -->
+        </div>
+        <form id="sendMessageFormAll" method="post" action="/api/v1/send-message-to-all-users/">
+            {% csrf_token %}
+            <label for="message">Message:</label>
+            <input type="text" id="message" name="message" placeholder="Enter your message..." required>
+            <button type="submit">Send to All</button>
+        </form>
+        <form id="sendMessageFormUser" onsubmit="sendMessageToUser(); return false;">
+            <label for="messageUser">Message:</label>
+            <input type="text" id="messageUser" name="messageUser" placeholder="Enter your message..." required>
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="userId" placeholder="Enter user ID..." required>
+            <button type="submit">Send to User</button>
+        </form>
+        <div class="users-info">
+            Total users: <span id="totalUsers">-</span>
+        </div>
+        <div id="successMessage" class="success-message" style="display: none;">
+            Message sent successfully!
+        </div>
+    </div>
+
+    <script>
+        const successMessage = document.getElementById("successMessage");
+        const totalUsersSpan = document.getElementById("totalUsers");
+        const getTotalUsersBtn = document.getElementById("getTotalUsersBtn");
+
+        getTotalUsersBtn.addEventListener("click", function() {
+            fetchTotalUsers('/api/v1/bot/bot-user/');
+        });
+
+        function fetchTotalUsers(endpoint) {
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    // Calculate total users count
+                    const totalUsers = data.length;
+                    totalUsersSpan.textContent = totalUsers;
+                })
+                .catch(error => {
+                    console.error('Error fetching total users:', error);
+                    totalUsersSpan.textContent = 'Error';
+                });
+        }
+
+        function sendMessageToUser() {
+            const messageUser = document.getElementById("messageUser").value;
+            const userId = document.getElementById("userId").value;
+
+            fetch(`/api/v1/send-message-to-user/${userId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message: messageUser })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Show success message
+                successMessage.style.display = "block";
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 3000); // Hide message after 3 seconds
+            })
+            .catch(error => {
+                console.error('There was an error sending the message:', error);
+                alert('Failed to send message. Please try again later.');
+            });
+        }
+    </script>
+</body>
+</html>

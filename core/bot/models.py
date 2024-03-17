@@ -5,8 +5,9 @@ import uuid
 
 class BotUser(models.Model):
     """
-        Represents a bot user.
+    Represents a bot user.
     """
+
     user_id = models.IntegerField(unique=True)
     test_status = models.CharField(max_length=250, blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True)
@@ -40,13 +41,21 @@ class Order(models.Model):
     """A class for Order objects"""
 
     user = models.ForeignKey(BotUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, blank=True, null=True
+    )
     order_id = models.CharField(max_length=36, unique=True, default=uuid.uuid4)
-    major_product = models.ForeignKey(MajorProduct, on_delete=models.CASCADE, blank=True, null=True)
+    major_product = models.ForeignKey(
+        MajorProduct, on_delete=models.CASCADE, blank=True, null=True
+    )
     quantity = models.IntegerField()
     status = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Order {self.order_id} for {self.user} ({self.product})" if self.product else f"Order {self.order_id} for {self.user} (No product)"
+        return (
+            f"Order {self.order_id} for {self.user} ({self.product})"
+            if self.product
+            else f"Order {self.order_id} for {self.user} (No product)"
+        )

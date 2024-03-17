@@ -3,7 +3,13 @@ import django
 from telebot import TeleBot
 from website.models import Configuration, Message
 from ..utils.api_management import APIManager
-from .operations import MainHandler, OrderHandler, PurchaseHandler, UserHandler, ConfirmationHandler
+from .operations import (
+    MainHandler,
+    OrderHandler,
+    PurchaseHandler,
+    UserHandler,
+    ConfirmationHandler,
+)
 from bot.models import BotUser
 from ..utils.funcs import rollback
 
@@ -20,7 +26,9 @@ bot = TeleBot(API_token)
 marzban = APIManager(panel)
 
 # Get the access token from Marzban panel
-access_token = marzban.get_token(username=conf.panel_username, password=conf.panel_password)
+access_token = marzban.get_token(
+    username=conf.panel_username, password=conf.panel_password
+)
 
 # Initializing operation handlers
 main_handler = MainHandler(API_token, panel, access_token)

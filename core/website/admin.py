@@ -8,7 +8,7 @@ from .models import (
     Message,
     PaymentMethod,
     Payment,
-    MajorProduct
+    MajorProduct,
 )
 
 admin.site.register(Configuration)
