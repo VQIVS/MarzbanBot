@@ -21,3 +21,7 @@ class BotOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
+
+
+class SendMessageSerializer(serializers.Serializer):
+    message = serializers.CharField(max_length=255)
