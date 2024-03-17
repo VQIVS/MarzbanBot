@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from .serializers import BotOrderSerializer, BotUserSerializer, SendMessageSerializer
 from ...models import BotUser, Order
@@ -70,6 +71,44 @@ class SendMessageToAllUsers(APIView):
                 except Exception as e:
                     print(f"Failed to send message to user {user.user_id}: {str(e)}")
             return JsonResponse({"message": "Messages sent to all users."}, status=200)
+        else:
+            return JsonResponse(
+                {"error": "Invalid request data.", "details": serializer.errors},
+                status=400,
+            )
+
+
+@swagger_auto_schema(
+    method="post",
+    operation_summary="Send message to a specific user",
+    request_body=SendMessageSerializer,
+    responses={
+        200: "Message sent successfully",
+        400: "Bad request",
+        404: "User not found",
+    },
+)
+@api_view(["POST"])
+def send_message_to_user(request, user_id):
+    if request.method == "POST":
+        serializer = SendMessageSerializer(data=request.data)
+        if serializer.is_valid():
+            message_text = serializer.validated_data["message"]
+            try:
+                # Send message to the specified user
+                # Assuming you have a method to send messages in your BotUser model
+                user = BotUser.objects.get(user_id=user_id)
+                # Send message using telebot
+                bot.send_message(user.user_id, message_text)
+                return JsonResponse(
+                    {"message": f"Message sent to user {user_id}."}, status=200
+                )
+            except BotUser.DoesNotExist:
+                return JsonResponse({"error": f"User {user_id} not found."}, status=404)
+            except Exception as e:
+                return JsonResponse(
+                    {"error": f"Failed to send message: {str(e)}"}, status=400
+                )
         else:
             return JsonResponse(
                 {"error": "Invalid request data.", "details": serializer.errors},
