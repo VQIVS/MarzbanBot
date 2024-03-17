@@ -1,7 +1,4 @@
 import os
-import telebot
-from telebot import types
-from telebot import formatting as fmt
 from ..utils.api_management import APIManager
 from telebot import TeleBot
 from bot.models import BotUser, Order, Subscription
@@ -218,9 +215,11 @@ class PurchaseHandler(MainHandler):
                     PaymentMethod.objects.first()
                 )
                 text = (f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
-                        f"صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال "
-                        f"کنید و منتظر تایید پرداخت بمانید.")
+                        f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
+                        f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
+                        "مستقیماً به صورت تصویر ارسال کنید.")
                 self.bot.edit_message_text(chat_id=user_id, message_id=msg_id, text=text)
+
             else:
                 self.bot.send_message(user_id, "No product found for the last order.")
         else:
