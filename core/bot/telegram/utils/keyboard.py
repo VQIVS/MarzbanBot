@@ -55,7 +55,7 @@ class Keyboards:
             types.KeyboardButton("🧪دریافت سرور تست"),
         ],
         [types.KeyboardButton("💡 راهنما‌ی سرویس"), types.KeyboardButton("💬 پشتیبانی")],
-        [types.KeyboardButton("🛍 خرید عمده️")],
+        [types.KeyboardButton("🛍 خرید عمده️"), types.KeyboardButton("👨‍👩‍👧‍👧 معرفی به دوستان")],
     ]
     main_keyboard = KeyboardCreator.create_reply_keyboard(main_buttons)
 
