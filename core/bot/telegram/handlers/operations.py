@@ -115,6 +115,18 @@ class MainHandler:
                     user_id, "خطایی رخ داده است. لطفا دوباره تلاش کنید"
                 )
 
+    def refer(self, message):
+        referral_link = f"{conf.bot_url}?start=ref_{message.chat.id}"
+        text = (
+            f"🎉🚀به ازای هر شخص که با [لینک معرفی شما]({referral_link}) به ربات بپیوندد و خریدی "
+            f"انجام دهد،"
+            f"شما یک اشتراک ۱۰ گیگابایتی رایگان دریافت خواهید کرد! 🎁😊\n\n"
+            "پس همین الان زود باش! این پیام را برای دوستانت فوروارد کن و بگو از لینک معرفیت "
+            "استفاده کنن. 🚀💬"
+        )
+
+        self.bot.send_message(message.chat.id, text=text, parse_mode='Markdown')
+
 
 class OrderHandler(MainHandler):
 
@@ -341,9 +353,9 @@ class UserHandler(MainHandler):
                     days_to_expire = (expire_date - datetime.now()).days
                     expire = (expire_date, days_to_expire)
 
-                data_limit = user.get("data_limit", 0) / 1024**3
+                data_limit = user.get("data_limit", 0) / 1024 ** 3
                 status = user.get("status")
-                used_traffic = user.get("used_traffic", 0) / 1024**3
+                used_traffic = user.get("used_traffic", 0) / 1024 ** 3
                 subscription_url = user.get("subscription_url")
                 formatted_message = (
                     "👤 شناسه اشتراک: {}\n\n"
@@ -366,7 +378,7 @@ class UserHandler(MainHandler):
 
                 # Check expiration
                 if isinstance(expire, tuple) and (
-                    expire[0] <= datetime.now() or data_limit - used_traffic <= 0
+                        expire[0] <= datetime.now() or data_limit - used_traffic <= 0
                 ):
                     text = (
                         "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
@@ -408,13 +420,16 @@ class ConfirmationHandler(MainHandler):
     def handle_confirm_message(self, message):
         user_id = extract_user_id_from_caption(message.reply_to_message.caption)
         last_order = Order.objects.filter(user__user_id=user_id).last()
-
         if last_order:
             self.process_confirm_message(last_order, user_id)
         else:
             print("No order found for the user")
 
     def process_confirm_message(self, last_order, user_id):
+
+        # check and send the referral prize
+        self.award_prize(user_id)
+        # ================================================================
         product = last_order.product
         data_limit = product.data_limit
         expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=product.expire)
@@ -435,7 +450,7 @@ class ConfirmationHandler(MainHandler):
             print("No subscription data available")
 
     def subscription_success(
-        self, user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+            self, user, user_id, last_order, sub_user, expiry_utc_time, data_limit
     ):
         subscription_url = user.get("subscription_url", "")
 
@@ -452,7 +467,7 @@ class ConfirmationHandler(MainHandler):
 
     @staticmethod
     def generate_subscription_message(
-        user, expiry_utc_time, data_limit, subscription_url
+            user, expiry_utc_time, data_limit, subscription_url
     ):
         formatted_message = (
             "🔐 مشخصات اشتراک \n\n"
@@ -482,7 +497,7 @@ class ConfirmationHandler(MainHandler):
 
     @staticmethod
     def generate_subscription_urls(
-        user_id, quantity, data_limit, on_hold_expire_duration
+            user_id, quantity, data_limit, on_hold_expire_duration
     ):
         file_content = ""
         for i in range(quantity):
@@ -526,7 +541,7 @@ class ConfirmationHandler(MainHandler):
             print(f"Subscription URLs file sent to user {user_id}")
 
     def create_and_send_subscription_urls(
-        self, user_id, quantity, data_limit, on_hold_expire_duration
+            self, user_id, quantity, data_limit, on_hold_expire_duration
     ):
 
         if not os.path.exists("subscription_urls"):
@@ -564,6 +579,29 @@ class ConfirmationHandler(MainHandler):
             self.process_approved_message(last_order, user_id)
         else:
             print("No order found for the user")
+
+    def award_prize(self, user_id):
+        user = BotUser.objects.filter(user_id=user_id).first()
+        if not user.has_received_prize:
+            ref_id = user.invited_by
+            username = f"Prize_{ref_id}"
+            expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=31)
+            expire_timestamp = expiry_utc_time.timestamp()
+            on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
+            prize = marzban.create_user(username, 10, on_hold_expire_duration, access_token)
+            if prize is not None:
+                subscription_url = prize.get("subscription_url")
+                subscription_size = "10GB"
+                usage_method = "از دکمه راهنمای سرویس استفاده کنید"
+                text = (
+                    f"تبریک شما برنده جایزه ۱۰ گیگابایتی ما شدید🎉 "
+                    f"🎉 اشتراک شما:\n{subscription_url}\n\n"
+                    f"🔋 حجم اشتراک شما: {subscription_size}\n\n"
+                    f"🔍 نحوه استفاده: {usage_method}"
+                )
+                self.bot.send_message(ref_id, text)
+            user.has_received_prize = True
+            user.save()
 
     def accept_purchase(self, message):
         if message.reply_to_message:
