@@ -582,7 +582,7 @@ class ConfirmationHandler(MainHandler):
 
     def award_prize(self, user_id):
         user = BotUser.objects.filter(user_id=user_id).first()
-        if not user.has_received_prize:
+        if not user.has_received_prize and user.invited_by is not None:
             ref_id = user.invited_by
             username = f"Prize_{ref_id}"
             expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=31)
