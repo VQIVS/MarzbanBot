@@ -51,6 +51,13 @@ def start(message):
     if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
         referrer_id = int(message.text.split()[1][4:])
         user_id = message.from_user.id
+        # TODO: check invited users query
+        # referrer = BotUser.objects.filter(user_id=referrer_id).first()
+        # bot_user = BotUser(user_id=user_id)
+        # bot_user.save()
+        # if referrer:
+        #     user = BotUser.objects.get(user_id=user_id)
+        #     referrer.invited_users.add(user)
         if user_id != referrer_id:
             bot.reply_to(message,
                          f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
