@@ -163,9 +163,3 @@ def refer(message):
     main_handler.refer(message)
 
 
-ignored_user_ids = [622491665]  # Add the user IDs you want to ignore here
-
-
-@bot.message_handler(func=lambda message: message.from_user.id in ignored_user_ids)
-def ignore_messages(message):
-    pass
