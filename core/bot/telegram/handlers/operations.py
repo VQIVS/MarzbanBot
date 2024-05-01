@@ -488,7 +488,6 @@ class ConfirmationHandler(MainHandler):
     def save_subscription_details(user_id, sub_user, last_order):
         bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
         subscription = Subscription.objects.create(user_id=bot_user, sub_user=sub_user)
-        bot_user.update_total_sub_user()
         last_order.status = "Completed"
         last_order.save()
 
