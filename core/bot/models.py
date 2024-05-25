@@ -10,6 +10,7 @@ class BotUser(models.Model):
 
     user_id = models.IntegerField(unique=True)
     test_status = models.CharField(max_length=250, blank=True, null=True)
+    is_banned = models.BooleanField(default=False)
     status = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=255, blank=True, null=True)
     selected_product_id = models.IntegerField(null=True, blank=True)
@@ -17,6 +18,7 @@ class BotUser(models.Model):
     has_received_prize = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 
 class Subscription(models.Model):
