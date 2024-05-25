@@ -43,6 +43,13 @@ class KeyboardCreator:
             inline_keyboard_markup.add(inline_button)
         return inline_keyboard_markup
 
+    @staticmethod
+    def create_inline_join_button():
+        inline_keyboard_markup = types.InlineKeyboardMarkup()
+        join_button = types.InlineKeyboardButton("عضو شدم", callback_data="joined")
+        inline_keyboard_markup.add(join_button)
+        return inline_keyboard_markup
+
 
 class Keyboards:
     def __init__(self):
@@ -86,3 +93,4 @@ class Keyboards:
         types.InlineKeyboardButton("تایید ✅", callback_data="confirm"),
         types.InlineKeyboardButton("انصراف ❌", callback_data="cancel"),
     )
+    join_button_inline = KeyboardCreator.create_inline_join_button()
