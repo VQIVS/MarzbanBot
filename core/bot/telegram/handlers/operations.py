@@ -1,4 +1,6 @@
 import os
+
+import website.models
 from ..utils.api_management import APIManager
 from telebot import TeleBot
 from bot.models import BotUser, Order, Subscription
@@ -13,6 +15,7 @@ from website.models import (
     TelegramChannel,
     Payment,
     MajorProduct,
+    ForceChannel,
 )
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
@@ -37,9 +40,27 @@ class MainHandler:
         self.bot = TeleBot(API_token)
         self.panel_url = panel_url
         self.access_token = access_token
+        self.channel_username = "popopopopopopoq"
+        self.channel_id = -1002050240547
+
+    def is_member(self, user_id):
+        try:
+            member_status = self.bot.get_chat_member(self.channel_id, user_id)
+            return member_status.status in ['member', 'administrator', 'creator']
+        except Exception as e:
+            print(f"Error checking membership status: {e}")
+            return False
+
+    def is_banned(self, user_id):
+        return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
 
     def start(self, message):
         user_id = message.from_user.id
+        if not self.is_member(user_id):
+            self.bot.send_message(user_id, f"Please join our channel first: https://t.me/{self.channel_username}/3",
+                                  reply_markup=Keyboards.join_button_inline)
+            return
+
         message_bot = Message.objects.first()
         try:
             bot_user = BotUser(user_id=user_id)
@@ -49,6 +70,15 @@ class MainHandler:
 
         text = message_bot.text
         self.bot.send_message(user_id, text, reply_markup=Keyboards.main_keyboard)
+
+    def handle_join(self, query):
+        user_id = query.from_user.id
+        if self.is_member(user_id):
+            self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
+                                  reply_markup=Keyboards.main_keyboard)
+        else:
+            self.bot.send_message(user_id, f"لطفا اول در کانال عضو شوید: https://t.me/{self.channel_username}/2",
+                                  reply_markup=Keyboards.join_button_inline)
 
     def tutorial(self, message):
         user_id = message.from_user.id
@@ -247,23 +277,35 @@ class PurchaseHandler(MainHandler):
                     f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
                     "مستقیماً به صورت تصویر ارسال کنید."
                 )
+                text = f"🏷️ مبلغ: {price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام صاحب کارت: {payment_method.holders_name}\n\n📩 پس از پرداخت، رسید خود را داخل بات ارسال کنید و منتظر تایید پرداخت بمانید."
+
+                payment_methods = PaymentMethod.objects.all()
+                formatted_text = ""
+                for payment_method in payment_methods:
+                    formatted_text += (
+                        f"🏷️ مبلغ: {price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
+                        f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
+                        f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
+                        "مستقیماً به صورت تصویر ارسال کنید.\n\n"
+                    )
                 self.bot.edit_message_text(
-                    chat_id=user_id, message_id=msg_id, text=text
+                    chat_id=user_id, message_id=msg_id, text=formatted_text
                 )
             elif major_product:
                 price = major_product.price * last_order.quantity
                 formatted_price = "{:,}".format(price)
-                payment_method = PaymentMethod.objects.first()
-                text = (
-                    f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
-                    f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
-                    f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
-                    "مستقیماً به صورت تصویر ارسال کنید."
-                )
+                payment_methods = PaymentMethod.objects.all()
+                formatted_text = ""
+                for payment_method in payment_methods:
+                    formatted_text += (
+                        f"🏷️ مبلغ: {formatted_price} تومان\n\n💳 شماره کارت: {payment_method.card_number}\n\n👤 نام "
+                        f"صاحب کارت: {payment_method.holders_name}\n\n📸 لطفاً پس از پرداخت، عکس رسید خود را داخل بات ارسال "
+                        f"کرده و منتظر تایید پرداخت بمانید.\n\n📷 تنها عکس رسید پرداخت مورد قبول است. لطفاً رسید پرداخت را "
+                        "مستقیماً به صورت تصویر ارسال کنید.\n\n"
+                    )
                 self.bot.edit_message_text(
-                    chat_id=user_id, message_id=msg_id, text=text
+                    chat_id=user_id, message_id=msg_id, text=formatted_text
                 )
-
             else:
                 self.bot.send_message(user_id, "No product found for the last order.")
         else:
@@ -410,6 +452,24 @@ class UserHandler(MainHandler):
 
 
 class ConfirmationHandler(MainHandler):
+
+    def handle_block_message(self, message):
+        user_id = extract_user_id_from_caption(message.reply_to_message.caption)
+        self.ban_user(user_id)
+
+    def ban_user(self, user_id):
+        # Ban the user from the bot
+        try:
+            self.bot.ban_chat_member(self.channel_id, user_id)
+            self.bot.send_message(user_id, "یوزر شما بلاک شده است.برای دریافت اطلاعات بیشتر به پشتیبانی پیام دهید")
+            print(f"User {user_id} has been banned.")
+        except Exception as e:
+            print(f"Error banning user {user_id}: {e}")
+
+        # Delete the user from the database
+        BotUser.objects.filter(user_id=user_id).update(is_banned=True)
+        self.bot.send_message(user_id, "You have been banned from using this bot.")
+        print(f"User {user_id} has been banned.")
 
     # Handle  service confirmation
     def service_message(self, channel_id):
@@ -611,6 +671,9 @@ class ConfirmationHandler(MainHandler):
             elif "approved" in message.text.lower():
                 self.handle_approved_message(message)
                 self.whole_message(message.chat.id)
+            elif "block" in message.text.lower():
+                self.handle_block_message(message)
+                self.bot.send_message(message.chat.id, "User has been banned and data removed.")
             else:
                 print("No action defined for this message")
         else:
