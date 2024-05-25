@@ -10,6 +10,7 @@ class BotUser(models.Model):
 
     user_id = models.IntegerField(unique=True)
     test_status = models.CharField(max_length=250, blank=True, null=True)
+    is_banned = models.BooleanField(default=False)
     status = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=255, blank=True, null=True)
     selected_product_id = models.IntegerField(null=True, blank=True)
@@ -22,6 +23,7 @@ class BotUser(models.Model):
 
     def __str__(self):
         return str(self.user_id)
+
 
 
 class Subscription(models.Model):
