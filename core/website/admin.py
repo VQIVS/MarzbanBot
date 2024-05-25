@@ -9,6 +9,7 @@ from .models import (
     PaymentMethod,
     Payment,
     MajorProduct,
+    DiscountCode,
 )
 
 admin.site.register(Configuration)
@@ -20,3 +21,5 @@ admin.site.register(Message)
 admin.site.register(PaymentMethod)
 admin.site.register(Payment)
 admin.site.register(MajorProduct)
+admin.site.register(DiscountCode)
+

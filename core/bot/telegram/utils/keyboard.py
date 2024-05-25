@@ -55,7 +55,7 @@ class Keyboards:
             types.KeyboardButton("🧪دریافت سرور تست"),
         ],
         [types.KeyboardButton("💡 راهنما‌ی سرویس"), types.KeyboardButton("💬 پشتیبانی")],
-        [types.KeyboardButton("🛍 خرید عمده️")],
+        [types.KeyboardButton("🛍 خرید عمده️"), types.KeyboardButton("👨‍👩‍👧‍👧 معرفی به دوستان")],
     ]
     main_keyboard = KeyboardCreator.create_reply_keyboard(main_buttons)
 
@@ -71,7 +71,8 @@ class Keyboards:
     )
 
     confirm_button = types.InlineKeyboardButton(text="تایید", callback_data="confirm")
-    inline_confirmation_keyboard = types.InlineKeyboardMarkup().add(confirm_button)
+    DC_button = types.InlineKeyboardButton(text="کد تخفیف دارم", callback_data="discount")
+    inline_confirmation_keyboard = types.InlineKeyboardMarkup().add(confirm_button, DC_button)
 
     card = types.InlineKeyboardButton(text="شماره کارت", callback_data="card")
     trx = types.InlineKeyboardButton(text="ارز دیجیتال ترون", callback_data="trx")

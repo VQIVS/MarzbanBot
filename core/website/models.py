@@ -1,5 +1,6 @@
+from datetime import timezone
 from django.db import models
-
+import uuid
 
 class Configuration(models.Model):
     """This is a model for bot configurations"""
@@ -87,3 +88,34 @@ class MajorProduct(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class DiscountCode(models.Model):
+    code = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
+    active = models.BooleanField(default=True)
+    discount_percent = models.FloatField()
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    use_limit = models.IntegerField(default=1)
+    times_used = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.code
+
+    def is_valid(self):
+        """ Check if the code is still active, within the valid date range, and under the use limit. """
+        if not self.active:
+            return False
+        if self.times_used >= self.use_limit:
+            return False
+        if not (self.valid_from <= timezone.now() <= self.valid_to):
+            return False
+        return True
+
+    def use(self):
+        """ Increment the usage count of the code. """
+        if self.is_valid():
+            self.times_used += 1
+            self.save()
+            return True
+        return False

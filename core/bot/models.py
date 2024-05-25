@@ -13,15 +13,10 @@ class BotUser(models.Model):
     status = models.CharField(max_length=255, blank=True, null=True)
     state = models.CharField(max_length=255, blank=True, null=True)
     selected_product_id = models.IntegerField(null=True, blank=True)
-    is_invited = models.CharField(max_length=255, blank=True, null=True)
-    invited_user = models.CharField(max_length=255, null=True, blank=True)
-    total_sub = models.IntegerField(null=True, blank=True)
-    points = models.IntegerField(null=True, blank=True)
+    invited_by = models.IntegerField(null=True, blank=True)
+    has_received_prize = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return str(self.user_id)
 
 
 class Subscription(models.Model):
