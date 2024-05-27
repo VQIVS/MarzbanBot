@@ -124,13 +124,9 @@ class DiscountCode(models.Model):
         return False
 
 
-
 class ForceChannel(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     channel_id = models.CharField(max_length=255)
     channel_username = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Telegram Channel ID: {self.channel_id} (User: {self.user.username})"
-
-
+        return f"Telegram Channel ID: {self.channel_id})"
