@@ -29,6 +29,7 @@ from ..utils.funcs import (
 # Initializing settings
 conf = Configuration.objects.first()
 url = conf.panel_url
+force_channel = ForceChannel.objects.first()
 marzban = APIManager(url)
 access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
@@ -40,8 +41,8 @@ class MainHandler:
         self.bot = TeleBot(API_token)
         self.panel_url = panel_url
         self.access_token = access_token
-        self.channel_username = "popopopopopopoq"
-        self.channel_id = -1002050240547
+        self.channel_username = force_channel.channel_username
+        self.channel_id = force_channel.channel_id
 
     def is_member(self, user_id):
         try:
@@ -51,13 +52,14 @@ class MainHandler:
             print(f"Error checking membership status: {e}")
             return False
 
-    def is_banned(self, user_id):
+    @staticmethod
+    def is_banned(user_id):
         return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
 
     def start(self, message):
         user_id = message.from_user.id
         if not self.is_member(user_id):
-            self.bot.send_message(user_id, f"Please join our channel first: https://t.me/{self.channel_username}/3",
+            self.bot.send_message(user_id, f"Please join our channel first: https://t.me/{self.channel_username}",
                                   reply_markup=Keyboards.join_button_inline)
             return
 
@@ -77,7 +79,7 @@ class MainHandler:
             self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
                                   reply_markup=Keyboards.main_keyboard)
         else:
-            self.bot.send_message(user_id, f"لطفا اول در کانال عضو شوید: https://t.me/{self.channel_username}/2",
+            self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
                                   reply_markup=Keyboards.join_button_inline)
 
     def tutorial(self, message):
