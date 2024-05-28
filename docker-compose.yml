@@ -8,7 +8,7 @@ services:
       context: ./core
     container_name: "django_cont"
     ports:
-      - 8000:8000
+      - "8000:8000"
     command: >
       sh -c "python manage.py createsuperuser && python manage.py runserver 0.0.0.0:8000 && python manage.py makemigrations && python manage.py migrate && python manage.py run_bot"
     depends_on:
