@@ -19,6 +19,8 @@ class BotUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return str(self.user_id)
 
 
 class Subscription(models.Model):
@@ -29,9 +31,6 @@ class Subscription(models.Model):
     status = models.BooleanField(default=False, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return str(self.user_id)
 
 
 class Order(models.Model):
