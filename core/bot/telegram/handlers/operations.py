@@ -23,7 +23,7 @@ from django.core.files.base import ContentFile
 from ..utils.funcs import (
     generate_user_id,
     extract_user_id_from_caption,
-    major_extract_user_id_from_caption,
+    major_extract_user_id_from_caption, bytes_to_gb,
 )
 
 # Initializing settings
@@ -701,14 +701,21 @@ class SubscriptionManager:
                 for subscription in subscriptions:
                     sub_user_id = subscription.sub_user
                     user_data = marzban.get_user(sub_user_id, access_token)
+                    expire_time = user_data.get('expire')
+                    data_limit_bytes = user_data.get('data_limit', 0)
+                    data_limit_gb = bytes_to_gb(data_limit_bytes)
                     if user_data:
-                        if user_data.get('data_limit', 0) <= 1073741824:
+                        if (expire_time is not None and
+                                (data_limit_gb < 1 or
+                                 datetime.fromtimestamp(expire_time) <= datetime.now() + timedelta(days=3))):
                             user_id = subscription.user_id
-                            data_limit = user_data.get("data_limit") / 1024 ** 3
+                            data_limit = user_data.get("data_limit") / (1024 ** 3)
+                            expire_time_formatted = datetime.fromtimestamp(expire_time).strftime('%Y-%m-%d %H:%M:%S')
                             notification_message = (
-                                f"اشتراک شما رو به اتمام است\n\n"
+                                f"🪫اشتراک شما رو به اتمام است\n\n"
                                 f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
-                                f"حجم باقی مانده: {data_limit}"
+                                f"حجم باقی مانده: 🪫{data_limit}\n"
+                                f"زمان انقضا: {expire_time_formatted}\n"
                             )
                             try:
                                 self.bot.send_message(user_id, notification_message)
