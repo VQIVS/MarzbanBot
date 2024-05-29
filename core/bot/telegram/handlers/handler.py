@@ -3,17 +3,20 @@ from datetime import datetime, timedelta, timezone
 
 import django
 from telebot import TeleBot
-from website.models import Configuration, Message
+from website.models import Configuration, Message, ForceChannel
 from ..utils.api_management import APIManager
 from .operations import (
     MainHandler,
     OrderHandler,
     PurchaseHandler,
     UserHandler,
-    ConfirmationHandler,
+    ConfirmationHandler, SubscriptionManager,
 )
 from bot.models import BotUser
 from ..utils.funcs import rollback
+from django.db import IntegrityError
+from ..utils.keyboard import Keyboards
+from ..utils.funcs import ban_check
 
 # Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
@@ -38,14 +41,24 @@ order_handler = OrderHandler(API_token, panel, access_token)
 purchase_handler = PurchaseHandler(API_token, panel, access_token)
 user_handler = UserHandler(API_token, panel, access_token)
 confirmation = ConfirmationHandler(API_token, panel, access_token)
+subscription_manager = SubscriptionManager(bot)
+ban_check_decorator = ban_check(bot)
 
 
-@bot.message_handler(["restart"])
+@bot.message_handler(commands=['start'])
 def start(message):
     main_handler.start(message)
 
 
 @bot.message_handler(commands=['start'])
+@bot.message_handler(["restart"])
+@ban_check_decorator
+def start(message):
+    main_handler.start(message)
+
+
+@bot.message_handler(commands=['start'])
+@ban_check_decorator
 def start(message):
     # Check if the start command includes a referral parameter
     if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
@@ -75,6 +88,7 @@ def start(message):
 
 
 @bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")
+@ban_check_decorator
 def tutorial(message):
     main_handler.tutorial(message)
 
@@ -85,51 +99,61 @@ def support(message):
 
 
 @bot.message_handler(func=lambda message: message.text == "⭐️ خرید سرویس")
+@ban_check_decorator
 def service(message):
     main_handler.buy(message)
 
 
 @bot.message_handler(func=lambda message: message.text == "🛍 خرید عمده️")
+@ban_check_decorator
 def whole_service(message):
     main_handler.whole_buy(message)
 
 
 @bot.message_handler(func=lambda message: message.text == "🧪دریافت سرور تست")
+@ban_check_decorator
 def test_subscription(message):
     main_handler.test_subscription(message)
 
 
 @bot.callback_query_handler(func=lambda query: query.data.startswith("p_"))
+@ban_check_decorator
 def create_invoice(query):
     order_handler.create_service_invoice(query)
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "confirm")
+@ban_check_decorator
 def confirm_order_invoice(query):
     order_handler.confirm_order(query)
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "trx")
+@ban_check_decorator
 def trx_purchase(query):
     purchase_handler.trx_purchase(query)
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "card")
+@ban_check_decorator
 def card_purchase(query):
     purchase_handler.card_purchase(query)
 
 
 @bot.message_handler(func=lambda message: message.text == "👤 اشتراک‌های من")
+@ban_check_decorator
 def get_subscription_data(message):
     user_handler.get_user_data(message)
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "delete")
+@ban_check_decorator
 def delete_subscription(query):
     user_handler.delete_subscription(query)
 
 
 @bot.callback_query_handler(func=lambda query: query.data.startswith("m_"))
+@ban_check_decorator
 def whole_service_selection(query):
     order_handler.whole_service_selection(query)
 
@@ -144,22 +168,34 @@ def create_invoice(message):
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "cancel")
+@ban_check_decorator
 def cancel_process(query):
     rollback(query)
 
 
 @bot.channel_post_handler(content_types=["text"])
+@ban_check_decorator
 def accept_purchase(message):
     confirmation.accept_purchase(message)
 
 
 @bot.message_handler(content_types=["photo"])
+@ban_check_decorator
 def send_photo(message):
     purchase_handler.send_order_invoice(message)
 
 
 @bot.message_handler(func=lambda message: message.text == "👨‍👩‍👧‍👧 معرفی به دوستان")
+@ban_check_decorator
 def refer(message):
     main_handler.refer(message)
 
 
+@bot.callback_query_handler(func=lambda query: query.data == "joined")
+def handle_join(query):
+    main_handler.handle_join(query)
+
+
+@bot.message_handler(func=lambda message: message.text == "send expire message to all users")
+def check_subscriptions(message):
+    subscription_manager.check_subscriptions()

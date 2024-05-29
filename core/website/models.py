@@ -1,6 +1,9 @@
 from datetime import timezone
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
+from django.conf import settings
+
 
 class Configuration(models.Model):
     """This is a model for bot configurations"""
@@ -119,3 +122,11 @@ class DiscountCode(models.Model):
             self.save()
             return True
         return False
+
+
+class ForceChannel(models.Model):
+    channel_id = models.CharField(max_length=255)
+    channel_username = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Telegram Channel ID: {self.channel_id})"

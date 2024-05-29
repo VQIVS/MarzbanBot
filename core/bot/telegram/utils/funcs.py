@@ -1,6 +1,8 @@
 import uuid
 from website.models import Configuration
 from telebot import TeleBot
+from functools import wraps
+from bot.models import BotUser
 
 from .keyboard import Keyboards
 
@@ -47,3 +49,15 @@ def rollback(query):
         text="❌ درخواست شما لغو شد.",
         reply_markup=None,
     )
+
+def ban_check(bot):
+    def decorator(handler_func):
+        @wraps(handler_func)
+        def wrapper(message, *args, **kwargs):
+            user_id = message.from_user.id if hasattr(message.from_user, 'id') else message.chat.id
+            if BotUser.objects.filter(user_id=user_id, is_banned=True).exists():
+                bot.send_message(user_id, "You are banned from using this bot.")
+            else:
+                return handler_func(message, *args, **kwargs)
+        return wrapper
+    return decorator
