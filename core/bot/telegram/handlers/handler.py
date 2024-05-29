@@ -10,7 +10,7 @@ from .operations import (
     OrderHandler,
     PurchaseHandler,
     UserHandler,
-    ConfirmationHandler,
+    ConfirmationHandler, SubscriptionManager,
 )
 from bot.models import BotUser
 from ..utils.funcs import rollback
@@ -41,7 +41,7 @@ order_handler = OrderHandler(API_token, panel, access_token)
 purchase_handler = PurchaseHandler(API_token, panel, access_token)
 user_handler = UserHandler(API_token, panel, access_token)
 confirmation = ConfirmationHandler(API_token, panel, access_token)
-
+subscription_manager = SubscriptionManager(bot)
 ban_check_decorator = ban_check(bot)
 
 
@@ -194,3 +194,8 @@ def refer(message):
 @bot.callback_query_handler(func=lambda query: query.data == "joined")
 def handle_join(query):
     main_handler.handle_join(query)
+
+
+@bot.message_handler(func=lambda message: message.text == "send message to all users")
+def check_subscriptions(message):
+    subscription_manager.check_subscriptions()
