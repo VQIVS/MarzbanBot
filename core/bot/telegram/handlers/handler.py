@@ -196,6 +196,6 @@ def handle_join(query):
     main_handler.handle_join(query)
 
 
-@bot.message_handler(func=lambda message: message.text == "send message to all users")
+@bot.message_handler(func=lambda message: message.text == "send expire message to all users")
 def check_subscriptions(message):
     subscription_manager.check_subscriptions()
