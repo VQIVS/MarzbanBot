@@ -50,6 +50,7 @@ def rollback(query):
         reply_markup=None,
     )
 
+
 def ban_check(bot):
     def decorator(handler_func):
         @wraps(handler_func)
@@ -59,5 +60,14 @@ def ban_check(bot):
                 bot.send_message(user_id, "You are banned from using this bot.")
             else:
                 return handler_func(message, *args, **kwargs)
+
         return wrapper
+
     return decorator
+
+
+def bytes_to_gb(bytes_value):
+    """
+    Convert bytes to gigabytes.
+    """
+    return bytes_value / (1024 ** 3)
