@@ -1,6 +1,6 @@
 import os
-
-import website.models
+import logging
+import time
 from ..utils.api_management import APIManager
 from telebot import TeleBot
 from bot.models import BotUser, Order, Subscription
@@ -34,6 +34,7 @@ marzban = APIManager(url)
 access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
 )
+logging.basicConfig(level=logging.INFO)
 
 
 class MainHandler:
@@ -680,3 +681,41 @@ class ConfirmationHandler(MainHandler):
                 print("No action defined for this message")
         else:
             print("No reply message found")
+
+
+class SubscriptionManager:
+    def __init__(self, bot):
+        self.bot = bot
+
+    def check_subscriptions(self):
+        while True:
+            # Get all bot users
+            bot_users = BotUser.objects.all()
+
+            # Iterate over each bot user
+            for bot_user in bot_users:
+                # Get subscriptions for the current user
+                subscriptions = Subscription.objects.filter(user_id=bot_user)
+
+                # Iterate over each subscription
+                for subscription in subscriptions:
+                    sub_user_id = subscription.sub_user
+                    user_data = marzban.get_user(sub_user_id, access_token)
+                    if user_data:
+                        if user_data.get('data_limit', 0) <= 1073741824:
+                            user_id = subscription.user_id
+                            data_limit = user_data.get("data_limit") / 1024 ** 3
+                            notification_message = (
+                                f"اشتراک شما رو به اتمام است\n\n"
+                                f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
+                                f"حجم باقی مانده: {data_limit}"
+                            )
+                            try:
+                                self.bot.send_message(user_id, notification_message)
+                                logging.info(f"Notified user {user_id} about subscription status.")
+                            except Exception as e:
+                                logging.error(f"Failed to send message to user {user_id}: {e}")
+                    else:
+                        logging.error(f"Failed to get user data for subscription: {subscription.id}")
+
+            time.sleep(60 * 60 * 12)
