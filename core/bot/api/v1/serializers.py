@@ -24,4 +24,4 @@ class BotOrderSerializer(serializers.ModelSerializer):
 
 
 class SendMessageSerializer(serializers.Serializer):
-    message = serializers.CharField(max_length=255)
+    message = serializers.CharField(max_length=1024)
