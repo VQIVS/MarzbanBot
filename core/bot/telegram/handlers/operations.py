@@ -696,35 +696,37 @@ class SubscriptionManager:
             for bot_user in bot_users:
                 # Get subscriptions for the current user
                 subscriptions = Subscription.objects.filter(user_id=bot_user)
+                if subscriptions:
 
-                # Iterate over each subscription
-                for subscription in subscriptions:
-                    sub_user_id = subscription.sub_user
-                    user_data = marzban.get_user(sub_user_id, access_token)
-                    if user_data:
-                        expire_time = user_data.get('expire')
-                        data_limit_bytes = user_data.get('data_limit', 0)
-                        data_limit_gb = bytes_to_gb(data_limit_bytes)
-                        if user_data.get("status") == "active" and (expire_time is not None and
-                                                                    (data_limit_gb < 1 or
-                                                                     datetime.fromtimestamp(
-                                                                         expire_time) <= datetime.now() + timedelta(
-                                                                                days=3))):
-                            user_id = subscription.user_id
-                            data_limit = user_data.get("data_limit") / (1024 ** 3)
-                            expire_time_formatted = datetime.fromtimestamp(expire_time).strftime('%Y-%m-%d %H:%M:%S')
-                            notification_message = (
-                                f"🪫اشتراک شما رو به اتمام است\n\n"
-                                f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
-                                f"حجم باقی مانده: 🪫{data_limit}\n"
-                                f"زمان انقضا: {expire_time_formatted}\n"
-                            )
-                            try:
-                                self.bot.send_message(user_id, notification_message)
-                                logging.info(f"Notified user {user_id} about subscription status.")
-                            except Exception as e:
-                                logging.error(f"Failed to send message to user {user_id}: {e}")
-                    else:
-                        logging.error(f"Failed to get user data for subscription: {subscription.id}")
+                    # Iterate over each subscription
+                    for subscription in subscriptions:
+                        sub_user_id = subscription.sub_user
+                        user_data = marzban.get_user(sub_user_id, access_token)
+                        if user_data:
+                            expire_time = user_data.get('expire')
+                            data_limit_bytes = user_data.get('data_limit', 0)
+                            data_limit_gb = bytes_to_gb(data_limit_bytes)
+                            if user_data.get("status") == "active" and (expire_time is not None and
+                                                                        (data_limit_gb < 1 or
+                                                                         datetime.fromtimestamp(
+                                                                             expire_time) <= datetime.now() + timedelta(
+                                                                                    days=3))):
+                                user_id = subscription.user_id
+                                data_limit = user_data.get("data_limit") / (1024 ** 3)
+                                expire_time_formatted = datetime.fromtimestamp(expire_time).strftime(
+                                    '%Y-%m-%d %H:%M:%S')
+                                notification_message = (
+                                    f"🪫اشتراک شما رو به اتمام است\n\n"
+                                    f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
+                                    f"حجم باقی مانده: 🪫{data_limit}\n"
+                                    f"زمان انقضا: {expire_time_formatted}\n"
+                                )
+                                try:
+                                    self.bot.send_message(user_id, notification_message)
+                                    logging.info(f"Notified user {user_id} about subscription status.")
+                                except Exception as e:
+                                    logging.error(f"Failed to send message to user {user_id}: {e}")
+                        else:
+                            logging.error(f"Failed to get user data for subscription: {subscription.id}")
 
             time.sleep(60 * 60 * 12)
