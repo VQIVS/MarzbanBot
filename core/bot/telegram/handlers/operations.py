@@ -730,3 +730,17 @@ class SubscriptionManager:
                             logging.error(f"Failed to get user data for subscription: {subscription.id}")
 
             time.sleep(60 * 60 * 12)
+
+    def delete_subscriptions(self, bot):
+
+        bot_users = BotUser.objects.all()
+        for bot_user in bot_users:
+            # Get subscriptions for the current user
+            subscriptions = Subscription.objects.filter(user_id=bot_user)
+            if subscriptions:
+                for subscription in subscriptions:
+                    sub_user_id = subscription.sub_user
+                    user_data = marzban.get_user(sub_user_id, access_token)
+                    self.bot.delete_subscription()
+
+
