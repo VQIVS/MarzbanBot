@@ -10,7 +10,7 @@ from .operations import (
     OrderHandler,
     PurchaseHandler,
     UserHandler,
-    ConfirmationHandler, SubscriptionManager,
+    ConfirmationHandler, 
 )
 from bot.models import BotUser
 from ..utils.funcs import rollback
