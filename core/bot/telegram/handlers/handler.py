@@ -41,7 +41,7 @@ order_handler = OrderHandler(API_token, panel, access_token)
 purchase_handler = PurchaseHandler(API_token, panel, access_token)
 user_handler = UserHandler(API_token, panel, access_token)
 confirmation = ConfirmationHandler(API_token, panel, access_token)
-subscription_manager = SubscriptionManager(bot)
+# subscription_manager = SubscriptionManager(bot)
 ban_check_decorator = ban_check(bot)
 
 
