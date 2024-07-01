@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import django
 from telebot import TeleBot
-from website.models import Configuration, Message, ForceChannel
+from website.models import Configuration, Message
 from ..utils.api_management import APIManager
 from .operations import (
     MainHandler,
@@ -57,34 +57,34 @@ def start(message):
     main_handler.start(message)
 
 
-@bot.message_handler(commands=['start'])
-@ban_check_decorator
-def start(message):
-    # Check if the start command includes a referral parameter
-    if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
-        referrer_id = int(message.text.split()[1][4:])
-        user_id = message.from_user.id
-        # TODO: check invited users query
-        # referrer = BotUser.objects.filter(user_id=referrer_id).first()
-        # bot_user = BotUser(user_id=user_id)
-        # bot_user.save()
-        # if referrer:
-        #     user = BotUser.objects.get(user_id=user_id)
-        #     referrer.invited_users.add(user)
-        if user_id != referrer_id:
-            bot.reply_to(message,
-                         f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
-                         f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
-                         f"خواهد گرفت. 🎁😊")
-            main_handler.start(message)
-            user = BotUser.objects.filter(user_id=user_id).first()
-            if not user.invited_by:
-                user.invited_by = referrer_id
-                user.save()
-        else:
-            main_handler.start(message)
-    else:
-        main_handler.start(message)
+# @bot.message_handler(commands=['start'])
+# @ban_check_decorator
+# def start(message):
+#     # Check if the start command includes a referral parameter
+#     if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
+#         referrer_id = int(message.text.split()[1][4:])
+#         user_id = message.from_user.id
+#         # TODO: check invited users query
+#         # referrer = BotUser.objects.filter(user_id=referrer_id).first()
+#         # bot_user = BotUser(user_id=user_id)
+#         # bot_user.save()
+#         # if referrer:
+#         #     user = BotUser.objects.get(user_id=user_id)
+#         #     referrer.invited_users.add(user)
+#         if user_id != referrer_id:
+#             bot.reply_to(message,
+#                          f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
+#                          f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
+#                          f"خواهد گرفت. 🎁😊")
+#             main_handler.start(message)
+#             user = BotUser.objects.filter(user_id=user_id).first()
+#             if not user.invited_by:
+#                 user.invited_by = referrer_id
+#                 user.save()
+#         else:
+#             main_handler.start(message)
+#     else:
+#         main_handler.start(message)
 
 
 @bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")

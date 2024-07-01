@@ -15,7 +15,6 @@ from website.models import (
     TelegramChannel,
     Payment,
     MajorProduct,
-    ForceChannel,
 )
 from io import BytesIO
 from datetime import datetime, timedelta, timezone
@@ -29,7 +28,6 @@ from ..utils.funcs import (
 # Initializing settings
 conf = Configuration.objects.first()
 url = conf.panel_url
-force_channel = ForceChannel.objects.first()
 marzban = APIManager(url)
 access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
@@ -42,8 +40,6 @@ class MainHandler:
         self.bot = TeleBot(API_token)
         self.panel_url = panel_url
         self.access_token = access_token
-        self.channel_username = force_channel.channel_username
-        self.channel_id = force_channel.channel_id
 
     def is_member(self, user_id):
         try:

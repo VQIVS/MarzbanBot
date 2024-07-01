@@ -10,8 +10,6 @@ from .models import (
     Payment,
     MajorProduct,
     DiscountCode,
-    ForceChannel,
-
 )
 
 admin.site.register(Configuration)
@@ -24,4 +22,3 @@ admin.site.register(PaymentMethod)
 admin.site.register(Payment)
 admin.site.register(MajorProduct)
 admin.site.register(DiscountCode)
-admin.site.register(ForceChannel)

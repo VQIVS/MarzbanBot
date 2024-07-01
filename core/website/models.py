@@ -124,9 +124,9 @@ class DiscountCode(models.Model):
         return False
 
 
-class ForceChannel(models.Model):
-    channel_id = models.CharField(max_length=255)
-    channel_username = models.CharField(max_length=255)
+# class ForceChannel(models.Model):
+#     channel_id = models.CharField(max_length=255)
+#     channel_username = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"Telegram Channel ID: {self.channel_id})"
+#     def __str__(self):
+#         return f"Telegram Channel ID: {self.channel_id})"
