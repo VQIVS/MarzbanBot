@@ -20,7 +20,6 @@
 #      - MYSQL_ROOT_PASSWORD=Qias83.1383
 #      - MYSQL_DATABASE=marzbanbot_db
 
-version: "3.8"
 services:
   core:
     build: ./core
