@@ -29,8 +29,8 @@ class APIManager:
 
         payload = {
             "username": username,
-            "proxies": {"vmess": {}, "vless": {}},
-            "inbounds": {"vmess": [], "vless": []},
+            "proxies": {"vmess": {}},
+            "inbounds": {"vmess": []},
             "expire": None,
             "data_limit": data_limit * 1024**3,
             "data_limit_reset_strategy": "no_reset",

@@ -33,6 +33,7 @@ access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
 )
 logging.basicConfig(level=logging.INFO)
+msg = Message.objects.first()
 
 
 class MainHandler:
@@ -41,43 +42,40 @@ class MainHandler:
         self.panel_url = panel_url
         self.access_token = access_token
 
-    def is_member(self, user_id):
-        try:
-            member_status = self.bot.get_chat_member(self.channel_id, user_id)
-            return member_status.status in ['member', 'administrator', 'creator']
-        except Exception as e:
-            print(f"Error checking membership status: {e}")
-            return False
+    # def is_member(self, user_id):
+    #     try:
+    #         member_status = self.bot.get_chat_member(self.channel_id, user_id)
+    #         return member_status.status in ['member', 'administrator', 'creator']
+    #     except Exception as e:
+    #         print(f"Error checking membership status: {e}")
+    #         return False
 
-    @staticmethod
-    def is_banned(user_id):
-        return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
+    # @staticmethod
+    # def is_banned(user_id):
+    #     return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
 
     def start(self, message):
         user_id = message.from_user.id
-        if not self.is_member(user_id):
-            self.bot.send_message(user_id, f"Please join our channel first: https://t.me/{self.channel_username}",
-                                  reply_markup=Keyboards.join_button_inline)
-            return
+        self.bot.send_message(user_id, msg)
 
-        message_bot = Message.objects.first()
-        try:
-            bot_user = BotUser(user_id=user_id)
-            bot_user.save()
-        except IntegrityError:
-            pass
+        # message_bot = Message.objects.first()
+        # try:
+        #     bot_user = BotUser(user_id=user_id)
+        #     bot_user.save()
+        # except IntegrityError:
+        #     pass
 
-        text = message_bot.text
-        self.bot.send_message(user_id, text, reply_markup=Keyboards.main_keyboard)
+    #     text = message_bot.text
+    #     self.bot.send_message(user_id, text, reply_markup=Keyboards.main_keyboard)
 
-    def handle_join(self, query):
-        user_id = query.from_user.id
-        if self.is_member(user_id):
-            self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
-                                  reply_markup=Keyboards.main_keyboard)
-        else:
-            self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
-                                  reply_markup=Keyboards.join_button_inline)
+    # def handle_join(self, query):
+    #     user_id = query.from_user.id
+    #     if self.is_member(user_id):
+    #         self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
+    #                               reply_markup=Keyboards.main_keyboard)
+    #     else:
+    #         self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
+    #                               reply_markup=Keyboards.join_button_inline)
 
     def tutorial(self, message):
         user_id = message.from_user.id

@@ -22,7 +22,7 @@ class Configuration(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(decimal_places=0, max_digits=10)
-    data_limit = models.FloatField()
+    data_limit = models.IntegerField()
     expire = models.IntegerField(blank=True, null=True)
 
     def __str__(self):

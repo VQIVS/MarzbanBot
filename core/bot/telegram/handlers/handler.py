@@ -191,9 +191,9 @@ def refer(message):
     main_handler.refer(message)
 
 
-@bot.callback_query_handler(func=lambda query: query.data == "joined")
-def handle_join(query):
-    main_handler.handle_join(query)
+# @bot.callback_query_handler(func=lambda query: query.data == "joined")
+# def handle_join(query):
+#     main_handler.handle_join(query)
 
 
 # @bot.message_handler(func=lambda message: message.text == "send expire message to all users")
