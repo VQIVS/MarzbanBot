@@ -33,8 +33,6 @@ access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
 )
 logging.basicConfig(level=logging.INFO)
-msg = Message.objects.first()
-
 
 class MainHandler:
     def __init__(self, API_token, panel_url, access_token):
@@ -56,15 +54,13 @@ class MainHandler:
 
     def start(self, message):
         user_id = message.from_user.id
+        msg = Message.objects.first()
         self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
-
-        # message_bot = Message.objects.first()
-        # try:
-        #     bot_user = BotUser(user_id=user_id)
-        #     bot_user.save()
-        # except IntegrityError:
-        #     pass
-
+        try:
+            bot_user = BotUser(user_id=user_id)
+            bot_user.save()
+        except IntegrityError:
+            pass
     #     text = message_bot.text
     #     self.bot.send_message(user_id, text, reply_markup=Keyboards.main_keyboard)
 
