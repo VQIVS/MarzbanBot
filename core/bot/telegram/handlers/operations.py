@@ -56,7 +56,7 @@ class MainHandler:
 
     def start(self, message):
         user_id = message.from_user.id
-        self.bot.send_message(user_id, msg)
+        self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
 
         # message_bot = Message.objects.first()
         # try:
