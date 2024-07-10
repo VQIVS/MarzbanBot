@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     
-    fetch('/get_users') 
+    fetch('http://135.181.100.53:8000/swagger/') 
         .then(response => response.json())
         .then(data => {
             const usersList = document.getElementById('users-list');
