@@ -45,3 +45,41 @@ tr:nth-child(even) {
 tr:hover {
     background-color: #f1f1f1;
 }
+
+
+nav {
+    background-color: #333;
+    color: #fff;
+}
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.menu li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.menu li a:hover {
+    background-color: #555;
+}
+
+.container {
+    /* Existing styles remain the same */
+}
+
+.panel-section {
+    margin-top: 20px;
+}
+
