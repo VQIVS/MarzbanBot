@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Fetch users data from server
-    fetch('/get_users') // Replace with your backend endpoint
+    
+    fetch('/get_users') 
         .then(response => response.json())
         .then(data => {
             const usersList = document.getElementById('users-list');
 
-            // Iterate through users data and create table rows
+            
             data.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
