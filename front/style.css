@@ -1,3 +1,5 @@
+/* Existing styles remain the same */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -46,7 +48,6 @@ tr:hover {
     background-color: #f1f1f1;
 }
 
-
 nav {
     background-color: #333;
     color: #fff;
@@ -75,9 +76,22 @@ nav {
     background-color: #555;
 }
 
-
-
 .panel-section {
     margin-top: 20px;
 }
 
+
+code {
+    color: #007bff; 
+    font-family: "Courier New", Courier, monospace;
+    background-color: #f9f9f9;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+code:hover {
+    background-color: #e0f7ff;
+    transform: scale(1.05);
+}
