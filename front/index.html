@@ -1,37 +1,23 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل ادمین</title>
+    <title>Admin Panel - Telegram Bot Users</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="#home">خانه</a>
-        <a href="#users">کاربران</a>
-        <a href="#orders">سفارش‌ها</a>
-        <a href="#products">محصولات</a>
-        <a href="#settings">تنظیمات</a>
-    </div>
-    <div class="admin-panel">
-        <h1>پنل ادمین - کاربران</h1>
-        <!-- <form id="add-user-form">
-            <input type="text" id="username" placeholder="نام کاربری" required>
-            <!-- <input type="email" id="email" placeholder="ایمیل" required> -->
-            <!-- <input type="date" id="joinDate" placeholder="تاریخ عضویت" required>
-            <button type="submit">افزودن کاربر</button> -->
-        <!-- </form> --> -->
+    <div class="container">
+        <h1>Admin Panel </h1>
         <table id="users-table">
             <thead>
                 <tr>
-                    <th>نام کاربری</th>
-                    <!-- <th>ایمیل</th> -->
-                    <th>تاریخ عضویت</th>
+                    <th>Username</th>
+                    <th>Join Date</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- User data will be populated here -->
+            <tbody id="users-list">
+               
             </tbody>
         </table>
     </div>
