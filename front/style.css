@@ -1,30 +1,73 @@
-/* Existing styles remain the same */
-
+/* style.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+nav {
+    background-color: #2c3e50;
+    padding: 1em;
+}
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; 
+}
+
+.menu li {
+    margin-right: 1em;
+    position: relative;
+    transition: transform 0.3s ease; 
+}
+
+.menu a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.menu a:hover {
+    background-color: #34495e;
+    color: #ffffff;
+}
+
+.menu li:hover {
+    transform: scale(1.1); 
 }
 
 .container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 2em;
 }
 
 h1 {
-    text-align: center;
-    margin-bottom: 20px;
+    color: #34495e;
+}
+
+.panel-section {
+    margin-bottom: 2em;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panel-section h2 {
+    color: #2980b9;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 1em;
 }
 
 table, th, td {
@@ -32,66 +75,19 @@ table, th, td {
 }
 
 th, td {
-    padding: 12px;
+    padding: 0.75em;
     text-align: left;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #2980b9;
+    color: white;
 }
 
 tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f2f2f2;
 }
 
 tr:hover {
-    background-color: #f1f1f1;
-}
-
-nav {
-    background-color: #333;
-    color: #fff;
-}
-
-.menu {
-    list-style-type: none;
-    margin: 0;
-    padding: 10px 0;
-    text-align: center;
-}
-
-.menu li {
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.menu li a {
-    color: #fff;
-    text-decoration: none;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.menu li a:hover {
-    background-color: #555;
-}
-
-.panel-section {
-    margin-top: 20px;
-}
-
-
-code {
-    color: #007bff; 
-    font-family: "Courier New", Courier, monospace;
-    background-color: #f9f9f9;
-    padding: 5px;
-    border-radius: 4px;
-    display: inline-block;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-code:hover {
-    background-color: #e0f7ff;
-    transform: scale(1.05);
+    background-color: #ddd;
 }
