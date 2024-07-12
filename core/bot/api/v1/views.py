@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from telebot import TeleBot
 from website.models import Configuration
 
-conf = Configuration.objects.first()
-bot = TeleBot(conf.token)
+# conf = Configuration.objects.first()
+# bot = TeleBot(conf.token)
 
 
 class UserModelViewSet(viewsets.ModelViewSet):

@@ -40,38 +40,40 @@ class MainHandler:
         self.panel_url = panel_url
         self.access_token = access_token
 
-    # def is_member(self, user_id):
-    #     try:
-    #         member_status = self.bot.get_chat_member(self.channel_id, user_id)
-    #         return member_status.status in ['member', 'administrator', 'creator']
-    #     except Exception as e:
-    #         print(f"Error checking membership status: {e}")
-    #         return False
+    def is_member(self, user_id):
+        try:
+            member_status = self.bot.get_chat_member(self.channel_id, user_id)
+            return member_status.status in ['member', 'administrator', 'creator']
+        except Exception as e:
+            print(f"Error checking membership status: {e}")
+            return False
 
-    # @staticmethod
-    # def is_banned(user_id):
-    #     return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
+    @staticmethod
+    def is_banned(user_id):
+        return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
 
     def start(self, message):
         user_id = message.from_user.id
-        msg = Message.objects.first()
-        self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
+        # msg = Message.objects.first()
+        # self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
         try:
             bot_user = BotUser(user_id=user_id)
             bot_user.save()
         except IntegrityError:
             pass
-    #     text = message_bot.text
-    #     self.bot.send_message(user_id, text, reply_markup=Keyboards.main_keyboard)
+        
+        msg = Message.objects.first()
 
-    # def handle_join(self, query):
-    #     user_id = query.from_user.id
-    #     if self.is_member(user_id):
-    #         self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
-    #                               reply_markup=Keyboards.main_keyboard)
-    #     else:
-    #         self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
-    #                               reply_markup=Keyboards.join_button_inline)
+        self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
+
+    def handle_join(self, query):
+        user_id = query.from_user.id
+        if self.is_member(user_id):
+            self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
+                                  reply_markup=Keyboards.main_keyboard)
+        else:
+            self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
+                                  reply_markup=Keyboards.join_button_inline)
 
     def tutorial(self, message):
         user_id = message.from_user.id
@@ -673,64 +675,64 @@ class ConfirmationHandler(MainHandler):
             print("No reply message found")
 
 
-# class SubscriptionManager:
-#     def __init__(self, bot):
-#         self.bot = bot
-#
-#     def check_subscriptions(self):
-#         while True:
-#             # Get all bot users
-#             bot_users = BotUser.objects.all()
-#
-#             # Iterate over each bot user
-#             for bot_user in bot_users:
-#                 # Get subscriptions for the current user
-#                 subscriptions = Subscription.objects.filter(user_id=bot_user)
-#                 if subscriptions:
-#
-#                     # Iterate over each subscription
-#                     for subscription in subscriptions:
-#                         sub_user_id = subscription.sub_user
-#                         user_data = marzban.get_user(sub_user_id, access_token)
-#                         if user_data:
-#                             expire_time = user_data.get('expire')
-#                             data_limit_bytes = user_data.get('data_limit', 0)
-#                             data_limit_gb = bytes_to_gb(data_limit_bytes)
-#                             if user_data.get("status") == "active" and (expire_time is not None and
-#                                                                         (data_limit_gb < 1 or
-#                                                                          datetime.fromtimestamp(
-#                                                                              expire_time) <= datetime.now() + timedelta(
-#                                                                                     days=3))):
-#                                 user_id = subscription.user_id
-#                                 data_limit = user_data.get("data_limit") / (1024 ** 3)
-#                                 expire_time_formatted = datetime.fromtimestamp(expire_time).strftime(
-#                                     '%Y-%m-%d %H:%M:%S')
-#                                 notification_message = (
-#                                     f"🪫اشتراک شما رو به اتمام است\n\n"
-#                                     f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
-#                                     f"حجم باقی مانده: 🪫{data_limit}\n"
-#                                     f"زمان انقضا: {expire_time_formatted}\n"
-#                                 )
-#                                 try:
-#                                     self.bot.send_message(user_id, notification_message)
-#                                     logging.info(f"Notified user {user_id} about subscription status.")
-#                                 except Exception as e:
-#                                     logging.error(f"Failed to send message to user {user_id}: {e}")
-#                         else:
-#                             logging.error(f"Failed to get user data for subscription: {subscription.id}")
-#
-#             time.sleep(60 * 60 * 12)
-#
-#     def delete_subscriptions(self, bot):
-#
-#         bot_users = BotUser.objects.all()
-#         for bot_user in bot_users:
-#             # Get subscriptions for the current user
-#             subscriptions = Subscription.objects.filter(user_id=bot_user)
-#             if subscriptions:
-#                 for subscription in subscriptions:
-#                     sub_user_id = subscription.sub_user
-#                     user_data = marzban.get_user(sub_user_id, access_token)
-#                     self.bot.delete_subscription()
-#
-#
+class SubscriptionManager:
+    def __init__(self, bot):
+        self.bot = bot
+
+    def check_subscriptions(self):
+        while True:
+            # Get all bot users
+            bot_users = BotUser.objects.all()
+
+            # Iterate over each bot user
+            for bot_user in bot_users:
+                # Get subscriptions for the current user
+                subscriptions = Subscription.objects.filter(user_id=bot_user)
+                if subscriptions:
+
+                    # Iterate over each subscription
+                    for subscription in subscriptions:
+                        sub_user_id = subscription.sub_user
+                        user_data = marzban.get_user(sub_user_id, access_token)
+                        if user_data:
+                            expire_time = user_data.get('expire')
+                            data_limit_bytes = user_data.get('data_limit', 0)
+                            data_limit_gb = bytes_to_gb(data_limit_bytes)
+                            if user_data.get("status") == "active" and (expire_time is not None and
+                                                                        (data_limit_gb < 1 or
+                                                                         datetime.fromtimestamp(
+                                                                             expire_time) <= datetime.now() + timedelta(
+                                                                                    days=3))):
+                                user_id = subscription.user_id
+                                data_limit = user_data.get("data_limit") / (1024 ** 3)
+                                expire_time_formatted = datetime.fromtimestamp(expire_time).strftime(
+                                    '%Y-%m-%d %H:%M:%S')
+                                notification_message = (
+                                    f"🪫اشتراک شما رو به اتمام است\n\n"
+                                    f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
+                                    f"حجم باقی مانده: 🪫{data_limit}\n"
+                                    f"زمان انقضا: {expire_time_formatted}\n"
+                                )
+                                try:
+                                    self.bot.send_message(user_id, notification_message)
+                                    logging.info(f"Notified user {user_id} about subscription status.")
+                                except Exception as e:
+                                    logging.error(f"Failed to send message to user {user_id}: {e}")
+                        else:
+                            logging.error(f"Failed to get user data for subscription: {subscription.id}")
+
+            time.sleep(60 * 60 * 12)
+
+    def delete_subscriptions(self, bot):
+
+        bot_users = BotUser.objects.all()
+        for bot_user in bot_users:
+            # Get subscriptions for the current user
+            subscriptions = Subscription.objects.filter(user_id=bot_user)
+            if subscriptions:
+                for subscription in subscriptions:
+                    sub_user_id = subscription.sub_user
+                    user_data = marzban.get_user(sub_user_id, access_token)
+                    self.bot.delete_subscription()
+
+
