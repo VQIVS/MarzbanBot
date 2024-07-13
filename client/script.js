@@ -64,4 +64,4 @@ const userChart = new Chart(userChartContext, {
         }
     }
 });
-});
+
