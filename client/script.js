@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 usersList.appendChild(row);
             });
 
-            // Update total users count
+           
             const totalUsers = data.length;
             userCountElement.textContent = totalUsers;
         })
