@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://135.181.100.53:8000/api/users') 
+    fetch('') 
         .then(response => response.json())
         .then(data => {
             const usersList = document.getElementById('users-list');
