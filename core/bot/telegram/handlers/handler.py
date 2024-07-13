@@ -11,6 +11,7 @@ from .operations import (
     PurchaseHandler,
     UserHandler,
     ConfirmationHandler, 
+    SubscriptionManager
 )
 from bot.models import BotUser
 from ..utils.funcs import rollback
@@ -41,7 +42,7 @@ order_handler = OrderHandler(API_token, panel, access_token)
 purchase_handler = PurchaseHandler(API_token, panel, access_token)
 user_handler = UserHandler(API_token, panel, access_token)
 confirmation = ConfirmationHandler(API_token, panel, access_token)
-# subscription_manager = SubscriptionManager(bot)
+subscription_manager = SubscriptionManager(bot)
 ban_check_decorator = ban_check(bot)
 
 
@@ -57,34 +58,34 @@ def start(message):
     main_handler.start(message)
 
 
-# @bot.message_handler(commands=['start'])
-# @ban_check_decorator
-# def start(message):
-#     # Check if the start command includes a referral parameter
-#     if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
-#         referrer_id = int(message.text.split()[1][4:])
-#         user_id = message.from_user.id
-#         # TODO: check invited users query
-#         # referrer = BotUser.objects.filter(user_id=referrer_id).first()
-#         # bot_user = BotUser(user_id=user_id)
-#         # bot_user.save()
-#         # if referrer:
-#         #     user = BotUser.objects.get(user_id=user_id)
-#         #     referrer.invited_users.add(user)
-#         if user_id != referrer_id:
-#             bot.reply_to(message,
-#                          f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
-#                          f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
-#                          f"خواهد گرفت. 🎁😊")
-#             main_handler.start(message)
-#             user = BotUser.objects.filter(user_id=user_id).first()
-#             if not user.invited_by:
-#                 user.invited_by = referrer_id
-#                 user.save()
-#         else:
-#             main_handler.start(message)
-#     else:
-#         main_handler.start(message)
+@bot.message_handler(commands=['start'])
+@ban_check_decorator
+def start(message):
+    # Check if the start command includes a referral parameter
+    if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
+        referrer_id = int(message.text.split()[1][4:])
+        user_id = message.from_user.id
+        # TODO: check invited users query
+        referrer = BotUser.objects.filter(user_id=referrer_id).first()
+        bot_user = BotUser(user_id=user_id)
+        bot_user.save()
+        if referrer:
+            user = BotUser.objects.get(user_id=user_id)
+            referrer.invited_users.add(user)
+        if user_id != referrer_id:
+            bot.reply_to(message,
+                         f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
+                         f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
+                         f"خواهد گرفت. 🎁😊")
+            main_handler.start(message)
+            user = BotUser.objects.filter(user_id=user_id).first()
+            if not user.invited_by:
+                user.invited_by = referrer_id
+                user.save()
+        else:
+            main_handler.start(message)
+    else:
+        main_handler.start(message)
 
 
 @bot.message_handler(func=lambda message: message.text == "💡 راهنما‌ی سرویس")
@@ -191,11 +192,11 @@ def refer(message):
     main_handler.refer(message)
 
 
-# @bot.callback_query_handler(func=lambda query: query.data == "joined")
-# def handle_join(query):
-#     main_handler.handle_join(query)
+@bot.callback_query_handler(func=lambda query: query.data == "joined")
+def handle_join(query):
+    main_handler.handle_join(query)
 
 
-# @bot.message_handler(func=lambda message: message.text == "send expire message to all users")
-# def check_subscriptions(message):
-#     subscription_manager.check_subscriptions()
+@bot.message_handler(func=lambda message: message.text == "send expire message to all users")
+def check_subscriptions(message):
+    subscription_manager.check_subscriptions()
