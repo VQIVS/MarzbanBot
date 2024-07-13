@@ -1,0 +1,113 @@
+body {
+    display: flex;
+    height: 600px;
+    width: 80%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding-left: 280px;
+    padding-top: 130px;
+   
+
+}
+.left-panel {
+    background-color: #3498db;
+    color: white;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.left-panel h1 {
+    font-size: 36px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0;
+}
+.left-panel p {
+    font-size: 18px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 10px 0;
+    padding-top: 20px;
+}
+.left-panel button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #3498db;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.right-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.right-panel h1{
+    color: #3498db;
+    font-size: 50px;
+    padding-bottom: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.right-panel form {
+    width: 80%;
+    max-width: 400px;
+}
+.right-panel input {
+    width: calc(100% - 40px);
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+}
+.right-panel input::placeholder {
+    padding-left: 10px;
+}
+.right-panel .input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.right-panel .input-container i {
+    position: absolute;
+    left: 10px;
+    color: #aaa;
+}
+.right-panel a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 10px;
+    display: inline-block;
+}
+.right-panel button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.right-panel button:hover{border: 4px solid white;
+    border-radius: 4px;
+}
+
+
