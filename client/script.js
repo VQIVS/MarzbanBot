@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('https://jsonplaceholder.typicode.com/users') 
+    fetch('') 
         .then(response => response.json())
         .then(data => {
             const usersList = document.getElementById('users-list');
