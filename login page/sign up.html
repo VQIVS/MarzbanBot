@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد حساب کاربری</title>
+    <link rel="stylesheet" href="./font/fontawesome-free-6.5.2-web/css/all.min.css">
+    <link rel="stylesheet" href="./java.js">
+</head>
+<body>
+
+    <div class="panel left-panel fade-out">
+        <h1>Create Account</h1>
+        <form>
+            <div class="input-container">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Name" required>
+            </div>
+            <div class="input-container">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email" required>
+            </div>
+            <div class="input-container">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Password" required>
+            </div>
+            <a href="./index.html">
+            <button type="submit">Sign Up</button></a>
+        </form>
+    </div>
+    
+    <div class="panel right-panel ">
+        <h1>Welcome Back</h1>
+        <p>To keep connected with us please login with your personal info</p>
+        <button onclick="goToSignIn()">Sign In</button> 
+    </div>
+</body>
+<script>
+    function goToSignIn() {
+        window.location.href = '/login page/index.html'; 
+    
+        ; 
+        }
+    
+</script>
+<script src="./java.js"></script>
+    <style>
+  body {
+    display: flex;
+    height: 600px;
+    width: 80%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding-left: 280px;
+    padding-top: 130px;
+   
+
+}
+.right-panel {
+    background-color: #3498db;
+    color: white;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel h1 {
+    font-size: 36px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0;
+}
+.right-panel p {
+    font-size: 18px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 10px 0;
+    padding-top: 20px;
+}
+.right-panel button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #3498db;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.fade-out {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.fade-out-active {
+    opacity: 0;
+}
+
+.left-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.left-panel h1{
+    color: #3498db;
+    font-size: 50px;
+    padding-bottom: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.left-panel form {
+    width: 80%;
+    max-width: 400px;
+}
+.left-panel input {
+    width: calc(100% - 40px);
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+}
+.left-panel input::placeholder {
+    padding-left: 10px;
+}
+.left-panel .input-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.left-panel .input-container i {
+    position: absolute;
+    left: 10px;
+    color: #aaa;
+}
+.left-panel a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 10px;
+    display: inline-block;
+}
+.left-panel button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #3498db;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+</style>
