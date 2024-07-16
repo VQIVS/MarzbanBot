@@ -1,37 +1,47 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('') 
-        .then(response => response.json())
-        .then(data => {
+    const fetchUsersBtn = document.getElementById('fetch-users-btn');
+    fetchUsersBtn.addEventListener('click', async function() {
+        try {
+            const response = await fetch('http://135.181.100.53:8000/api/v1/bot/bot-user/', {
+                method: 'GET',
+                headers: {
+                    'accept': 'application/json',
+                    'X-CSRFToken': '7k76p22G0AQbuembCm0OUGtala6eCH4NMUMSQylfVnUCV2A5dcKKEqyy3iS0nagt'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
             const usersList = document.getElementById('users-list');
             const userCountElement = document.getElementById('user-count');
-            const userDates = [];
-            const userCounts = [];
+            usersList.innerHTML = ''; 
 
-            data.forEach((user, index) => {
+            const userIds = [];
+
+            data.forEach((item, index) => {
+                const userId = item.user_id;  
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${new Date(user.id * 10000000000).toLocaleDateString()}</td>
-                `;
+                row.innerHTML = `<td>${userId}</td>`;
                 usersList.appendChild(row);
 
-                
-                userDates.push(new Date(user.id * 10000000000).toLocaleDateString());
-                userCounts.push(index + 1);
+                userIds.push(userId);
             });
 
             const totalUsers = data.length;
             userCountElement.textContent = totalUsers;
 
-           
             const userChartContext = document.getElementById('userChart').getContext('2d');
             new Chart(userChartContext, {
                 type: 'line',
                 data: {
-                    labels: userDates,
+                    labels: userIds.map((id, index) => index + 1),
                     datasets: [{
                         label: 'Total Users Over Time',
-                        data: userCounts,
+                        data: userIds.map((id, index) => index + 1),
                         borderColor: 'rgba(41, 128, 185, 1)',
                         backgroundColor: 'rgba(41, 128, 185, 0.2)',
                         fill: true,
@@ -43,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Join Date'
+                                text: 'User Index'
                             }
                         },
                         y: {
@@ -67,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-        })
-        .catch(error => console.error('Error fetching users data:', error));
+        } catch (error) {
+            console.error('Error fetching users data:', error);
+        }
+    });
 });
