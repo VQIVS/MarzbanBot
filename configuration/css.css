@@ -1,16 +1,24 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('./img/3ac5ff639e701804aaa3142f305df7ee.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    overflow: hidden; 
 }
 
+
 .container {
-    margin: 50px auto;
-    width: 100%;
-    max-width: 1200px;
-    background: #fff;
+    position: relative;
+    margin: 20px auto;
     padding: 20px;
+    max-width: 800px;
+    background: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    z-index: 1;
 }
 
 #settingsButton {
@@ -19,6 +27,7 @@ body {
     background-color: #3498db;
     color: white;
     border: none;
+    margin-bottom: 10px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -27,41 +36,48 @@ body {
     background-color: #2980b9;
 }
 
-table {
+#searchInput {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: fixed;
-}
-
-table, th, td {
+    padding: 10px;
+    margin-bottom: 20px;
     border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-th, td {
-    padding: 8px;
-    text-align: left;
+.card {
+    padding: 20px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-th {
-    background-color: #f2f2f2;
+.card h3 {
+    margin: 0 0 20px;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
+.card label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 5px;
+.card input[type="text"],
+.card input[type="password"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     box-sizing: border-box;
 }
 
-.edit-button, .save-button, .delete-button {
-    padding: 5px 10px;
+.card button {
+    padding: 10px 15px;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     cursor: pointer;
+    margin-right: 5px;
+    font-size: 14px;
 }
 
 .edit-button {
@@ -70,7 +86,7 @@ input[type="text"], input[type="password"] {
 }
 
 .edit-button:hover {
-    background-color: #27ae60;
+    background-color: #1f6f92;
 }
 
 .save-button {
@@ -80,7 +96,7 @@ input[type="text"], input[type="password"] {
 }
 
 .save-button:hover {
-    background-color: #2980b9;
+    background-color: #1e8c4f;
 }
 
 .delete-button {
@@ -88,6 +104,10 @@ input[type="text"], input[type="password"] {
     color: white;
     display: none;
 }
+.hidden {
+    display: none;
+}
+
 
 .delete-button:hover {
     background-color: #a5281a;
@@ -96,13 +116,32 @@ input[type="text"], input[type="password"] {
 .hidden {
     display: none;
 }
+.container {
+    margin: 50px auto;
+    width: 100%;
+    max-width: 800px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+}
+
 
 .success {
     background-color: #2980b9;
     color: white;
+    width: 30%;
+    height: 30px;
+   padding-left: 20%;
+   margin-left: 25%;
 }
 
 .error {
+    width: 30%;
+    height: 30px;
+   padding-left: 20%;
+   margin-left: 25%;
     background-color: #e74c3c;
     color: white;
 }

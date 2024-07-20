@@ -1,36 +1,17 @@
-<th>boturl</th>
-</thead>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings Table</title>
-    <link rel="stylesheet" href="css.css">
-    
+    <title>Settings Card</title>
+    <link rel="stylesheet" href="./css.css">
 </head>
 <body>
     <div class="container">
         <button id="settingsButton">Settings</button>
-        <table id="settingsTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th> panel Username</th>
-                    <th> panel Password</th>
-                    <th> bot Name</th>
-                    <th>Panel URL</th>
-                    <th>Actions</th>
-                    <th>Token</th>
-                    <!DOCTYPE html>
-                </tr>
-                <tbody>
-                
-            </tbody>
-        </table>
+        <div id="settingsContainer" class="hidden"></div>
     </div>
     <div id="message" class="hidden"></div>
-    <script src="/java.js"> </script>
+    <script src="/configuration/java.js"></script>
 </body>
-
 </html>

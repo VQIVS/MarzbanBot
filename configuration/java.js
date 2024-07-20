@@ -1,73 +1,75 @@
 document.getElementById('settingsButton').addEventListener('click', async function() {
-    document.getElementById('settingsTable').style.display = 'table';
-
+    // نمایش کارت تنظیمات
+    document.getElementById('settingsContainer').classList.remove('hidden');
+    
     try {
-        const response = await fetch('http://135.181.100.53:8000/api/v1/website/configuration');
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1'); // گرفتن کارت با ID 1
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
         const data = await response.json();
-        populateTable(data);
+        populateCard(data);
     } catch (error) {
         console.error('Error:', error);
     }
 });
 
-function populateTable(data) {
-    const tbody = document.querySelector('#settingsTable tbody');
-    tbody.innerHTML = '';
-
-    data.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${item.id}</td>
-            <td><input type="text" value="${item. panelusername}" data-id="${item.id}" data-field="username" disabled></td>
-            <td><input type="password" value="${item.panelpassword}" data-id="${item.id}" data-field="password" disabled></td>
-            <td><input type="text" value="${item.botname}" data-id="${item.id}" data-field="name" disabled></td>
-            <td><input type="text" value="${item.boturl}" data-id="${item.id}" data-field="website" disabled></td>
-            <td><input type="text" value="${item.panel_url}" data-id="${item.id}" data-field="panel_url" disabled></td>
-            <td><input type="text" value="${item.token}" data-id="${item.id}" data-field="token" disabled></td>
-            <td>
-                <button class="edit-button" onclick="enableEditing(${item.id})">Edit</button>
-                <button class="save-button" onclick="updateRow(${item.id})">Save</button>
-                <button class="delete-button" onclick="deleteRow(${item.id})">Delete</button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
+function populateCard(data) {
+    const container = document.getElementById('settingsContainer');
+    container.innerHTML = `
+        <div class="card">
+            <h3>Configuration Details</h3>
+            <label for="username">Username:</label>
+            <input type="text" id="username" value="${data.username}" disabled>
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="${data.password}" disabled>
+            <label for="botname">Bot Name:</label>
+            <input type="text" id="botname" value="Bot${data.id}" disabled>
+            <label for="bot_url">Bot URL:</label>
+            <input type="text" id="bot_url" value="${data.bot_url || ''}" disabled>
+            <label for="panel_url">Panel URL:</label>
+            <input type="text" id="panel_url" value="http://example.com/panel${data.id}" disabled>
+            <label for="token">Token:</label>
+            <input type="text" id="token" value="token${data.id}" disabled>
+            <div>
+                <button class="edit-button" onclick="enableEditing()">Edit</button>
+                <button class="save-button" onclick="updateCard()" style="display: none;">Save</button>
+                <button class="delete-button" onclick="deleteCard()" style="display: none;">Delete</button>
+            </div>
+        </div>
+    `;
 }
 
-function enableEditing(id) {
-    const row = document.querySelector(`tr td input[data-id="${id}"]`).closest('tr');
-    const inputs = row.querySelectorAll('input');
-
+function enableEditing() {
+    const inputs = document.querySelectorAll('#settingsContainer input');
     inputs.forEach(input => input.disabled = false);
-    row.classList.add('editing'); 
-    row.querySelector('.edit-button').style.display = 'none';
-    row.querySelector('.save-button').style.display = 'inline';
-    row.querySelector('.delete-button').style.display = 'inline';
+    document.querySelector('.edit-button').style.display = 'none';
+    document.querySelector('.save-button').style.display = 'inline';
+    document.querySelector('.delete-button').style.display = 'inline';
 }
 
-async function updateRow(id) {
-    const row = document.querySelector(`tr td input[data-id="${id}"]`).closest('tr');
-    const inputs = row.querySelectorAll('input');
+async function updateCard() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const botname = document.getElementById('botname').value;
+    const bot_url = document.getElementById('bot_url').value;
+    const panel_url = document.getElementById('panel_url').value;
+    const token = document.getElementById('token').value;
 
     const updatedData = {
-        username: row.querySelector('input[data-field="panelusername"]').value,
-        password: row.querySelector('input[data-field="panelpassword"]').value,
-        name: row.querySelector('input[data-field="botname"]').value,
-        website: row.querySelector('input[data-field="boturl"]').value,
-        panel_url: row.querySelector('input[data-field="panel_url"]').value,
-        token: row.querySelector('input[data-field="token"]').value,
+        username,
+        password,
+        botname,
+        bot_url,  // اضافه کردن فیلد جدید
+        panel_url,
+        token
     };
 
     try {
-        const response = await fetch( 'http://135.181.100.53:8000/api/v1/website/configuration/1/', {
-            method: 'Patch', 
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1', {  // به‌روزرسانی کارت با ID 1
+            method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json' ,
-
-                "X-CSRFToken" : 'IylYPy75aQ1cx38lMxWXtNV3iJXK57MVLQ5lCTxxBOOgyIHwNDfbKTxIwTEIXZtU',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(updatedData)
         });
@@ -77,36 +79,29 @@ async function updateRow(id) {
         }
 
         showMessage('Data updated successfully!', 'success');
-        
-        inputs.forEach(input => input.disabled = true);
-        row.classList.remove('editing'); 
-        row.querySelector('.edit-button').style.display = 'inline';
-        row.querySelector('.save-button').style.display = 'none';
-        row.querySelector('.delete-button').style.display = 'none';
+        disableEditing();
     } catch (error) {
         showMessage('Failed to update data', 'error');
         console.error('Error:', error);
     }
 }
 
-async function deleteRow(id) {
-    if (confirm('Are you sure you want to delete this row?')) {
+async function deleteCard() {
+    if (confirm('Are you sure you want to delete this card?')) {
         try {
-            const response = await fetch( 'http://135.181.100.53:8000/api/v1/website/configuration/1/', {
+            const response = await fetch('https://jsonplaceholder.typicode.com/users/1', {  // حذف کارت با ID 1
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json' ,
-    
-                    "X-CSRFToken" : 'f1WelCOSI4tzUQ2W9PnTKuK0ZfDYkn6DijGB8Xek92gDVvB7aVG71AmFdpkWcfNC',
-                },
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (!response.ok) {
                 throw new Error('Failed to delete data');
             }
 
-            showMessage('Row deleted successfully!', 'success');
-            document.querySelector(`tr td input[data-id="${id}"]`).closest('tr').remove();
+            showMessage('Card deleted successfully!', 'success');
+            document.getElementById('settingsContainer').innerHTML = ''; // پاک کردن محتوای کارت
         } catch (error) {
             showMessage('Failed to delete data', 'error');
             console.error('Error:', error);
@@ -123,4 +118,12 @@ function showMessage(message, type) {
     setTimeout(() => {
         messageDiv.classList.add('hidden');
     }, 3000);
+}
+
+function disableEditing() {
+    const inputs = document.querySelectorAll('#settingsContainer input');
+    inputs.forEach(input => input.disabled = true);
+    document.querySelector('.edit-button').style.display = 'inline';
+    document.querySelector('.save-button').style.display = 'none';
+    document.querySelector('.delete-button').style.display = 'none';
 }
