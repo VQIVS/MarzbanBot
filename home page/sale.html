@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه فروش وی‌پی‌ان</title>
+    <link rel="stylesheet" href="sale.css">
+   <link rel="stylesheet" href="./fontawesome-free-6.5.2-web/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="./img/IMG_20240722_160835_404.jpg" alt="Logo">
+            <h1 id="qi">Qi vpn</h1>
+        </div>
+        <div class="menu">
+            <a href="index.html">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="/login page/index.html"> <i class="fas fa-sign-out-alt"></i> </a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="add-product-container">
+            <button id="addProductBtn"> add new product</button>
+        </div>
+        <div id="productsContainer">
+            <!-- Products will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h2 id="modalTitle">افزودن محصول جدید</h2>
+            <form id="productForm">
+                <label for="title">title</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="price">price</label>
+                <input type="number" id="price" name="price" required>
+                
+                <label for="description">expression</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+                
+                <input type="hidden" id="productId">
+                <button type="submit">save</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="sale.js"></script>
+</body>
+</html>

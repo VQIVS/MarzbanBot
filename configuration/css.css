@@ -2,27 +2,134 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-image: url('./img/3ac5ff639e701804aaa3142f305df7ee.jpg'); 
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    overflow: hidden; 
+    overflow: hidden;
+    background: #ddd; /* رنگ پس‌زمینه اصلی */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
-.container {
+/* .background-blue {
+    position: absolute;
+    top: -7vh;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* نصف ارتفاع صفحه */
+    /* background: linear-gradient(to bottom, #3498db 70%, #fff 50%); رنگ آبی نیمه‌بالا و سفید نیمه‌پایین */
+    /* clip-path: ellipse(50% 100% at 50% 100%); برش به صورت نیم‌دایره */
+ */
+ nav {
+    background-color: #2c3e50;
+    padding: 1em;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.menu li {
+    margin-right: 1em;
     position: relative;
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 800px;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.menu a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #4e5a65;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.menu li:hover {
+    transform: scale(1.1);
+}
+
+
+
+/* General Body Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Navigation Styles */
+nav {
+    background-color: #2c3e50;
+    padding: 1em;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.menu li {
+    margin-right: 1em;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.menu a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    display: block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #4e5a65;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.menu li:hover {
+    transform: scale(1.1);
+}
+
+/* Settings Container Styles */
+#settingsWrapper {
+    position: relative; /* Change to relative for proper alignment */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
 }
 
 #settingsButton {
-    padding: 10px 20px;
     font-size: 16px;
     background-color: #3498db;
     color: white;
@@ -30,20 +137,57 @@ body {
     margin-bottom: 10px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 2; /* Ensure button is above the image */
 }
 
 #settingsButton:hover {
     background-color: #2980b9;
 }
 
-#searchInput {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+#settingsContainer {
+    width: 500px; /* Adjust width as needed */
+    background: #fff;
+    padding: 20px;
+    
+    position: relative; /* Ensure it sits on top of the image */
+    z-index: 1; 
+    background-color: #2c3e50;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px white;
+    /* Ensure container is above the image */
 }
 
+/* Image Animation */
+/* Styles for the moving image */
+#movingImage {
+    width: 300px; /* Adjust size as needed */
+    height: auto;
+    top: 0px;
+    position: absolute; /* Absolute positioning to animate freely */
+    bottom: -50px; /* Start below the settings container */
+    left: -150px; /* Start off-screen to the left */
+    z-index: 0; /* Ensure image is behind the settings container */
+    animation: moveImage 15s linear infinite;
+}
+
+/* Animation Keyframes */
+@keyframes moveImage {
+    0% {
+        transform: translateX(-150px); /* Start off-screen to the left */
+    }
+    50% {
+        transform: translateX(calc(100vw + 150px)); /* Move across the entire viewport */
+    }
+    100% {
+        transform: translateX(-150px); /* Return to the initial position */
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Card Styles */
 .card {
     padding: 20px;
     border-radius: 8px;
@@ -69,6 +213,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
+    color: #1f6f92;
 }
 
 .card button {
@@ -104,44 +249,89 @@ body {
     color: white;
     display: none;
 }
-.hidden {
-    display: none;
-}
-
 
 .delete-button:hover {
     background-color: #a5281a;
 }
 
-.hidden {
-    display: none;
+/* Styles for Success and Error Messages */
+#message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
 }
-.container {
-    margin: 50px auto;
-    width: 100%;
-    max-width: 800px;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    position: relative;
-}
-
 
 .success {
     background-color: #2980b9;
-    color: white;
-    width: 30%;
-    height: 30px;
-   padding-left: 20%;
-   margin-left: 25%;
 }
 
 .error {
-    width: 30%;
-    height: 30px;
-   padding-left: 20%;
-   margin-left: 25%;
     background-color: #e74c3c;
-    color: white;
+}
+@media (max-width: 768px) {
+    /* Adjust body styles for smaller screens */
+    body {
+        height: auto;
+        margin: 0;
+        padding: 0;
+        background: #ddd;
+    }
+
+    /* Adjust menu styles for smaller screens */
+    .menu {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu li {
+        margin: 0.5em 0;
+    }
+
+    /* Adjust settings container width */
+    #settingsContainer {
+        width: 90%;
+        padding: 10px;
+    }
+
+    /* Adjust settings button size */
+    #settingsButton {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    /* Adjust card input fields */
+    .card input[type="text"],
+    .card input[type="password"] {
+        width: calc(100% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens */
+    .menu li {
+        margin: 0.5em 0;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .card input[type="text"],
+    .card input[type="password"] {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .card button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
 }

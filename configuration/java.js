@@ -1,14 +1,17 @@
-document.getElementById('settingsButton').addEventListener('click', async function() {
+document.getElementById('settingsLink').addEventListener('click', async function() {
     // نمایش کارت تنظیمات
     document.getElementById('settingsContainer').classList.remove('hidden');
+  
+    // مخفی کردن دکمه
+    document.getElementById('settingsButton').classList.add('hidden');
     
     try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users/1'); // گرفتن کارت با ID 1
+        const response = await fetch('https://reqres.in/api/users/1'); // گرفتن کارت با ID 1
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
         const data = await response.json();
-        populateCard(data);
+        populateCard(data.data); // توجه کنید که ساختار داده‌های پاسخ `reqres.in` متفاوت است
     } catch (error) {
         console.error('Error:', error);
     }
@@ -20,13 +23,13 @@ function populateCard(data) {
         <div class="card">
             <h3>Configuration Details</h3>
             <label for="username">Username:</label>
-            <input type="text" id="username" value="${data.username}" disabled>
+            <input type="text" id="username" value="${data.first_name} ${data.last_name}" disabled>
             <label for="password">Password:</label>
-            <input type="password" id="password" value="${data.password}" disabled>
+            <input type="password" id="password" value="password123" disabled>
             <label for="botname">Bot Name:</label>
             <input type="text" id="botname" value="Bot${data.id}" disabled>
             <label for="bot_url">Bot URL:</label>
-            <input type="text" id="bot_url" value="${data.bot_url || ''}" disabled>
+            <input type="text" id="bot_url" value="${data.avatar}" disabled>
             <label for="panel_url">Panel URL:</label>
             <input type="text" id="panel_url" value="http://example.com/panel${data.id}" disabled>
             <label for="token">Token:</label>
@@ -60,13 +63,13 @@ async function updateCard() {
         username,
         password,
         botname,
-        bot_url,  // اضافه کردن فیلد جدید
+        bot_url,
         panel_url,
         token
     };
 
     try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users/1', {  // به‌روزرسانی کارت با ID 1
+        const response = await fetch('https://reqres.in/api/users/1', { // به‌روزرسانی کارت با ID 1
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -89,7 +92,7 @@ async function updateCard() {
 async function deleteCard() {
     if (confirm('Are you sure you want to delete this card?')) {
         try {
-            const response = await fetch('https://jsonplaceholder.typicode.com/users/1', {  // حذف کارت با ID 1
+            const response = await fetch('https://reqres.in/api/users/1', { // حذف کارت با ID 1
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

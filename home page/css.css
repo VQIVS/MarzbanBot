@@ -1,0 +1,99 @@
+/* Reset default styles */
+body, h1, h2, p, a, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Header */
+header {
+    background: #800080; /* بنفش */
+    color: white;
+    padding: 0.5em 1em;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    width: 60px; /* اندازه لوگو */
+    height: 60px; /* ارتفاع لوگو */
+    border-radius: 50%; /* دایره‌ای کردن لوگو */
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.menu-toggle:hover {
+    color: #e0b3ff; /* رنگ روشن‌تر برای حالت hover */
+}
+
+.menu-items {
+    display: none;
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #800080; /* بنفش */
+    width: 100%;
+    max-width: 300px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding:0;
+    margin: 0;
+}
+
+.menu-items.active {
+    display: block;
+    padding-right: 30px;
+}
+
+.menu-items li {
+    border-bottom: 1px solid #800080;
+}
+
+.menu-items li:last-child {
+    border-bottom: none;
+}
+
+.menu-items a {
+    display: block;
+    padding: 1em;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.menu-items a:hover {
+    background-color: rgb(185, 185, 185);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu-items.active {
+        display: block;
+    }
+}

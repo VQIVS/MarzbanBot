@@ -1,0 +1,177 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.navbar {
+    background-color: #800080;
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo img {
+    width: 50px;
+}
+
+.navbar .menu a {
+    color: white;
+    text-decoration: none;
+    margin: 0 1em;
+    display: flex;
+    align-items: center;
+display: inline-block;
+}
+#qi{
+    display: inline-block;
+    color: white;
+  position: relative
+  ;left: 720px;
+}
+
+.navbar .menu a i {
+    margin-right: 0.5em;
+}
+
+.content {
+    padding: 1em;
+}
+
+.add-product-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+    
+}
+#addProductBtn{font-size: 20px;}
+
+button {
+    background-color: #800080;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    
+    margin-bottom: 1em;
+}
+
+button:hover {
+    background-color: #6a0d91;
+}
+
+#productsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: center;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1em;
+    width: 250px;
+    text-align: left;
+    position: relative;
+}
+
+.product-card h3 {
+    margin: 0 0 0.5em;
+}
+
+.product-card p {
+    margin: 0 0 1em;
+}
+
+.product-card .price {
+    font-weight: bold;
+}
+
+.product-card button {
+    background-color: #800080;
+    color: white;
+    border: none;
+    padding: 0.3em 0.6em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 0.5em;
+}
+
+.product-card button:hover {
+    background-color: #6a0d91;
+}
+
+.product-card .actions {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    display: flex;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2em;
+    border-radius: 8px;
+    width: 400px;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-content button {
+    background-color: #800080;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #6a0d91;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
