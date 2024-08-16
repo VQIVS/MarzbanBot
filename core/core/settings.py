@@ -94,12 +94,8 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'botdb',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'marzbanbot-postgres-1',  # Replace with your container name
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
