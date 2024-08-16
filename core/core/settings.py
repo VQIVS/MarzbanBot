@@ -97,8 +97,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'botdb',
         'USER': 'root',
-        'PASSWORD': '<your_password>',
-        'HOST': 'postgres_container',  # Replace with your container name
+        'PASSWORD': '123456',
+        'HOST': 'marzbanbot-postgres-1',  # Replace with your container name
         'PORT': '5432',
     }
 }
