@@ -130,11 +130,11 @@ class MainHandler:
                 second_link = links[1] if len(links) > 1 else "لینک دوم موجود نیست"
                     
                 subscription_size = "200MB"
-                usage_method = "از دکمه راهنمای سرویس استفاده کنید"
                 text = (
                     f"🎉 اشتراک تست شما:\n{subscription_url}\n\n"
                     f"🔋 حجم اشتراک شما: {subscription_size}\n\n"
-                    f"🔍 نحوه استفاده: {usage_method}"
+                    f"🔍 لینک اول {first_link}\n\n"
+                    f"لینک دوم {second_link}"
                 )
 
                 user.test_status = "True"
