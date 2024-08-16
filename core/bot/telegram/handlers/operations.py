@@ -133,8 +133,8 @@ class MainHandler:
                 text = (
                     f"🎉 اشتراک تست شما:\n{subscription_url}\n\n"
                     f"🔋 حجم اشتراک شما: {subscription_size}\n\n"
-                    f"🔍 لینک اول {first_link}\n\n"
-                    f"لینک دوم {second_link}"
+                    f"1. {first_link}\n\n"
+                    f"2. {second_link}"
                 )
 
                 user.test_status = "True"
