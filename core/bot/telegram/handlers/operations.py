@@ -123,7 +123,12 @@ class MainHandler:
                 username, 0.2, on_hold_expire_duration, access_token
             )
             if response is not None:
+                links = response.get("links")
+
                 subscription_url = response.get("subscription_url")
+                first_link = links[0] if len(links) > 0 else "لینک اول موجود نیست"
+                second_link = links[1] if len(links) > 1 else "لینک دوم موجود نیست"
+                    
                 subscription_size = "200MB"
                 usage_method = "از دکمه راهنمای سرویس استفاده کنید"
                 text = (
