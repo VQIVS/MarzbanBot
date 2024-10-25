@@ -47,6 +47,7 @@ class APIManager:
         try:
             response = requests.post(url, json=payload, headers=headers)
             response.raise_for_status()
+            print(payload)
             return response.json()
         except requests.exceptions.RequestException as e:
             logging.error(f"Error occurred while creating user {username}: {e}")
