@@ -142,3 +142,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 GRAPPELLI_ADMIN_TITLE = "QiBotAdmin"
 AUTH_USER_MODEL = "accounts.User"
+
+
+# Bot Settings
+
+PANEL_USER = "admin@admin.com"
+PANEL_PASSWORD = "admin"
+BOT_NAME = "QiVPN"
+BOT_URL = "https://t.me//QiVPNbot"
+PANEL_URL = "https://master.neverupdate.xyz"
+BOT_TOKEN = "6936561346:AAEFe6r_3R2kFc1uytRKh3G2tY_-aWdMPA4"

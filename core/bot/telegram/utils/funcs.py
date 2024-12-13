@@ -3,13 +3,11 @@ from functools import wraps
 
 from bot.models import BotUser
 from telebot import TeleBot
-from website.models import Configuration
 
-from .keyboard import Keyboards
+from core.core import settings
 
 # Initializing settings
-conf = Configuration.objects.first()
-bot = TeleBot(conf.token)
+bot = TeleBot(settings.BOT_TOKEN)
 
 
 def extract_user_id_from_caption(caption):
@@ -38,7 +36,7 @@ def major_extract_user_id_from_caption(caption):
 
 def generate_user_id(length=32):
     unique_id = uuid.uuid4()
-    return str(f"{conf.bot_name}_" + str(unique_id))[:length]
+    return str(f"{settings.BOT_NAME}_" + str(unique_id))[:length]
 
 
 def rollback(query):

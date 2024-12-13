@@ -6,14 +6,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from telebot import TeleBot
-from website.models import Configuration
+
+from core.core import settings
 
 from ...models import BotUser, Order
-from .serializers import (BotOrderSerializer, BotUserSerializer,
-                          SendMessageSerializer)
+from .serializers import BotOrderSerializer, BotUserSerializer, SendMessageSerializer
 
-conf = Configuration.objects.first()
-bot = TeleBot(conf.token)
+bot = TeleBot(settings.BOT_TOKEN)
 
 
 class UserModelViewSet(viewsets.ModelViewSet):

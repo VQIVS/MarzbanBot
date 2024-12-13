@@ -3,28 +3,35 @@ import os
 import django
 from bot.models import BotUser
 from telebot import TeleBot
-from website.models import Configuration, Message
+from website.models import Message
+
+from core.core import settings
 
 from ..utils.api_management import APIManager
 from ..utils.funcs import ban_check, rollback
-from .operations import (ConfirmationHandler, MainHandler, OrderHandler,
-                         PurchaseHandler, SubscriptionManager, UserHandler)
+from .operations import (
+    ConfirmationHandler,
+    MainHandler,
+    OrderHandler,
+    PurchaseHandler,
+    SubscriptionManager,
+    UserHandler,
+)
 
 # Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 django.setup()
 
 # Initializing settings
-conf = Configuration.objects.first()
-API_token = conf.token
+API_token = settings.BOT_TOKEN
 message_bot = Message.objects.first()
-panel = conf.panel_url
+panel = settings.PANEL_URL
 bot = TeleBot(API_token)
 marzban = APIManager(panel)
 
 # Get the access token from Marzban panel
 access_token = marzban.get_token(
-    username=conf.panel_username, password=conf.panel_password
+    username=settings.PANEL_USER, password=settings.PANEL_PASSWORD
 )
 
 # Initializing operation handlers

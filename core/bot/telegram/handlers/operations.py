@@ -11,20 +11,31 @@ from django.db import IntegrityError
 from telebot import TeleBot
 from telebot.types import CallbackQuery
 from telebot.types import Message as msg
-from website.models import (ChannelAdmin, Configuration, MajorProduct, Message,
-                            Payment, PaymentMethod, Product, TelegramChannel)
+from website.models import (
+    ChannelAdmin,
+    MajorProduct,
+    Message,
+    Payment,
+    PaymentMethod,
+    Product,
+    TelegramChannel,
+)
+
+from core.core import settings
 
 from ..utils.api_management import APIManager
-from ..utils.funcs import (bytes_to_gb, extract_user_id_from_caption,
-                           generate_user_id,
-                           major_extract_user_id_from_caption)
+from ..utils.funcs import (
+    bytes_to_gb,
+    extract_user_id_from_caption,
+    generate_user_id,
+    major_extract_user_id_from_caption,
+)
 
 # Initializing settings
-conf: Configuration | None = Configuration.objects.first()
-url: str = conf.panel_url
+url: str = settings.PANEL_URL
 marzban = APIManager(url)
 access_token = marzban.get_token(
-    username=conf.panel_username, password=conf.panel_password
+    username=settings.PANEL_USER, password=settings.PANEL_PASSWORD
 )
 logging.basicConfig(level=logging.INFO)
 
@@ -145,7 +156,7 @@ class MainHandler:
                 )
 
     def refer(self, message):
-        referral_link = f"{conf.bot_url}?start=ref_{message.chat.id}"
+        referral_link = f"{settings.BOT_URL}?start=ref_{message.chat.id}"
         text = (
             f"🎉🚀به ازای هر شخص که با [لینک معرفی شما]({referral_link}) به ربات بپیوندد و خریدی "
             f"انجام دهد،"

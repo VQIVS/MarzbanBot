@@ -1,8 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (OrderModelViewSet, SendMessageToAllUsers, UserModelViewSet,
-                    send_message_to_user)
+from .views import (
+    OrderModelViewSet,
+    SendMessageToAllUsers,
+    UserModelViewSet,
+    send_message_to_user,
+)
 
 app_name = "v1-bot"
 

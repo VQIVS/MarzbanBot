@@ -1,10 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (ChannelAdminModelViewSet, ConfigurationModelViewSet,
-                    MajorProductModelViewSet, MessageModelViewSet,
-                    PaymentMethodModelViewSet, ProductModelViewSet,
-                    TelegramChannelModelViewSet, TutorialModelViewSet)
+from .views import (
+    ChannelAdminModelViewSet,
+    ConfigurationModelViewSet,
+    MajorProductModelViewSet,
+    MessageModelViewSet,
+    PaymentMethodModelViewSet,
+    ProductModelViewSet,
+    TelegramChannelModelViewSet,
+    TutorialModelViewSet,
+)
 
 app_name = "v1-website"
 
