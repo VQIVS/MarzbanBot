@@ -3,7 +3,7 @@ Django>=3.2,<4.0
 psycopg2-binary
 dj-database-url
 pillow
-coreapi==2.3.3
+coreapi
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 idna==3.4
