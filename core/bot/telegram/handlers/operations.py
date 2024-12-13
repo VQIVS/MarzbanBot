@@ -9,6 +9,8 @@ from bot.telegram.utils.keyboard import Keyboards
 from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from telebot import TeleBot
+from telebot.types import CallbackQuery
+from telebot.types import Message as msg
 from website.models import (ChannelAdmin, Configuration, MajorProduct, Message,
                             Payment, PaymentMethod, Product, TelegramChannel)
 
@@ -18,8 +20,8 @@ from ..utils.funcs import (bytes_to_gb, extract_user_id_from_caption,
                            major_extract_user_id_from_caption)
 
 # Initializing settings
-conf = Configuration.objects.first()
-url = conf.panel_url
+conf: Configuration | None = Configuration.objects.first()
+url: str = conf.panel_url
 marzban = APIManager(url)
 access_token = marzban.get_token(
     username=conf.panel_username, password=conf.panel_password
@@ -45,10 +47,8 @@ class MainHandler:
     def is_banned(user_id):
         return BotUser.objects.filter(user_id=user_id, is_banned=True).exists()
 
-    def start(self, message):
+    def start(self, message: msg):
         user_id = message.from_user.id
-        # msg = Message.objects.first()
-        # self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
         try:
             bot_user = BotUser(user_id=user_id)
             bot_user.save()
@@ -59,7 +59,7 @@ class MainHandler:
 
         self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
 
-    def handle_join(self, query):
+    def handle_join(self, query: CallbackQuery):
         user_id = query.from_user.id
         if self.is_member(user_id):
             self.bot.send_message(
@@ -100,7 +100,7 @@ class MainHandler:
             reply_markup=Keyboards.product_inline_markup,
         )
 
-    def whole_buy(self, message):
+    def whole_buy(self, message: msg):
         user_id = message.from_user.id
         self.bot.send_message(
             user_id,
@@ -108,7 +108,7 @@ class MainHandler:
             reply_markup=Keyboards.major_product_inline_markup,
         )
 
-    def test_subscription(self, message):
+    def test_subscription(self, message: msg):
         user_id = message.chat.id
         username = "test" + str(user_id)
         user = BotUser.objects.get(user_id=user_id)
@@ -160,7 +160,7 @@ class MainHandler:
 class OrderHandler(MainHandler):
 
     # Main services order operations
-    def create_service_invoice(self, query):
+    def create_service_invoice(self, query: CallbackQuery):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         product_callback_data = query.data
@@ -182,7 +182,7 @@ class OrderHandler(MainHandler):
         else:
             self.bot.send_message(user_id, "Product not found.")
 
-    def confirm_order(self, query):
+    def confirm_order(self, query: CallbackQuery):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         self.bot.edit_message_text(
@@ -193,7 +193,7 @@ class OrderHandler(MainHandler):
         )
 
     # Whole services order operations
-    def whole_service_selection(self, query):
+    def whole_service_selection(self, query: CallbackQuery):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         product_index = int(query.data.split("_")[1])
@@ -260,7 +260,7 @@ class OrderHandler(MainHandler):
 
 
 class PurchaseHandler(MainHandler):
-    def card_purchase(self, query):
+    def card_purchase(self, query: CallbackQuery):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         last_order = Order.objects.filter(user__user_id=user_id).last()
@@ -310,7 +310,7 @@ class PurchaseHandler(MainHandler):
         else:
             self.bot.send_message(user_id, "No previous order found.")
 
-    def trx_purchase(self, query):
+    def trx_purchase(self, query: CallbackQuery):
         user_id = query.message.chat.id
         self.bot.send_message(user_id, "غیرفعال")
 
@@ -435,7 +435,7 @@ class UserHandler(MainHandler):
                 else:
                     self.bot.send_message(user_id, formatted_message)
 
-    def delete_subscription(self, query):
+    def delete_subscription(self, query: CallbackQuery):
         msg_id = query.message.message_id
         user_id = query.message.chat.id
         bot_user, _ = BotUser.objects.get_or_create(user_id=user_id)
