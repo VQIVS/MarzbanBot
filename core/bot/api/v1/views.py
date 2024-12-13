@@ -3,12 +3,14 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from .serializers import BotOrderSerializer, BotUserSerializer, SendMessageSerializer
-from ...models import BotUser, Order
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from telebot import TeleBot
 from website.models import Configuration
+
+from ...models import BotUser, Order
+from .serializers import (BotOrderSerializer, BotUserSerializer,
+                          SendMessageSerializer)
 
 conf = Configuration.objects.first()
 bot = TeleBot(conf.token)

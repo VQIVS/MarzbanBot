@@ -1,16 +1,9 @@
-from rest_framework.serializers import ModelSerializer
-from rest_framework import serializers
-from ...models import (
-    Configuration,
-    Product,
-    TelegramChannel,
-    Tutorial,
-    ChannelAdmin,
-    Message,
-    PaymentMethod,
-    MajorProduct,
-)
 from django.utils.translation import gettext as _
+from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+
+from ...models import (ChannelAdmin, Configuration, MajorProduct, Message,
+                       PaymentMethod, Product, TelegramChannel, Tutorial)
 
 
 class ConfigurationSerializer(ModelSerializer):

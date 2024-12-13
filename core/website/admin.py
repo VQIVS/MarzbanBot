@@ -1,16 +1,8 @@
 from django.contrib import admin
-from .models import (
-    Configuration,
-    Product,
-    TelegramChannel,
-    Tutorial,
-    ChannelAdmin,
-    Message,
-    PaymentMethod,
-    Payment,
-    MajorProduct,
-    DiscountCode,
-)
+
+from .models import (ChannelAdmin, Configuration, DiscountCode, MajorProduct,
+                     Message, Payment, PaymentMethod, Product, TelegramChannel,
+                     Tutorial)
 
 admin.site.register(Configuration)
 admin.site.register(Product)

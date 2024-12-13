@@ -1,6 +1,7 @@
-from django.db import models
-from website.models import Product, MajorProduct
 import uuid
+
+from django.db import models
+from website.models import MajorProduct, Product
 
 
 class BotUser(models.Model):

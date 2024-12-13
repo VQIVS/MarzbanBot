@@ -1,23 +1,12 @@
-from ...models import (
-    Configuration,
-    Product,
-    TelegramChannel,
-    Tutorial,
-    ChannelAdmin,
-    MajorProduct,
-)
-from rest_framework.viewsets import ModelViewSet
-from .serializers import (
-    ConfigurationSerializer,
-    ProductSerializer,
-    TelegramChannelSerializer,
-    TutorialSerializer,
-    ChannelAdminSerializer,
-    MessageSerializer,
-    PaymentMethodSerializer,
-    MajorProductSerializer,
-)
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.viewsets import ModelViewSet
+
+from ...models import (ChannelAdmin, Configuration, MajorProduct, Product,
+                       TelegramChannel, Tutorial)
+from .serializers import (ChannelAdminSerializer, ConfigurationSerializer,
+                          MajorProductSerializer, MessageSerializer,
+                          PaymentMethodSerializer, ProductSerializer,
+                          TelegramChannelSerializer, TutorialSerializer)
 
 
 class ConfigurationModelViewSet(ModelViewSet):

@@ -1,8 +1,9 @@
 import uuid
-from website.models import Configuration
-from telebot import TeleBot
 from functools import wraps
+
 from bot.models import BotUser
+from telebot import TeleBot
+from website.models import Configuration
 
 from .keyboard import Keyboards
 
@@ -55,7 +56,11 @@ def ban_check(bot):
     def decorator(handler_func):
         @wraps(handler_func)
         def wrapper(message, *args, **kwargs):
-            user_id = message.from_user.id if hasattr(message.from_user, 'id') else message.chat.id
+            user_id = (
+                message.from_user.id
+                if hasattr(message.from_user, "id")
+                else message.chat.id
+            )
             if BotUser.objects.filter(user_id=user_id, is_banned=True).exists():
                 bot.send_message(user_id, "You are banned from using this bot.")
             else:
@@ -70,4 +75,4 @@ def bytes_to_gb(bytes_value):
     """
     Convert bytes to gigabytes.
     """
-    return bytes_value / (1024 ** 3)
+    return bytes_value / (1024**3)

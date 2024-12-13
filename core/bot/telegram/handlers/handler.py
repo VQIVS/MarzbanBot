@@ -1,23 +1,14 @@
 import os
-from datetime import datetime, timedelta, timezone
 
 import django
+from bot.models import BotUser
 from telebot import TeleBot
 from website.models import Configuration, Message
+
 from ..utils.api_management import APIManager
-from .operations import (
-    MainHandler,
-    OrderHandler,
-    PurchaseHandler,
-    UserHandler,
-    ConfirmationHandler, 
-    SubscriptionManager
-)
-from bot.models import BotUser
-from ..utils.funcs import rollback
-from django.db import IntegrityError
-from ..utils.keyboard import Keyboards
-from ..utils.funcs import ban_check
+from ..utils.funcs import ban_check, rollback
+from .operations import (ConfirmationHandler, MainHandler, OrderHandler,
+                         PurchaseHandler, SubscriptionManager, UserHandler)
 
 # Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
@@ -46,23 +37,23 @@ subscription_manager = SubscriptionManager(bot)
 ban_check_decorator = ban_check(bot)
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 def start(message):
     main_handler.start(message)
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 @bot.message_handler(["restart"])
 @ban_check_decorator
 def start(message):
     main_handler.start(message)
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=["start"])
 @ban_check_decorator
 def start(message):
     # Check if the start command includes a referral parameter
-    if len(message.text.split()) > 1 and message.text.split()[1].startswith('ref_'):
+    if len(message.text.split()) > 1 and message.text.split()[1].startswith("ref_"):
         referrer_id = int(message.text.split()[1][4:])
         user_id = message.from_user.id
         # TODO: check invited users query
@@ -73,10 +64,12 @@ def start(message):
             user = BotUser.objects.get(user_id=user_id)
             referrer.invited_users.add(user)
         if user_id != referrer_id:
-            bot.reply_to(message,
-                         f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
-                         f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
-                         f"خواهد گرفت. 🎁😊")
+            bot.reply_to(
+                message,
+                f"🎉 شما با استفاده از لینک معرفی کاربر {referrer_id} به بات ما پیوستید! به عنوان جایزه"
+                f"، در صورتی که از ربات ما خرید انجام بدین، یک اشتراک 10 گیگابایتی رایگان به دوست شما تعلق "
+                f"خواهد گرفت. 🎁😊",
+            )
             main_handler.start(message)
             user = BotUser.objects.filter(user_id=user_id).first()
             if not user.invited_by:
@@ -197,6 +190,8 @@ def handle_join(query):
     main_handler.handle_join(query)
 
 
-@bot.message_handler(func=lambda message: message.text == "send expire message to all users")
+@bot.message_handler(
+    func=lambda message: message.text == "send expire message to all users"
+)
 def check_subscriptions(message):
     subscription_manager.check_subscriptions()

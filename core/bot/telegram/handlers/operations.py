@@ -1,29 +1,21 @@
-import os
 import logging
+import os
 import time
-from ..utils.api_management import APIManager
-from telebot import TeleBot
+from datetime import datetime, timedelta, timezone
+from io import BytesIO
+
 from bot.models import BotUser, Order, Subscription
 from bot.telegram.utils.keyboard import Keyboards
-from django.db import IntegrityError
-from website.models import (
-    Configuration,
-    Message,
-    ChannelAdmin,
-    Product,
-    PaymentMethod,
-    TelegramChannel,
-    Payment,
-    MajorProduct,
-)
-from io import BytesIO
-from datetime import datetime, timedelta, timezone
 from django.core.files.base import ContentFile
-from ..utils.funcs import (
-    generate_user_id,
-    extract_user_id_from_caption,
-    major_extract_user_id_from_caption, bytes_to_gb,
-)
+from django.db import IntegrityError
+from telebot import TeleBot
+from website.models import (ChannelAdmin, Configuration, MajorProduct, Message,
+                            Payment, PaymentMethod, Product, TelegramChannel)
+
+from ..utils.api_management import APIManager
+from ..utils.funcs import (bytes_to_gb, extract_user_id_from_caption,
+                           generate_user_id,
+                           major_extract_user_id_from_caption)
 
 # Initializing settings
 conf = Configuration.objects.first()
@@ -34,6 +26,7 @@ access_token = marzban.get_token(
 )
 logging.basicConfig(level=logging.INFO)
 
+
 class MainHandler:
     def __init__(self, API_token, panel_url, access_token):
         self.bot = TeleBot(API_token)
@@ -43,7 +36,7 @@ class MainHandler:
     def is_member(self, user_id):
         try:
             member_status = self.bot.get_chat_member(self.channel_id, user_id)
-            return member_status.status in ['member', 'administrator', 'creator']
+            return member_status.status in ["member", "administrator", "creator"]
         except Exception as e:
             print(f"Error checking membership status: {e}")
             return False
@@ -61,7 +54,7 @@ class MainHandler:
             bot_user.save()
         except IntegrityError:
             pass
-        
+
         msg = Message.objects.first()
 
         self.bot.send_message(user_id, msg, reply_markup=Keyboards.main_keyboard)
@@ -69,11 +62,17 @@ class MainHandler:
     def handle_join(self, query):
         user_id = query.from_user.id
         if self.is_member(user_id):
-            self.bot.send_message(user_id, "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
-                                  reply_markup=Keyboards.main_keyboard)
+            self.bot.send_message(
+                user_id,
+                "با تشکر از پیوستن شما به کانال! اکنون میتوانید از ربات استفاده کنید",
+                reply_markup=Keyboards.main_keyboard,
+            )
         else:
-            self.bot.send_message(user_id, f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
-                                  reply_markup=Keyboards.join_button_inline)
+            self.bot.send_message(
+                user_id,
+                f"لطفا در کانال عضو شوید: https://t.me/{self.channel_username}",
+                reply_markup=Keyboards.join_button_inline,
+            )
 
     def tutorial(self, message):
         user_id = message.from_user.id
@@ -128,7 +127,7 @@ class MainHandler:
                 subscription_url = response.get("subscription_url")
                 first_link = links[0] if len(links) > 0 else "لینک اول موجود نیست"
                 second_link = links[1] if len(links) > 1 else "لینک دوم موجود نیست"
-                    
+
                 subscription_size = "200MB"
                 text = (
                     f"🎉 اشتراک تست شما:\n{subscription_url}\n\n"
@@ -155,7 +154,7 @@ class MainHandler:
             "استفاده کنن. 🚀💬"
         )
 
-        self.bot.send_message(message.chat.id, text=text, parse_mode='Markdown')
+        self.bot.send_message(message.chat.id, text=text, parse_mode="Markdown")
 
 
 class OrderHandler(MainHandler):
@@ -229,7 +228,7 @@ class OrderHandler(MainHandler):
             selected_product = MajorProduct.objects.get(id=selected_product_id)
 
             total_price = selected_product.price * quantity
-            total_price_formatted = "{:,}".format(total_price)
+            total_price_formatted = f"{total_price:,}"
 
             invoice_text = (
                 f"📄 **فاکتور شما**:\n\n"
@@ -293,7 +292,7 @@ class PurchaseHandler(MainHandler):
                 )
             elif major_product:
                 price = major_product.price * last_order.quantity
-                formatted_price = "{:,}".format(price)
+                formatted_price = f"{price:,}"
                 payment_methods = PaymentMethod.objects.all()
                 formatted_text = ""
                 for payment_method in payment_methods:
@@ -395,9 +394,9 @@ class UserHandler(MainHandler):
                     days_to_expire = (expire_date - datetime.now()).days
                     expire = (expire_date, days_to_expire)
 
-                data_limit = user.get("data_limit", 0) / 1024 ** 3
+                data_limit = user.get("data_limit", 0) / 1024**3
                 status = user.get("status")
-                used_traffic = user.get("used_traffic", 0) / 1024 ** 3
+                used_traffic = user.get("used_traffic", 0) / 1024**3
                 subscription_url = user.get("subscription_url")
                 formatted_message = (
                     "👤 شناسه اشتراک: {}\n\n"
@@ -420,7 +419,7 @@ class UserHandler(MainHandler):
 
                 # Check expiration
                 if isinstance(expire, tuple) and (
-                        expire[0] <= datetime.now() or data_limit - used_traffic <= 0
+                    expire[0] <= datetime.now() or data_limit - used_traffic <= 0
                 ):
                     text = (
                         "🚫پایان زمان یا حجم اشتراک🚫\n\n" f" شناسه اشتراک: {username}"
@@ -461,7 +460,10 @@ class ConfirmationHandler(MainHandler):
         # Ban the user from the bot
         try:
             self.bot.ban_chat_member(self.channel_id, user_id)
-            self.bot.send_message(user_id, "یوزر شما بلاک شده است.برای دریافت اطلاعات بیشتر به پشتیبانی پیام دهید")
+            self.bot.send_message(
+                user_id,
+                "یوزر شما بلاک شده است.برای دریافت اطلاعات بیشتر به پشتیبانی پیام دهید",
+            )
             print(f"User {user_id} has been banned.")
         except Exception as e:
             print(f"Error banning user {user_id}: {e}")
@@ -510,7 +512,7 @@ class ConfirmationHandler(MainHandler):
             print("No subscription data available")
 
     def subscription_success(
-            self, user, user_id, last_order, sub_user, expiry_utc_time, data_limit
+        self, user, user_id, last_order, sub_user, expiry_utc_time, data_limit
     ):
         subscription_url = user.get("subscription_url", "")
 
@@ -527,7 +529,7 @@ class ConfirmationHandler(MainHandler):
 
     @staticmethod
     def generate_subscription_message(
-            user, expiry_utc_time, data_limit, subscription_url
+        user, expiry_utc_time, data_limit, subscription_url
     ):
         formatted_message = (
             "🔐 مشخصات اشتراک \n\n"
@@ -557,7 +559,7 @@ class ConfirmationHandler(MainHandler):
 
     @staticmethod
     def generate_subscription_urls(
-            user_id, quantity, data_limit, on_hold_expire_duration
+        user_id, quantity, data_limit, on_hold_expire_duration
     ):
         file_content = ""
         for i in range(quantity):
@@ -601,7 +603,7 @@ class ConfirmationHandler(MainHandler):
             print(f"Subscription URLs file sent to user {user_id}")
 
     def create_and_send_subscription_urls(
-            self, user_id, quantity, data_limit, on_hold_expire_duration
+        self, user_id, quantity, data_limit, on_hold_expire_duration
     ):
 
         if not os.path.exists("subscription_urls"):
@@ -648,7 +650,9 @@ class ConfirmationHandler(MainHandler):
             expiry_utc_time = datetime.now(timezone.utc) + timedelta(days=31)
             expire_timestamp = expiry_utc_time.timestamp()
             on_hold_expire_duration = int(expire_timestamp - datetime.now().timestamp())
-            prize = marzban.create_user(username, 10, on_hold_expire_duration, access_token)
+            prize = marzban.create_user(
+                username, 10, on_hold_expire_duration, access_token
+            )
             if prize is not None:
                 subscription_url = prize.get("subscription_url")
                 subscription_size = "10GB"
@@ -673,7 +677,9 @@ class ConfirmationHandler(MainHandler):
                 self.whole_message(message.chat.id)
             elif "block" in message.text.lower():
                 self.handle_block_message(message)
-                self.bot.send_message(message.chat.id, "User has been banned and data removed.")
+                self.bot.send_message(
+                    message.chat.id, "User has been banned and data removed."
+                )
             else:
                 print("No action defined for this message")
         else:
@@ -700,18 +706,22 @@ class SubscriptionManager:
                         sub_user_id = subscription.sub_user
                         user_data = marzban.get_user(sub_user_id, access_token)
                         if user_data:
-                            expire_time = user_data.get('expire')
-                            data_limit_bytes = user_data.get('data_limit', 0)
+                            expire_time = user_data.get("expire")
+                            data_limit_bytes = user_data.get("data_limit", 0)
                             data_limit_gb = bytes_to_gb(data_limit_bytes)
-                            if user_data.get("status") == "active" and (expire_time is not None and
-                                                                        (data_limit_gb < 1 or
-                                                                         datetime.fromtimestamp(
-                                                                             expire_time) <= datetime.now() + timedelta(
-                                                                                    days=3))):
+                            if user_data.get("status") == "active" and (
+                                expire_time is not None
+                                and (
+                                    data_limit_gb < 1
+                                    or datetime.fromtimestamp(expire_time)
+                                    <= datetime.now() + timedelta(days=3)
+                                )
+                            ):
                                 user_id = subscription.user_id
-                                data_limit = user_data.get("data_limit") / (1024 ** 3)
-                                expire_time_formatted = datetime.fromtimestamp(expire_time).strftime(
-                                    '%Y-%m-%d %H:%M:%S')
+                                data_limit = user_data.get("data_limit") / (1024**3)
+                                expire_time_formatted = datetime.fromtimestamp(
+                                    expire_time
+                                ).strftime("%Y-%m-%d %H:%M:%S")
                                 notification_message = (
                                     f"🪫اشتراک شما رو به اتمام است\n\n"
                                     f" آیدی اشتراک شما: {sub_user_id}\n\n\n"
@@ -720,11 +730,17 @@ class SubscriptionManager:
                                 )
                                 try:
                                     self.bot.send_message(user_id, notification_message)
-                                    logging.info(f"Notified user {user_id} about subscription status.")
+                                    logging.info(
+                                        f"Notified user {user_id} about subscription status."
+                                    )
                                 except Exception as e:
-                                    logging.error(f"Failed to send message to user {user_id}: {e}")
+                                    logging.error(
+                                        f"Failed to send message to user {user_id}: {e}"
+                                    )
                         else:
-                            logging.error(f"Failed to get user data for subscription: {subscription.id}")
+                            logging.error(
+                                f"Failed to get user data for subscription: {subscription.id}"
+                            )
 
             time.sleep(60 * 60 * 12)
 
@@ -739,5 +755,3 @@ class SubscriptionManager:
                     sub_user_id = subscription.sub_user
                     user_data = marzban.get_user(sub_user_id, access_token)
                     self.bot.delete_subscription()
-
-

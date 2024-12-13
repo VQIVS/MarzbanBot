@@ -1,8 +1,9 @@
-from datetime import timezone
-from django.db import models
 import uuid
-from django.contrib.auth.models import User
+from datetime import timezone
+
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
 
 
 class Configuration(models.Model):
@@ -106,7 +107,7 @@ class DiscountCode(models.Model):
         return self.code
 
     def is_valid(self):
-        """ Check if the code is still active, within the valid date range, and under the use limit. """
+        """Check if the code is still active, within the valid date range, and under the use limit."""
         if not self.active:
             return False
         if self.times_used >= self.use_limit:
@@ -116,7 +117,7 @@ class DiscountCode(models.Model):
         return True
 
     def use(self):
-        """ Increment the usage count of the code. """
+        """Increment the usage count of the code."""
         if self.is_valid():
             self.times_used += 1
             self.save()

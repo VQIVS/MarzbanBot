@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import BotUser, Order, Subscription
 
 admin.site.register(BotUser)

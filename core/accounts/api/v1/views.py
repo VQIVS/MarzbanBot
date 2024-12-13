@@ -1,7 +1,7 @@
-from rest_framework import generics
-from .serializers import RegistrationsSerializer
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
+
+from .serializers import RegistrationsSerializer
 
 
 class RegistrationApiView(generics.GenericAPIView):
